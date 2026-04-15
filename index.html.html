@@ -1,65 +1,22 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>학생 포인트 시스템</title>
-<style>
-body { font-family: Arial; text-align: center; margin-top: 30px; }
-.box { border: 1px solid #ccc; padding: 20px; display: inline-block; width: 300px; }
-button { margin: 5px; padding: 10px; cursor: pointer; }
-.tab { margin: 10px; }
-.hidden { display: none; }
-</style>
-</head>
-<body>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-<!-- 로그인 -->
-<div id="loginBox" class="box">
-    <h2>로그인</h2>
-    <input id="id" placeholder="아이디"><br><br>
-    <input id="pw" type="password" placeholder="비밀번호"><br><br>
-    <button onclick="login()">로그인</button>
-</div>
+// 🔥 Firebase 설정
+const firebaseConfig = {
+  apiKey: "AIzaSyClc2ZS_N03gWY2SX7Wt5MydzgDKtBaT7c",
+  authDomain: "pointapp-21442.firebaseapp.com",
+  projectId: "pointapp-21442",
+  storageBucket: "pointapp-21442.firebasestorage.app",
+  messagingSenderId: "599709947004",
+  appId: "1:599709947004:web:aa46c1e4ac46a2fe84e5f9"
+};
 
-<!-- 메인 -->
-<div id="mainBox" class="box hidden">
+// 🔥 초기화
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    <h3 id="welcome"></h3>
-
-    <!-- 탭 -->
-    <div class="tab">
-        <button onclick="showTab('home')">홈</button>
-        <button onclick="showTab('shop')">상점</button>
-    </div>
-
-    <!-- 홈 -->
-    <div id="homeTab">
-        <h3>내 포인트</h3>
-        <h2><span id="point"></span> 점</h2>
-
-        <h3>사용 내역</h3>
-        <ul id="history"></ul>
-    </div>
-
-    <!-- 상점 -->
-    <div id="shopTab" class="hidden">
-        <h3>상점</h3>
-        <div id="products"></div>
-    </div>
-
-    <br>
-    <button onclick="logout()">로그아웃</button>
-
-</div>
-
-<script>
-// 🔹 학생 데이터
-const students = [
-    {id: "student1", pw: "1234", name: "홍길동", point: 1000, history: []},
-    {id: "student2", pw: "1111", name: "김철수", point: 500, history: []}
-];
-
-// 🔹 상품 목록
+// 🔹 상품 목록 (이건 그대로 유지)
 const products = [
     {name: "초코파이", price: 300},
     {name: "콜라", price: 500},
@@ -68,33 +25,41 @@ const products = [
 
 let currentUser = null;
 
-// 🔐 로그인
-function login() {
+// 🔐 로그인 (Firebase에서 불러오기)
+async function login() {
     const id = document.getElementById("id").value;
     const pw = document.getElementById("pw").value;
 
-    const user = students.find(s => s.id === id && s.pw === pw);
+    const ref = doc(db, "students", id);
+    const snap = await getDoc(ref);
 
-    if (user) {
-        currentUser = user;
-        document.getElementById("loginBox").classList.add("hidden");
-        document.getElementById("mainBox").classList.remove("hidden");
-        updateUI();
+    if (snap.exists()) {
+        const user = snap.data();
+
+        if (user.pw === pw) {
+            currentUser = user;
+
+            document.getElementById("loginBox").classList.add("hidden");
+            document.getElementById("mainBox").classList.remove("hidden");
+
+            updateUI();
+        } else {
+            alert("비밀번호 오류");
+        }
     } else {
-        alert("아이디 또는 비밀번호 오류");
+        alert("아이디 없음");
     }
 }
 
-// 🔄 화면 업데이트
+// 🔄 UI 업데이트
 function updateUI() {
     document.getElementById("welcome").innerText = currentUser.name + " 학생";
     document.getElementById("point").innerText = currentUser.point;
 
-    // 사용 내역
     const historyList = document.getElementById("history");
     historyList.innerHTML = "";
 
-    if (currentUser.history.length === 0) {
+    if (!currentUser.history || currentUser.history.length === 0) {
         historyList.innerHTML = "<li>사용 내역 없음</li>";
     } else {
         currentUser.history.forEach(h => {
@@ -104,7 +69,6 @@ function updateUI() {
         });
     }
 
-    // 상품 표시
     const productDiv = document.getElementById("products");
     productDiv.innerHTML = "";
 
@@ -116,25 +80,34 @@ function updateUI() {
     });
 }
 
-// 🛒 구매
-function buy(index) {
+// 🛒 구매 + Firebase 저장
+async function buy(index) {
     const product = products[index];
 
     if (currentUser.point >= product.price) {
         currentUser.point -= product.price;
 
         const date = new Date().toLocaleString();
-        currentUser.history.unshift(product.name + " 구매 (" + product.price + "점) - " + date);
+        if (!currentUser.history) currentUser.history = [];
 
-        alert(product.name + " 구매 완료!");
+        currentUser.history.unshift(
+            product.name + " 구매 (" + product.price + "점) - " + date
+        );
+
+        await updateDoc(doc(db, "students", currentUser.id), {
+            point: currentUser.point,
+            history: currentUser.history
+        });
+
+        alert("구매 완료!");
         updateUI();
     } else {
         alert("포인트 부족!");
     }
 }
 
-// 📑 탭 전환
-function showTab(tab) {
+// 탭
+window.showTab = function(tab) {
     document.getElementById("homeTab").classList.add("hidden");
     document.getElementById("shopTab").classList.add("hidden");
 
@@ -143,15 +116,16 @@ function showTab(tab) {
     } else {
         document.getElementById("shopTab").classList.remove("hidden");
     }
-}
+};
 
-// 🚪 로그아웃
-function logout() {
+// 로그아웃
+window.logout = function() {
     currentUser = null;
     document.getElementById("loginBox").classList.remove("hidden");
     document.getElementById("mainBox").classList.add("hidden");
-}
-</script>
+};
 
-</body>
-</html>
+// 로그인 버튼 연결 (중요)
+window.login = login;
+
+</script>
