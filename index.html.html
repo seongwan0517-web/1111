@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>학생 포인트 시스템</title>
+<style>
+body { font-family: Arial; text-align: center; margin-top: 30px; }
+.box { border: 1px solid #ccc; padding: 20px; display: inline-block; width: 300px; }
+button { margin: 5px; padding: 10px; cursor: pointer; }
+.tab { margin: 10px; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="loginBox" class="box">
+    <h2>로그인</h2>
+    <input id="id" placeholder="아이디"><br><br>
+    <input id="pw" type="password" placeholder="비밀번호"><br><br>
+    <button onclick="login()">로그인</button>
+</div>
+
+<!-- 메인 -->
+<div id="mainBox" class="box hidden">
+
+    <h3 id="welcome"></h3>
+
+    <!-- 탭 -->
+    <div class="tab">
+        <button onclick="showTab('home')">홈</button>
+        <button onclick="showTab('shop')">상점</button>
+    </div>
+
+    <!-- 홈 -->
+    <div id="homeTab">
+        <h3>내 포인트</h3>
+        <h2><span id="point"></span> 점</h2>
+
+        <h3>사용 내역</h3>
+        <ul id="history"></ul>
+    </div>
+
+    <!-- 상점 -->
+    <div id="shopTab" class="hidden">
+        <h3>상점</h3>
+        <div id="products"></div>
+    </div>
+
+    <br>
+    <button onclick="logout()">로그아웃</button>
+
+</div>
+
+<script>
+// 🔹 학생 데이터
+const students = [
+    {id: "student1", pw: "1234", name: "홍길동", point: 1000, history: []},
+    {id: "student2", pw: "1111", name: "김철수", point: 500, history: []}
+];
+
+// 🔹 상품 목록
+const products = [
+    {name: "초코파이", price: 300},
+    {name: "콜라", price: 500},
+    {name: "사탕", price: 100}
+];
+
+let currentUser = null;
+
+// 🔐 로그인
+function login() {
+    const id = document.getElementById("id").value;
+    const pw = document.getElementById("pw").value;
+
+    const user = students.find(s => s.id === id && s.pw === pw);
+
+    if (user) {
+        currentUser = user;
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("mainBox").classList.remove("hidden");
+        updateUI();
+    } else {
+        alert("아이디 또는 비밀번호 오류");
+    }
+}
+
+// 🔄 화면 업데이트
+function updateUI() {
+    document.getElementById("welcome").innerText = currentUser.name + " 학생";
+    document.getElementById("point").innerText = currentUser.point;
+
+    // 사용 내역
+    const historyList = document.getElementById("history");
+    historyList.innerHTML = "";
+
+    if (currentUser.history.length === 0) {
+        historyList.innerHTML = "<li>사용 내역 없음</li>";
+    } else {
+        currentUser.history.forEach(h => {
+            const li = document.createElement("li");
+            li.innerText = h;
+            historyList.appendChild(li);
+        });
+    }
+
+    // 상품 표시
+    const productDiv = document.getElementById("products");
+    productDiv.innerHTML = "";
+
+    products.forEach((p, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = p.name + " (" + p.price + "점)";
+        btn.onclick = () => buy(index);
+        productDiv.appendChild(btn);
+    });
+}
+
+// 🛒 구매
+function buy(index) {
+    const product = products[index];
+
+    if (currentUser.point >= product.price) {
+        currentUser.point -= product.price;
+
+        const date = new Date().toLocaleString();
+        currentUser.history.unshift(product.name + " 구매 (" + product.price + "점) - " + date);
+
+        alert(product.name + " 구매 완료!");
+        updateUI();
+    } else {
+        alert("포인트 부족!");
+    }
+}
+
+// 📑 탭 전환
+function showTab(tab) {
+    document.getElementById("homeTab").classList.add("hidden");
+    document.getElementById("shopTab").classList.add("hidden");
+
+    if (tab === "home") {
+        document.getElementById("homeTab").classList.remove("hidden");
+    } else {
+        document.getElementById("shopTab").classList.remove("hidden");
+    }
+}
+
+// 🚪 로그아웃
+function logout() {
+    currentUser = null;
+    document.getElementById("loginBox").classList.remove("hidden");
+    document.getElementById("mainBox").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>
