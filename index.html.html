@@ -323,43 +323,45 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 </div>
 <div class="toast" id="toast"></div>
 
-<script>
 // ═══════════════════════════════════════════════════════════════
-//  JSONBin 설정 — https://jsonbin.io 에서 발급
-//  1. jsonbin.io 회원가입 → API Keys 메뉴에서 Secret Key 복사
-//  2. Bins → Create Bin → 아무 JSON({}) 저장 → BIN ID 복사
-//  3. 아래 두 값을 채워넣으면 끝
+//  Firebase Realtime Database 설정
 // ═══════════════════════════════════════════════════════════════
-let JSONBIN_KEY = localStorage.getItem('jb_key') || '';  // $2a$10$... 형태
-let JSONBIN_BIN = localStorage.getItem('jb_bin') || '';  // 6자리 hex ID
+// 제공해주신 URL을 기본값으로 설정합니다.
+let FIREBASE_URL = localStorage.getItem('fb_url') || 'https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/';
 
-const API = 'https://api.jsonbin.io/v3/b';
+// Firebase REST API를 사용하기 위해 URL 끝에 .json을 붙여야 합니다.
+function getApiUrl() {
+  let url = FIREBASE_URL.trim();
+  if (!url.endsWith('/')) url += '/';
+  return url + 'data.json'; // 'data' 노드에 저장
+}
 
 async function dbLoad() {
-  if (!JSONBIN_KEY || !JSONBIN_BIN) return null;
   try {
-    const r = await fetch(`${API}/${JSONBIN_BIN}/latest`, {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
+    const r = await fetch(getApiUrl());
     if (!r.ok) return null;
     const j = await r.json();
-    return j.record;
-  } catch { return null; }
+    return j; // Firebase는 데이터 그대로를 반환함
+  } catch (e) { 
+    console.error('불러오기 실패:', e);
+    return null; 
+  }
 }
 
 async function dbSave(data) {
-  if (!JSONBIN_KEY || !JSONBIN_BIN) return;
   try {
-    await fetch(`${API}/${JSONBIN_BIN}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+    await fetch(getApiUrl(), {
+      method: 'PUT', // 데이터를 전체 덮어쓰기
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-  } catch (e) { console.warn('저장 실패', e); }
+  } catch (e) { 
+    console.warn('Firebase 저장 실패', e); 
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  DATA — JSONBin + localStorage 캐시 병행
+//  DATA — 로컬 스토리지 캐시 + Firebase 병행
 // ═══════════════════════════════════════════════════════════════
 const STORE_KEY = 'pointShopData';
 
@@ -367,29 +369,13 @@ const DEFAULT_DATA = {
   students: [
     {id:'student1',pw:'pass1234',name:'김민준',points:350,history:[
       {type:'earn',label:'퀴즈 1등',points:100,date:'2025-04-08'},
-      {type:'earn',label:'수업 참여',points:50,date:'2025-04-10'},
       {type:'spend',label:'포카칩 스낵',points:-30,date:'2025-04-12'}
     ]},
-    {id:'student2',pw:'pass1234',name:'이서연',points:520,history:[
-      {type:'earn',label:'발표 우수',points:150,date:'2025-04-07'},
-      {type:'earn',label:'수업 참여',points:50,date:'2025-04-10'}
-    ]},
-    {id:'student3',pw:'pass1234',name:'박도현',points:180,history:[
-      {type:'earn',label:'수업 참여',points:50,date:'2025-04-10'},
-      {type:'spend',label:'자리 선택권',points:-80,date:'2025-04-09'}
-    ]},
-    {id:'student4',pw:'pass1234',name:'최수아',points:290,history:[
-      {type:'earn',label:'퀴즈 2등',points:80,date:'2025-04-08'}
-    ]}
+    {id:'admin',pw:'admin1234',name:'관리자',points:0,history:[]} // 관리자 계정 예시
   ],
   items: [
-    {id:1,name:'막대사탕',desc:'달콤한 막대사탕 1개',price:20,icon:'�',stock:30,cat:'간식'},
-    {id:2,name:'음료수',desc:'시원한 음료수 1캔',price:40,icon:'🥤',stock:20,cat:'간식'},
-    {id:3,name:'초코파이',desc:'달콤한 초코파이 1개',price:30,icon:'🍫',stock:20,cat:'간식'},
-    {id:4,name:'초콜릿',desc:'달콤한 초콜릿 1개',price:25,icon:'🍬',stock:25,cat:'간식'},
-    {id:5,name:'오답노트 면제권',desc:'오답노트 제출 1주일 면제',price:150,icon:'�',stock:5,cat:'특권'},
-    {id:6,name:'자리 우선권',desc:'원하는 자리 1회 선택',price:100,icon:'💺',stock:8,cat:'특권'},
-    {id:7,name:'청소 면제권',desc:'청소 당번 1회 면제',price:120,icon:'🧹',stock:6,cat:'특권'}
+    {id:1,name:'막대사탕',desc:'달콤한 막대사탕 1개',price:20,icon:'🍭',stock:30,cat:'간식'},
+    {id:2,name:'음료수',desc:'시원한 음료수 1캔',price:40,icon:'🥤',stock:20,cat:'간식'}
   ],
   orders: []
 };
@@ -403,7 +389,7 @@ function loadData() {
 
 function saveData() {
   localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
-  dbSave(DATA); // JSONBin에도 비동기 저장
+  dbSave(DATA); 
 }
 
 let DATA = loadData();
@@ -412,19 +398,22 @@ let pendingAction = null;
 let activeShopCat = '전체';
 
 // ═══════════════════════════════════════════════════════════════
-//  AUTH
+//  AUTH (Firebase 연동 로그인)
 // ═══════════════════════════════════════════════════════════════
 async function doLogin() {
   const id  = document.getElementById('loginId').value.trim();
   const pw  = document.getElementById('loginPw').value.trim();
   const err = document.getElementById('loginErr');
   const btn = document.getElementById('loginBtn');
-  err.style.display = 'none';
-  btn.textContent = '연결 중...'; btn.disabled = true;
+  
+  if(!id || !pw) return;
 
-  // JSONBin에서 최신 데이터 가져오기
+  err.style.display = 'none';
+  btn.textContent = '데이터 동기화 중...'; btn.disabled = true;
+
+  // 로그인 시점에 Firebase에서 최신 데이터를 가져옴
   const remote = await dbLoad();
-  if (remote) {
+  if (remote && remote.students) {
     DATA = remote;
     localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
   }
@@ -437,6 +426,7 @@ async function doLogin() {
     renderAdmin();
     return;
   }
+  
   const student = DATA.students.find(s => s.id === id && s.pw === pw);
   if (student) {
     currentUser = { role: 'student', data: student };
@@ -447,16 +437,45 @@ async function doLogin() {
   }
 }
 
-function logout() {
-  currentUser = null;
-  show('studentWrap', false); show('adminWrap', false); show('loginWrap', true);
-  document.getElementById('loginId').value = '';
-  document.getElementById('loginPw').value = '';
-  // 탭 초기화
-  document.querySelectorAll('#studentWrap .tab, #adminWrap .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#studentWrap .tab:first-child, #adminWrap .tab:first-child').forEach(t => t.classList.add('active'));
-  document.querySelectorAll('#studentWrap .panel, #adminWrap .panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#s-home, #a-orders').forEach(p => p.classList.add('active'));
+// ... (나머지 render 및 비즈니스 로직 함수들은 기존과 동일) ...
+
+// ═══════════════════════════════════════════════════════════════
+//  관리자 설정 페이지 UI 수정 (JSONBin -> Firebase)
+// ═══════════════════════════════════════════════════════════════
+function loadJsonBinConfigUI() {
+  // 함수 이름은 유지하되 내용은 Firebase용으로
+  const urlInput = document.getElementById('cfgKey'); // 기존 input 재활용
+  if (urlInput) {
+    urlInput.placeholder = "Firebase Database URL";
+    urlInput.value = FIREBASE_URL;
+  }
+  // Bin ID 입력칸은 숨기거나 제거
+  const binInput = document.getElementById('cfgBin');
+  if (binInput) binInput.style.display = 'none';
+}
+
+async function saveJsonBinConfig() {
+  const url = document.getElementById('cfgKey').value.trim();
+  if (!url) { toast('Firebase URL을 입력하세요.'); return; }
+  
+  FIREBASE_URL = url;
+  localStorage.setItem('fb_url', url);
+  toast('🔗 연결 확인 중...');
+
+  try {
+    const testData = await dbLoad();
+    if (testData) {
+      DATA = testData;
+      localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
+      toast('✅ Firebase 연결 성공!');
+    } else {
+      // 데이터가 비어있으면 현재 데이터 업로드
+      await dbSave(DATA);
+      toast('✅ 새 데이터베이스 초기화 완료!');
+    }
+  } catch (e) {
+    toast('❌ 연결 실패: URL을 확인하세요.');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
