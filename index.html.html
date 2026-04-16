@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>포인트 상점 🎓 (Firebase 연동)</title>
+<title>포인트 상점 🎓</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -30,65 +30,68 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .login-card{padding:28px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:11px 14px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.field input::placeholder{color:var(--text3)}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:11px 14px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .error-msg{font-size:13px;color:var(--red);margin:-8px 0 12px;display:none}
+
+/* BUTTONS */
 .btn{padding:11px 20px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
 .btn-primary{background:var(--accent);color:#fff;box-shadow:0 0 16px var(--accent-glow)}
 .btn-primary:hover{background:var(--accent2)}
 .btn-secondary{background:rgba(255,255,255,0.06);color:var(--text2);border:0.5px solid var(--border2)}
-.btn-secondary:hover{background:rgba(255,255,255,0.1)}
 .btn-danger{background:var(--red-bg);color:var(--red);border:0.5px solid rgba(248,113,113,.3)}
-.btn-danger:hover{background:var(--red);color:#fff}
 .btn-green{background:var(--green-bg);color:var(--green);border:0.5px solid rgba(52,211,153,.3)}
-.btn-green:hover{background:var(--green);color:#000}
 .btn-full{width:100%}
 .btn-sm{padding:6px 14px;font-size:12px}
 
-/* MAIN */
+/* MAIN STRUCTURE */
 .main-wrap{width:100%;max-width:560px;display:none}
-.main-wrap.active{display:block}
 .top-bar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--border)}
 .top-bar-left{display:flex;align-items:center;gap:10px}
-.avatar{width:36px;height:36px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--accent2);flex-shrink:0}
-.role-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px}
-.role-student{background:var(--accent-bg);color:var(--accent2)}
-.role-admin{background:var(--amber-bg);color:var(--amber)}
-.logout-btn{font-size:12px;padding:6px 14px;background:none;border:0.5px solid var(--border2);border-radius:20px;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s}
-.logout-btn:hover{border-color:var(--red);color:var(--red)}
-
-/* TABS */
+.avatar{width:36px;height:36px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--accent2)}
+.logout-btn{font-size:12px;padding:6px 14px;background:none;border:0.5px solid var(--border2);border-radius:20px;color:var(--text2);cursor:pointer}
 .tabs{display:flex;border-bottom:0.5px solid var(--border);padding:0 4px}
-.tab{flex:1;padding:12px 8px;text-align:center;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab{flex:1;padding:12px 8px;text-align:center;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent}
 .tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
 .panel{padding:20px;display:none}
 .panel.active{display:block}
 
-/* POINT BANNER */
+/* STUDENT HOME */
 .point-banner{background:linear-gradient(135deg,rgba(124,111,255,.15),rgba(167,139,250,.08));border:0.5px solid var(--accent-glow);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:20px}
 .point-banner .lbl{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.point-banner .val{font-size:48px;font-weight:700;color:var(--accent2);line-height:1}
-.point-banner .sub{font-size:13px;color:var(--text3);margin-top:8px}
+.point-banner .val{font-size:48px;font-weight:700;color:var(--accent2)}
 
 /* SHOP */
+.shop-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;border:0.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer}
+.filter-chip.active{background:var(--accent-bg);border-color:var(--accent-glow);color:var(--accent2)}
 .shop-item{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.item-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--accent-bg)}
+.item-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.item-cat-snack{background:rgba(251,191,36,.12)}
+.item-cat-privilege{background:rgba(124,111,255,.12)}
+.item-cat-goods{background:rgba(52,211,153,.1)}
+.item-info{flex:1}
+.item-name{font-size:14px;font-weight:600}
+.item-price{font-size:13px;font-weight:700;color:var(--accent2)}
 
 /* ADMIN STATS */
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
 .stat-card{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
-.stat-card .s-val{font-size:20px;font-weight:700}
+.stat-card .s-lbl{font-size:11px;color:var(--text3);margin-bottom:6px}
+.stat-card .s-val{font-size:22px;font-weight:700}
 
-/* MODAL / TOAST */
+/* HISTORY */
+.hist-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid var(--border)}
+.hist-pts.plus{color:var(--green)}
+.hist-pts.minus{color:var(--red)}
+
+/* MODAL & TOAST */
 .modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
 .modal-wrap.open{display:flex}
 .modal-box{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;width:100%;max-width:420px}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.1);backdrop-filter:blur(16px);border:0.5px solid var(--border2);padding:12px 22px;border-radius:30px;font-size:13px;opacity:0;transition:0.3s;pointer-events:none;z-index:200}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.1);backdrop-filter:blur(16px);border:0.5px solid var(--border2);padding:12px 22px;border-radius:30px;font-size:13px;opacity:0;transition:all .3s;z-index:200}
 .toast.show{opacity:1}
 .scroll-area{max-height:400px;overflow-y:auto}
-.hist-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border)}
-.plus{color:var(--green)} .minus{color:var(--red)}
 </style>
 </head>
 <body>
@@ -100,12 +103,12 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     <div class="logo-area">
       <div class="logo-icon">🎓</div>
       <h1>포인트 상점</h1>
-      <p>실시간 데이터베이스 시스템</p>
+      <p id="connStatus">데이터베이스 연결 확인 중...</p>
     </div>
     <div class="card login-card">
-      <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디" value=""></div>
-      <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <p class="error-msg" id="loginErr">로그인 정보가 틀렸습니다.</p>
+      <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디 입력"></div>
+      <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <p class="error-msg" id="loginErr">아이디 또는 비밀번호가 틀렸습니다.</p>
       <button class="btn btn-primary btn-full" id="loginBtn" onclick="doLogin()">로그인</button>
     </div>
   </div>
@@ -113,7 +116,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <!-- STUDENT UI -->
   <div class="main-wrap card" id="studentWrap">
     <div class="top-bar">
-      <div class="top-bar-left"><div class="avatar" id="sAvatar">S</div><span id="sName" style="font-weight:600"></span></div>
+      <div class="top-bar-left"><div class="avatar" id="sAvatar"></div><div><span id="sName" style="font-weight:600"></span><span style="font-size:10px; margin-left:5px; color:var(--text3)">학생</span></div></div>
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
     <div class="tabs">
@@ -123,12 +126,13 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     </div>
     <div class="panel active" id="s-home">
       <div class="point-banner">
-        <div class="lbl">내 포인트</div>
+        <div class="lbl">내 보유 포인트</div>
         <div class="val"><span id="sPoints">0</span> P</div>
       </div>
-      <div style="font-size:13px; color:var(--text3); text-align:center">환영합니다! 열심히 포인트를 모아보세요.</div>
+      <div style="font-size:13px; color:var(--text3); text-align:center">환영합니다! 상점에서 포인트를 사용해보세요.</div>
     </div>
     <div class="panel" id="s-shop">
+      <div class="shop-filter" id="shopFilter"></div>
       <div class="scroll-area" id="shopList"></div>
     </div>
     <div class="panel" id="s-history">
@@ -139,93 +143,94 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <!-- ADMIN UI -->
   <div class="main-wrap card" id="adminWrap" style="max-width:640px">
     <div class="top-bar">
-      <div class="top-bar-left"><div class="avatar" style="color:var(--amber)">A</div><span style="font-weight:600">관리자 모드</span></div>
+      <div class="top-bar-left"><div class="avatar" style="color:var(--amber); background:var(--amber-bg)">A</div><span style="font-weight:600">관리자 패널</span></div>
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
     <div class="tabs">
-      <div class="tab active" onclick="aTab('orders',this)">주문</div>
-      <div class="tab" onclick="aTab('students',this)">학생</div>
+      <div class="tab active" onclick="aTab('orders',this)">주문 관리</div>
+      <div class="tab" onclick="aTab('students',this)">학생 관리</div>
       <div class="tab" onclick="aTab('shop',this)">상점 설정</div>
     </div>
-    
     <div class="panel active" id="a-orders">
       <div class="stat-grid" id="adminStats"></div>
       <div class="scroll-area" id="adminOrders"></div>
     </div>
-
     <div class="panel" id="a-students">
-      <!-- 포인트 지급 -->
-      <div style="background:var(--surface2); padding:15px; border-radius:10px; margin-bottom:15px">
-        <div style="font-size:12px; margin-bottom:10px; color:var(--text2)">포인트 직접 지급</div>
-        <div style="display:flex; gap:5px">
-          <select id="giveStudent" style="flex:1"></select>
-          <input type="number" id="giveAmt" placeholder="P" style="width:80px">
+      <div style="background:var(--surface2); padding:16px; border-radius:12px; margin-bottom:16px">
+        <div style="font-size:11px; color:var(--text3); margin-bottom:10px">포인트 지급</div>
+        <div style="display:flex; gap:8px">
+          <select id="giveStudent" style="flex:1; background:#000; color:#fff; border:1px solid var(--border2); padding:10px; border-radius:8px"></select>
+          <input type="number" id="giveAmt" placeholder="P" style="width:80px; background:#000; color:#fff; border:1px solid var(--border2); padding:10px; border-radius:8px">
           <button class="btn btn-primary btn-sm" onclick="givePoints()">지급</button>
         </div>
       </div>
       <div class="scroll-area" id="adminStudentList"></div>
-      <button class="btn btn-green btn-full" style="margin-top:10px" onclick="openAddStudentModal()">+ 학생 추가</button>
+      <button class="btn btn-green btn-full" style="margin-top:12px" onclick="openAddStudentModal()">+ 새 학생 등록</button>
     </div>
-
     <div class="panel" id="a-shop">
       <div class="scroll-area" id="adminShopList"></div>
-      <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="openAddItemModal()">+ 아이템 추가</button>
+      <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="openAddItemModal()">+ 새 아이템 등록</button>
     </div>
   </div>
 
 </div>
 
-<!-- MODAL -->
 <div class="modal-wrap" id="modalWrap">
   <div class="modal-box">
-    <h3 id="modalTitle" style="margin-bottom:15px"></h3>
+    <h3 id="modalTitle" style="margin-bottom:16px"></h3>
     <div id="modalContent"></div>
-    <div style="display:flex; gap:10px; margin-top:20px" id="modalBtns"></div>
+    <div style="display:flex; gap:10px; margin-top:24px" id="modalBtns"></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// 1. CONFIG & DATABASE
+// 1. DATA & DATABASE (Firebase 연동)
 // ═══════════════════════════════════════════════════════════════
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
 
-let DATA = {
-  students: [],
-  items: [],
+const DEFAULT_DATA = {
+  students: [
+    {id:'student1',pw:'1234',name:'김민준',points:500,history:[]}
+  ],
+  items: [
+    {id:1,name:'막대사탕',desc:'달콤한 사탕',price:20,icon:'🍭',stock:50,cat:'간식'},
+    {id:2,name:'음료수',desc:'시원한 음료',price:50,icon:'🥤',stock:30,cat:'간식'},
+    {id:3,name:'자리 우선권',desc:'원하는 자리 선택',price:100,icon:'💺',stock:10,cat:'특권'},
+    {id:4,name:'청소 면제권',desc:'청소 1회 면제',price:150,icon:'🧹',stock:5,cat:'특권'},
+    {id:5,name:'오답노트 면제',desc:'제출 1회 면제',price:200,icon:'📝',stock:5,cat:'특권'}
+  ],
   orders: []
 };
 
+let DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
 let currentUser = null;
+let activeCat = '전체';
 
-// 데이터 로드
 async function dbLoad() {
   try {
     const res = await fetch(FIREBASE_URL);
     const json = await res.json();
     if (json) {
       DATA = json;
-      if (!DATA.students) DATA.students = [];
-      if (!DATA.items) DATA.items = [];
-      if (!DATA.orders) DATA.orders = [];
+      if(!DATA.students) DATA.students = [];
+      if(!DATA.items) DATA.items = [];
+      if(!DATA.orders) DATA.orders = [];
+    } else {
+      // 데이터가 아예 없으면 초기 데이터로 채움
+      await dbSave();
     }
+    document.getElementById('connStatus').textContent = "온라인: 연결됨";
   } catch (e) {
-    console.error("DB 로드 실패", e);
+    document.getElementById('connStatus').textContent = "오프라인 모드";
   }
 }
 
-// 데이터 저장
 async function dbSave() {
   try {
-    await fetch(FIREBASE_URL, {
-      method: 'PUT',
-      body: JSON.stringify(DATA)
-    });
-  } catch (e) {
-    console.error("DB 저장 실패", e);
-  }
+    await fetch(FIREBASE_URL, { method: 'PUT', body: JSON.stringify(DATA) });
+  } catch (e) { console.error("저장 실패", e); }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -234,42 +239,32 @@ async function dbSave() {
 async function doLogin() {
   const id = document.getElementById('loginId').value.trim();
   const pw = document.getElementById('loginPw').value.trim();
-  const btn = document.getElementById('loginBtn');
   
-  btn.disabled = true; btn.textContent = "동기화 중...";
   await dbLoad();
-  btn.disabled = false; btn.textContent = "로그인";
 
   if (id === 'admin' && pw === 'admin1234') {
     currentUser = { role: 'admin' };
-    showUI('adminWrap');
-    renderAdmin();
+    showUI('adminWrap'); renderAdmin();
   } else {
     const s = DATA.students.find(x => x.id === id && x.pw === pw);
     if (s) {
       currentUser = { role: 'student', data: s };
-      showUI('studentWrap');
-      renderStudent();
+      showUI('studentWrap'); renderStudent();
     } else {
       document.getElementById('loginErr').style.display = 'block';
     }
   }
 }
 
-function logout() {
-  currentUser = null;
-  location.reload();
-}
-
 function showUI(id) {
   document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('studentWrap').style.display = 'none';
-  document.getElementById('adminWrap').style.display = 'none';
   document.getElementById(id).style.display = 'block';
 }
 
+function logout() { location.reload(); }
+
 // ═══════════════════════════════════════════════════════════════
-// 3. STUDENT LOGIC
+// 3. STUDENT
 // ═══════════════════════════════════════════════════════════════
 function renderStudent() {
   const s = currentUser.data;
@@ -281,68 +276,63 @@ function renderStudent() {
 }
 
 function renderShop() {
+  const cats = ['전체', ...new Set(DATA.items.map(i => i.cat))];
+  document.getElementById('shopFilter').innerHTML = cats.map(c => 
+    `<button class="filter-chip ${activeCat===c?'active':''}" onclick="filterShop('${c}')">${c}</button>`
+  ).join('');
+
   const list = document.getElementById('shopList');
-  list.innerHTML = DATA.items.map(item => `
-    <div class="shop-item">
-      <div class="item-icon">${item.icon}</div>
-      <div style="flex:1">
-        <div style="font-weight:600; font-size:14px">${item.name}</div>
-        <div style="font-size:12px; color:var(--text3)">${item.price}P · 재고 ${item.stock}</div>
-      </div>
-      <button class="btn btn-primary btn-sm" ${item.stock <= 0 || currentUser.data.points < item.price ? 'disabled' : ''} onclick="buyItem(${item.id})">구매</button>
-    </div>
-  `).join('');
+  const items = activeCat === '전체' ? DATA.items : DATA.items.filter(i => i.cat === activeCat);
+  
+  list.innerHTML = items.map(i => {
+    const cc = i.cat==='간식'?'item-cat-snack':i.cat==='특권'?'item-cat-privilege':'item-cat-goods';
+    const canBuy = currentUser.data.points >= i.price && i.stock > 0;
+    return `
+      <div class="shop-item">
+        <div class="item-icon ${cc}">${i.icon}</div>
+        <div class="item-info">
+          <div class="item-name">${i.name}</div>
+          <div class="item-price">${i.price} P · <span style="color:var(--text3); font-weight:400">재고 ${i.stock}</span></div>
+        </div>
+        <button class="btn btn-primary btn-sm" ${!canBuy?'disabled':''} onclick="buyItem(${i.id})">구매</button>
+      </div>`;
+  }).join('') || '<div style="text-align:center; padding:40px; color:var(--text3)">품목이 없습니다.</div>';
 }
 
-async function buyItem(itemId) {
-  const item = DATA.items.find(i => i.id === itemId);
+function filterShop(c) { activeCat = c; renderShop(); }
+
+async function buyItem(id) {
+  const i = DATA.items.find(x => x.id === id);
   const s = currentUser.data;
+  if(!confirm(`[${i.name}]을(를) 구매하시겠습니까?`)) return;
 
-  if (s.points < item.price) return toast("포인트가 부족합니다.");
-  if (item.stock <= 0) return toast("재고가 없습니다.");
-
-  if (!confirm(`${item.name}을(를) 구매하시겠습니까?`)) return;
-
-  // 로컬 데이터 반영
-  s.points -= item.price;
-  item.stock -= 1;
-  const hist = { type: 'spend', label: item.name, points: -item.price, date: new Date().toISOString().split('T')[0] };
-  if (!s.history) s.history = [];
+  s.points -= i.price;
+  i.stock--;
+  const hist = { label: i.name, points: -i.price, date: new Date().toISOString().split('T')[0], type:'spend' };
+  if(!s.history) s.history = [];
   s.history.push(hist);
+  DATA.orders.unshift({ id: Date.now(), studentName: s.name, itemName: i.name, date: hist.date, status: 'pending' });
 
-  DATA.orders.unshift({
-    id: Date.now(),
-    studentName: s.name,
-    itemName: item.name,
-    status: 'pending',
-    date: hist.date
-  });
-
-  await dbSave();
-  renderStudent();
-  toast("구매 완료!");
+  await dbSave(); renderStudent(); toast("구매 완료!");
 }
 
 function renderStudentHistory() {
-  const hList = document.getElementById('sHistList');
-  const history = currentUser.data.history || [];
-  hList.innerHTML = history.slice().reverse().map(h => `
+  const list = document.getElementById('sHistList');
+  list.innerHTML = (currentUser.data.history || []).slice().reverse().map(h => `
     <div class="hist-item">
       <div><div style="font-size:14px">${h.label}</div><div style="font-size:11px; color:var(--text3)">${h.date}</div></div>
-      <div class="${h.points > 0 ? 'plus' : 'minus'}">${h.points > 0 ? '+' : ''}${h.points}P</div>
-    </div>
-  `).join('') || '<div style="padding:20px; text-align:center; color:var(--text3)">내역이 없습니다.</div>';
+      <div class="hist-pts ${h.points>0?'plus':'minus'}">${h.points>0?'+':''}${h.points}P</div>
+    </div>`).join('') || '<div style="text-align:center; padding:40px; color:var(--text3)">내역이 없습니다.</div>';
 }
 
 function sTab(id, el) {
-  document.querySelectorAll('#studentWrap .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#studentWrap .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('s-' + id).classList.add('active');
+  document.querySelectorAll('#studentWrap .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#studentWrap .panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active'); document.getElementById('s-'+id).classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 4. ADMIN LOGIC
+// 4. ADMIN
 // ═══════════════════════════════════════════════════════════════
 function renderAdmin() {
   renderAdminStats();
@@ -354,136 +344,89 @@ function renderAdmin() {
 function renderAdminStats() {
   const pending = DATA.orders.filter(o => o.status === 'pending').length;
   document.getElementById('adminStats').innerHTML = `
-    <div class="stat-card"><div>학생</div><div class="s-val">${DATA.students.length}</div></div>
-    <div class="stat-card"><div>대기주문</div><div class="s-val" style="color:var(--amber)">${pending}</div></div>
-    <div class="stat-card"><div>총 아이템</div><div class="s-val">${DATA.items.length}</div></div>
-  `;
+    <div class="stat-card"><div class="s-lbl">학생</div><div class="s-val">${DATA.students.length}</div></div>
+    <div class="stat-card"><div class="s-lbl">대기주문</div><div class="s-val" style="color:var(--amber)">${pending}</div></div>
+    <div class="stat-card"><div class="s-lbl">총 품목</div><div class="s-val">${DATA.items.length}</div></div>`;
 }
 
 function renderAdminOrders() {
   const list = document.getElementById('adminOrders');
   list.innerHTML = DATA.orders.map(o => `
-    <div class="shop-item" style="opacity: ${o.status === 'done' ? 0.6 : 1}">
-      <div style="flex:1">
-        <div style="font-size:14px"><b>${o.studentName}</b>: ${o.itemName}</div>
-        <div style="font-size:11px; color:var(--text3)">${o.date} · ${o.status === 'pending' ? '대기중' : '완료'}</div>
-      </div>
-      ${o.status === 'pending' ? `<button class="btn btn-green btn-sm" onclick="completeOrder(${o.id})">완료</button>` : ''}
-      <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">X</button>
-    </div>
-  `).join('') || '<div class="empty">주문이 없습니다.</div>';
+    <div class="shop-item" style="opacity:${o.status==='done'?0.5:1}">
+      <div style="flex:1"><div style="font-size:14px"><b>${o.studentName}</b> : ${o.itemName}</div><div style="font-size:11px; color:var(--text3)">${o.date}</div></div>
+      ${o.status==='pending'?`<button class="btn btn-green btn-sm" onclick="completeOrder(${o.id})">완료</button>`:''}
+      <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">삭제</button>
+    </div>`).join('') || '<div style="padding:40px; text-align:center">주문이 없습니다.</div>';
 }
 
-async function completeOrder(id) {
-  const o = DATA.orders.find(x => x.id === id);
-  o.status = 'done';
-  await dbSave(); renderAdmin();
-}
-
-async function deleteOrder(id) {
-  DATA.orders = DATA.orders.filter(x => x.id !== id);
-  await dbSave(); renderAdmin();
-}
+async function completeOrder(id) { DATA.orders.find(x=>x.id===id).status='done'; await dbSave(); renderAdmin(); }
+async function deleteOrder(id) { DATA.orders=DATA.orders.filter(x=>x.id!==id); await dbSave(); renderAdmin(); }
 
 function renderAdminStudents() {
   const list = document.getElementById('adminStudentList');
-  const select = document.getElementById('giveStudent');
-  
+  const sel = document.getElementById('giveStudent');
   list.innerHTML = DATA.students.map(s => `
     <div class="shop-item">
-      <div style="flex:1">
-        <div style="font-size:14px"><b>${s.name}</b> (${s.id})</div>
-        <div style="font-size:12px; color:var(--accent2)">${s.points.toLocaleString()} P</div>
-      </div>
-      <button class="btn btn-secondary btn-sm" onclick="deleteStudent('${s.id}')">삭제</button>
-    </div>
-  `).join('');
-
-  select.innerHTML = DATA.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+      <div style="flex:1"><b>${s.name}</b> (${s.id})<br><span style="color:var(--accent2); font-size:13px">${s.points} P</span></div>
+      <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')">삭제</button>
+    </div>`).join('');
+  sel.innerHTML = DATA.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 }
 
 async function givePoints() {
   const id = document.getElementById('giveStudent').value;
   const amt = parseInt(document.getElementById('giveAmt').value);
-  if (!amt) return;
-  const s = DATA.students.find(x => x.id === id);
+  if(!amt) return;
+  const s = DATA.students.find(x=>x.id===id);
   s.points += amt;
   if(!s.history) s.history = [];
-  s.history.push({ type: 'earn', label: '관리자 지급', points: amt, date: new Date().toISOString().split('T')[0] });
+  s.history.push({ label: '관리자 지급', points: amt, date: new Date().toISOString().split('T')[0], type:'earn' });
   await dbSave(); renderAdmin(); toast("지급 완료");
 }
 
 function openAddStudentModal() {
-  openModal("학생 추가", `
-    <input type="text" id="addSid" placeholder="아이디" class="field" style="margin-bottom:10px">
-    <input type="text" id="addSname" placeholder="이름" class="field" style="margin-bottom:10px">
-    <input type="text" id="addSpw" placeholder="비밀번호" class="field">
-  `, [
-    { label: "취소", cls: "btn-secondary", fn: closeModal },
-    { label: "추가", cls: "btn-primary", fn: async () => {
-      const id = document.getElementById('addSid').value;
-      const name = document.getElementById('addSname').value;
-      const pw = document.getElementById('addSpw').value;
-      if(id && name && pw) {
-        DATA.students.push({ id, name, pw, points: 0, history: [] });
-        await dbSave(); renderAdmin(); closeModal();
-      }
-    }}
-  ]);
+  openModal("학생 등록", `
+    <input type="text" id="asId" placeholder="아이디" style="width:100%; margin-bottom:10px; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+    <input type="text" id="asName" placeholder="이름" style="width:100%; margin-bottom:10px; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+    <input type="text" id="asPw" placeholder="비밀번호" style="width:100%; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+  `, [{label:"등록", cls:"btn-primary", fn: async ()=>{
+    const id=document.getElementById('asId').value, name=document.getElementById('asName').value, pw=document.getElementById('asPw').value;
+    if(id&&name&&pw) { DATA.students.push({id,name,pw,points:0,history:[]}); await dbSave(); renderAdmin(); closeModal(); }
+  }}]);
 }
 
-async function deleteStudent(id) {
-  if(!confirm("정말 삭제할까요?")) return;
-  DATA.students = DATA.students.filter(x => x.id !== id);
-  await dbSave(); renderAdmin();
-}
+async function deleteStudent(id) { if(confirm("삭제할까요?")){DATA.students=DATA.students.filter(x=>x.id!==id); await dbSave(); renderAdmin();}}
 
 function renderAdminShop() {
   const list = document.getElementById('adminShopList');
-  list.innerHTML = DATA.items.map(item => `
+  list.innerHTML = DATA.items.map(i => `
     <div class="shop-item">
-      <div class="item-icon">${item.icon}</div>
-      <div style="flex:1">
-        <div><b>${item.name}</b></div>
-        <div style="font-size:12px">${item.price}P · 재고 ${item.stock}</div>
-      </div>
-      <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">삭제</button>
-    </div>
-  `).join('');
+      <div class="item-icon item-cat-snack">${i.icon}</div>
+      <div style="flex:1"><b>${i.name}</b> (${i.cat})<br>${i.price} P · 재고 ${i.stock}</div>
+      <button class="btn btn-danger btn-sm" onclick="deleteItem(${i.id})">삭제</button>
+    </div>`).join('');
 }
 
 function openAddItemModal() {
-  openModal("아이템 추가", `
-    <input type="text" id="addItemIcon" placeholder="아이콘(이모지)" style="width:100%; margin-bottom:10px">
-    <input type="text" id="addItemName" placeholder="아이템명" style="width:100%; margin-bottom:10px">
-    <input type="number" id="addItemPrice" placeholder="가격" style="width:100%; margin-bottom:10px">
-    <input type="number" id="addItemStock" placeholder="초기재고" style="width:100%">
-  `, [
-    { label: "취소", cls: "btn-secondary", fn: closeModal },
-    { label: "추가", cls: "btn-primary", fn: async () => {
-      const name = document.getElementById('addItemName').value;
-      const icon = document.getElementById('addItemIcon').value || '🎁';
-      const price = parseInt(document.getElementById('addItemPrice').value);
-      const stock = parseInt(document.getElementById('addItemStock').value);
-      if(name && price >= 0) {
-        DATA.items.push({ id: Date.now(), name, icon, price, stock });
-        await dbSave(); renderAdmin(); closeModal();
-      }
-    }}
-  ]);
+  openModal("아이템 등록", `
+    <input type="text" id="aiIcon" placeholder="이모지" style="width:100%; margin-bottom:10px; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+    <input type="text" id="aiName" placeholder="이름" style="width:100%; margin-bottom:10px; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+    <input type="number" id="aiPrice" placeholder="가격" style="width:100%; margin-bottom:10px; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+    <select id="aiCat" style="width:100%; padding:12px; background:#000; border:1px solid var(--border2); color:#fff; border-radius:8px">
+      <option>간식</option><option>특권</option><option>상품</option>
+    </select>
+  `, [{label:"등록", cls:"btn-primary", fn: async ()=>{
+    const name=document.getElementById('aiName').value, price=parseInt(document.getElementById('aiPrice').value);
+    if(name&&price>=0){ DATA.items.push({id:Date.now(), name, price, icon:document.getElementById('aiIcon').value||'🎁', stock:10, cat:document.getElementById('aiCat').value}); await dbSave(); renderAdmin(); closeModal(); }
+  }}]);
 }
 
-async function deleteItem(id) {
-  if(!confirm("아이템을 삭제할까요?")) return;
-  DATA.items = DATA.items.filter(x => x.id !== id);
-  await dbSave(); renderAdmin();
-}
+async function deleteItem(id) { DATA.items=DATA.items.filter(x=>x.id!==id); await dbSave(); renderAdmin(); }
 
 function aTab(id, el) {
-  document.querySelectorAll('#adminWrap .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#adminWrap .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('a-' + id).classList.add('active');
+  document.querySelectorAll('#adminWrap .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#adminWrap .panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active'); document.getElementById('a-'+id).classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -492,27 +435,20 @@ function aTab(id, el) {
 function openModal(title, content, btns) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalContent').innerHTML = content;
-  const btnArea = document.getElementById('modalBtns');
-  btnArea.innerHTML = '';
+  const area = document.getElementById('modalBtns'); area.innerHTML = '';
   btns.forEach(b => {
-    const btn = document.createElement('button');
-    btn.className = 'btn ' + b.cls;
-    btn.textContent = b.label;
-    btn.onclick = b.fn;
-    btnArea.appendChild(btn);
+    const btn = document.createElement('button'); btn.className = 'btn ' + b.cls;
+    btn.textContent = b.label; btn.onclick = b.fn; area.appendChild(btn);
   });
   document.getElementById('modalWrap').classList.add('open');
 }
-
 function closeModal() { document.getElementById('modalWrap').classList.remove('open'); }
-
 function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000);
 }
 
-// 초기 데이터 로드 (백그라운드)
+// 초기 로드
 dbLoad();
 </script>
 </body>
