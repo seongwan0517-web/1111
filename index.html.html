@@ -239,9 +239,12 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     <!-- 포인트 지급 -->
     <div style="background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px">
       <div class="sec-title" style="margin-bottom:10px">포인트 지급</div>
-      <div class="give-row">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
         <select id="giveStudent" style="background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none"></select>
-        <input type="number" id="giveAmt" placeholder="포인트" min="1" style="background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none;width:100%">
+        <input type="number" id="giveAmt" placeholder="포인트" min="1" style="background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px">
+        <input type="text" id="giveReason" placeholder="지급 사유 (예: 퀴즈 1등, 수업 참여...)" style="background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;color:var(--text);font-family:inherit;outline:none">
         <button class="btn btn-primary" onclick="givePoints()">지급</button>
       </div>
     </div>
@@ -380,14 +383,13 @@ const DEFAULT_DATA = {
     ]}
   ],
   items: [
-    {id:1,name:'포카칩 스낵',desc:'맛있는 과자 1봉지',price:30,icon:'🍟',stock:20,cat:'간식'},
-    {id:2,name:'초코파이',desc:'달콤한 초코파이',price:25,icon:'🍫',stock:15,cat:'간식'},
-    {id:3,name:'음료수',desc:'시원한 음료수 1캔',price:40,icon:'🥤',stock:10,cat:'간식'},
-    {id:4,name:'숙제 면제권',desc:'숙제 1회 제출 면제',price:150,icon:'📝',stock:5,cat:'특권'},
-    {id:5,name:'자리 선택권',desc:'원하는 자리 1회 선택',price:80,icon:'💺',stock:8,cat:'특권'},
-    {id:6,name:'수업 도우미 배지',desc:'일주일 도우미 자격',price:100,icon:'⭐',stock:3,cat:'특권'},
-    {id:7,name:'문구 세트',desc:'예쁜 문구 세트',price:200,icon:'✏️',stock:7,cat:'상품'},
-    {id:8,name:'독서 교환권',desc:'도서관 추가 대출 1회',price:60,icon:'📚',stock:12,cat:'상품'}
+    {id:1,name:'막대사탕',desc:'달콤한 막대사탕 1개',price:20,icon:'�',stock:30,cat:'간식'},
+    {id:2,name:'음료수',desc:'시원한 음료수 1캔',price:40,icon:'🥤',stock:20,cat:'간식'},
+    {id:3,name:'초코파이',desc:'달콤한 초코파이 1개',price:30,icon:'🍫',stock:20,cat:'간식'},
+    {id:4,name:'초콜릿',desc:'달콤한 초콜릿 1개',price:25,icon:'🍬',stock:25,cat:'간식'},
+    {id:5,name:'오답노트 면제권',desc:'오답노트 제출 1주일 면제',price:150,icon:'�',stock:5,cat:'특권'},
+    {id:6,name:'자리 우선권',desc:'원하는 자리 1회 선택',price:100,icon:'💺',stock:8,cat:'특권'},
+    {id:7,name:'청소 면제권',desc:'청소 당번 1회 면제',price:120,icon:'🧹',stock:6,cat:'특권'}
   ],
   orders: []
 };
@@ -677,14 +679,16 @@ function editStudent(id) {
 }
 
 function givePoints() {
-  const sid = document.getElementById('giveStudent').value;
-  const amt = parseInt(document.getElementById('giveAmt').value);
+  const sid    = document.getElementById('giveStudent').value;
+  const amt    = parseInt(document.getElementById('giveAmt').value);
+  const reason = document.getElementById('giveReason').value.trim() || '관리자 지급';
   if (!amt || amt < 1) { toast('유효한 포인트를 입력하세요.'); return; }
   const s = DATA.students.find(x => x.id===sid);
   s.points += amt;
-  s.history.push({type:'earn', label:'관리자 지급', points:amt, date:new Date().toISOString().slice(0,10)});
+  s.history.push({type:'earn', label: reason, points:amt, date:new Date().toISOString().slice(0,10)});
   saveData();
   document.getElementById('giveAmt').value='';
+  document.getElementById('giveReason').value='';
   renderStudentList();
   toast(`✅ ${s.name}에게 ${amt.toLocaleString()}P 지급 완료!`);
 }
