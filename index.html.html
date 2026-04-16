@@ -75,10 +75,11 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .plus{color:var(--green)} .minus{color:var(--red)}
 
 /* MODAL & TOAST */
-.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
 .modal-wrap.open{display:flex}
-.modal-box{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;width:100%;max-width:420px}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.1);backdrop-filter:blur(16px);border:0.5px solid var(--border2);padding:12px 22px;border-radius:30px;font-size:13px;opacity:0;transition:all .3s;z-index:200}
+.modal-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:28px;width:100%;max-width:420px;box-shadow: 0 10px 40px rgba(0,0,0,0.5)}
+.modal-box input, .modal-box select { width: 100%; margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border2); color: white; border-radius: 8px; outline: none; }
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.1);backdrop-filter:blur(16px);border:0.5px solid var(--border2);padding:12px 22px;border-radius:30px;font-size:13px;opacity:0;transition:all .3s;z-index:200; pointer-events: none;}
 .toast.show{opacity:1}
 .scroll-area{max-height:400px;overflow-y:auto}
 </style>
@@ -87,7 +88,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 
 <div class="app">
 
-  <!-- LOGIN -->
   <div class="login-wrap" id="loginWrap">
     <div class="logo-area">
       <div class="logo-icon">🎓</div>
@@ -102,7 +102,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     </div>
   </div>
 
-  <!-- STUDENT UI -->
   <div class="main-wrap card" id="studentWrap">
     <div class="top-bar">
       <div class="top-bar-left"><div class="avatar" id="sAvatar"></div><div id="sName" style="font-weight:600"></div></div>
@@ -126,7 +125,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     </div>
   </div>
 
-  <!-- ADMIN UI -->
   <div class="main-wrap card" id="adminWrap" style="max-width:640px">
     <div class="top-bar">
       <div class="top-bar-left"><div class="avatar" style="color:var(--amber); background:var(--amber-bg)">A</div><span style="font-weight:600">관리자 모드</span></div>
@@ -152,7 +150,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     </div>
     <div class="panel" id="a-shop">
       <div style="display:flex; gap:10px; margin-bottom:15px">
-        <button class="btn btn-secondary btn-full btn-sm" onclick="resetToDefault()">기본 아이템 세트로 초기화</button>
+        <button class="btn btn-secondary btn-full btn-sm" onclick="resetToDefault()">기본 세트로 초기화</button>
       </div>
       <div class="scroll-area" id="adminShopList"></div>
       <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="openAddItemModal()">+ 아이템 추가</button>
@@ -163,7 +161,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 
 <div class="modal-wrap" id="modalWrap">
   <div class="modal-box">
-    <h3 id="modalTitle" style="margin-bottom:15px"></h3>
+    <h3 id="modalTitle" style="margin-bottom:15px; color:var(--accent2)"></h3>
     <div id="modalContent"></div>
     <div style="display:flex; gap:10px; margin-top:20px" id="modalBtns"></div>
   </div>
@@ -193,20 +191,20 @@ async function dbLoad() {
     const res = await fetch(FIREBASE_URL);
     const json = await res.json();
     
-    // 데이터가 있고, items 배열에 내용이 있는 경우만 DATA로 설정
-    if (json && json.items && json.items.length > 0) {
-      DATA = json;
+    if (json) {
+      DATA = {
+        students: json.students || [],
+        items: json.items || [],
+        orders: json.orders || []
+      };
     } else {
-      // 데이터베이스가 비어있으면 기본 아이템으로 초기화
-      console.log("DB가 비어있어 기본값으로 설정합니다.");
-      DATA.items = DEFAULT_ITEMS;
-      if (!DATA.students) DATA.students = [];
-      if (!DATA.orders) DATA.orders = [];
+      DATA = { students: [], items: DEFAULT_ITEMS, orders: [] };
       await dbSave();
     }
     document.getElementById('connStatus').textContent = "온라인 연결됨";
   } catch (e) {
     document.getElementById('connStatus').textContent = "오프라인 (연결 오류)";
+    console.error(e);
   }
 }
 
@@ -221,7 +219,7 @@ async function doLogin() {
   const id = document.getElementById('loginId').value.trim();
   const pw = document.getElementById('loginPw').value.trim();
   
-  await dbLoad(); // 로그인 시 최신 데이터 로드
+  await dbLoad();
 
   if (id === 'admin' && pw === 'admin1234') {
     currentUser = { role: 'admin' };
@@ -283,8 +281,8 @@ async function buyItem(id) {
   s.points -= i.price;
   i.stock--;
   if(!s.history) s.history = [];
-  s.history.push({label:i.name, points:-i.price, date:new Date().toISOString().split('T')[0]});
-  DATA.orders.unshift({id:Date.now(), studentName:s.name, itemName:i.name, status:'pending', date:new Date().toISOString().split('T')[0]});
+  s.history.push({label:i.name, points:-i.price, date:new Date().toLocaleDateString()});
+  DATA.orders.unshift({id:Date.now(), studentName:s.name, itemName:i.name, status:'pending', date:new Date().toLocaleString()});
   await dbSave(); renderStudent(); toast("구매 완료!");
 }
 
@@ -316,8 +314,15 @@ function renderAdminOrders() {
     </div>`).join('') || '<div style="padding:40px; text-align:center">주문 없음</div>';
 }
 
-async function completeOrder(id) { DATA.orders.find(x=>x.id===id).status='done'; await dbSave(); renderAdmin(); }
-async function deleteOrder(id) { DATA.orders=DATA.orders.filter(x=>x.id!==id); await dbSave(); renderAdmin(); }
+async function completeOrder(id) { 
+  const order = DATA.orders.find(x=>x.id===id);
+  if(order) order.status='done'; 
+  await dbSave(); renderAdmin(); 
+}
+async function deleteOrder(id) { 
+  DATA.orders=DATA.orders.filter(x=>x.id!==id); 
+  await dbSave(); renderAdmin(); 
+}
 
 function renderAdminStudents() {
   const list = document.getElementById('adminStudentList');
@@ -329,18 +334,25 @@ function renderAdminStudents() {
   document.getElementById('giveStudent').innerHTML = DATA.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 }
 
+async function deleteStudent(id) {
+    if(!confirm("이 학생을 삭제할까요?")) return;
+    DATA.students = DATA.students.filter(s => s.id !== id);
+    await dbSave(); renderAdmin();
+}
+
 async function givePoints() {
   const s = DATA.students.find(x=>x.id===document.getElementById('giveStudent').value);
   const amt = parseInt(document.getElementById('giveAmt').value);
-  if(!amt) return;
+  if(!amt || !s) return;
   s.points += amt;
   if(!s.history) s.history = [];
-  s.history.push({label:'관리자 지급', points:amt, date:new Date().toISOString().split('T')[0]});
+  s.history.push({label:'관리자 지급', points:amt, date:new Date().toLocaleDateString()});
   await dbSave(); renderAdmin(); toast("지급 완료");
+  document.getElementById('giveAmt').value = '';
 }
 
 async function resetToDefault() {
-  if(!confirm("모든 상점 아이템을 초기 상태(막대사탕 등)로 재설정할까요?")) return;
+  if(!confirm("모든 상점 아이템을 초기 상태로 재설정할까요?")) return;
   DATA.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
   await dbSave(); renderAdmin(); toast("초기화 완료");
 }
@@ -354,9 +366,80 @@ function renderAdminShop() {
     </div>`).join('');
 }
 
-async function deleteItem(id) { DATA.items=DATA.items.filter(x=>x.id!==id); await dbSave(); renderAdmin(); }
+async function deleteItem(id) { 
+    DATA.items=DATA.items.filter(x=>x.id!==id); 
+    await dbSave(); renderAdmin(); 
+}
 
-// --- 나머지 공통 기능 ---
+// ═══════════════════════════════════════════════════════════════
+// 5. 모달 및 유틸리티
+// ═══════════════════════════════════════════════════════════════
+function openAddStudentModal() {
+  openModal("학생 추가", `
+    <input type="text" id="asId" placeholder="아이디">
+    <input type="text" id="asName" placeholder="이름">
+    <input type="text" id="asPw" placeholder="비밀번호">
+  `, 
+  [{label:"추가", cls:"btn-primary", fn: async ()=>{
+    const id=document.getElementById('asId').value.trim();
+    const name=document.getElementById('asName').value.trim();
+    const pw=document.getElementById('asPw').value.trim();
+    
+    if(id && name && pw) {
+      if(DATA.students.some(s => s.id === id)) { alert("이미 존재하는 아이디입니다."); return; }
+      DATA.students.push({id, name, pw, points:0, history:[]});
+      await dbSave(); renderAdmin(); closeModal(); toast("학생 추가됨");
+    } else {
+      alert("모든 필드를 입력해주세요.");
+    }
+  }}, {label:"취소", cls:"btn-secondary", fn: closeModal}]);
+}
+
+function openAddItemModal() {
+  openModal("아이템 추가", `
+    <input type="text" id="aiI" placeholder="이모지 (예: 🍔)">
+    <input type="text" id="aiN" placeholder="아이템 이름">
+    <input type="number" id="aiP" placeholder="가격">
+    <input type="number" id="aiS" placeholder="초기 재고" value="10">
+    <select id="aiC"><option>간식</option><option>특권</option></select>
+  `, 
+  [{label:"추가", cls:"btn-primary", fn: async ()=>{
+    const n=document.getElementById('aiN').value.trim();
+    const p=parseInt(document.getElementById('aiP').value);
+    const s=parseInt(document.getElementById('aiS').value) || 0;
+    
+    if(n && !isNaN(p)) {
+      DATA.items.push({
+          id:Date.now(), 
+          name:n, 
+          price:p, 
+          icon:document.getElementById('aiI').value || '🎁', 
+          stock:s, 
+          cat:document.getElementById('aiC').value
+      });
+      await dbSave(); renderAdmin(); closeModal(); toast("아이템 추가됨");
+    } else {
+        alert("이름과 가격을 확인해주세요.");
+    }
+  }}, {label:"취소", cls:"btn-secondary", fn: closeModal}]);
+}
+
+function openModal(title, content, btns) {
+  document.getElementById('modalTitle').textContent = title; 
+  document.getElementById('modalContent').innerHTML = content;
+  const area = document.getElementById('modalBtns'); area.innerHTML = '';
+  btns.forEach(b => { 
+    const btn = document.createElement('button'); 
+    btn.className = 'btn ' + b.cls; 
+    btn.textContent = b.label; 
+    btn.onclick = b.fn; 
+    area.appendChild(btn); 
+  });
+  document.getElementById('modalWrap').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modalWrap').classList.remove('open'); }
+
 function sTab(id, el) {
   document.querySelectorAll('#studentWrap .tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('#studentWrap .panel').forEach(p=>p.classList.remove('active'));
@@ -371,27 +454,6 @@ function toast(msg) {
   const t = document.getElementById('toast'); t.textContent = msg;
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000);
 }
-function openAddStudentModal() {
-  openModal("학생 추가", `<input type="text" id="asId" placeholder="아이디" style="width:100%;margin-bottom:10px;padding:10px"><input type="text" id="asName" placeholder="이름" style="width:100%;margin-bottom:10px;padding:10px"><input type="text" id="asPw" placeholder="비밀번호" style="width:100%;padding:10px">`, 
-  [{label:"추가", cls:"btn-primary", fn: async ()=>{
-    const id=document.getElementById('asId').value, name=document.getElementById('asName').value, pw=document.getElementById('asPw').value;
-    if(id&&name&&pw) { DATA.students.push({id,name,pw,points:0,history:[]}); await dbSave(); renderAdmin(); closeModal(); }
-  }}]);
-}
-function openAddItemModal() {
-  openModal("아이템 추가", `<input type="text" id="aiI" placeholder="이모지" style="width:100%;margin-bottom:10px;padding:10px"><input type="text" id="aiN" placeholder="이름" style="width:100%;margin-bottom:10px;padding:10px"><input type="number" id="aiP" placeholder="가격" style="width:100%;margin-bottom:10px;padding:10px"><select id="aiC" style="width:100%;padding:10px"><option>간식</option><option>특권</option></select>`, 
-  [{label:"추가", cls:"btn-primary", fn: async ()=>{
-    const n=document.getElementById('aiN').value, p=parseInt(document.getElementById('aiP').value);
-    if(n&&p>=0) { DATA.items.push({id:Date.now(), name:n, price:p, icon:document.getElementById('aiI').value||'🎁', stock:10, cat:document.getElementById('aiC').value}); await dbSave(); renderAdmin(); closeModal(); }
-  }}]);
-}
-function openModal(title, content, btns) {
-  document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content;
-  const area = document.getElementById('modalBtns'); area.innerHTML = '';
-  btns.forEach(b => { const btn = document.createElement('button'); btn.className = 'btn ' + b.cls; btn.textContent = b.label; btn.onclick = b.fn; area.appendChild(btn); });
-  document.getElementById('modalWrap').classList.add('open');
-}
-function closeModal() { document.getElementById('modalWrap').classList.remove('open'); }
 
 // 초기 실행
 dbLoad();
