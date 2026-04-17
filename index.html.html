@@ -1,189 +1,96 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>용유중학교 Vitamin</title>
+<title>용유중학교 Vitamin - 경매 & 포인트 관리</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0b0b12;
-  --surface:#13131f;
-  --surface2:#1b1b2a;
-  --surface3:#222235;
-  --border:rgba(255,255,255,0.07);
-  --border2:rgba(255,255,255,0.13);
-  --text:#eeeef8;
-  --text2:#8888a8;
-  --text3:#44445a;
-  --accent:#6c5fff;
-  --accent2:#a394ff;
-  --accent-bg:rgba(108,95,255,0.13);
-  --accent-glow:rgba(108,95,255,0.25);
-  --green:#2dd4a0;
-  --green-bg:rgba(45,212,160,0.1);
-  --green-border:rgba(45,212,160,0.25);
-  --red:#f47070;
-  --red-bg:rgba(244,112,112,0.1);
-  --red-border:rgba(244,112,112,0.25);
-  --amber:#f5a623;
-  --amber-bg:rgba(245,166,35,0.1);
-  --amber-border:rgba(245,166,35,0.25);
-  --r:12px;
-  --r-sm:8px;
-  --r-lg:18px;
+  --bg:#0b0b12; --surface:#13131f; --surface2:#1b1b2a; --surface3:#222235;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#eeeef8; --text2:#8888a8; --text3:#44445a;
+  --accent:#6c5fff; --accent2:#a394ff; --accent-bg:rgba(108,95,255,0.13); --accent-glow:rgba(108,95,255,0.25);
+  --green:#2dd4a0; --green-bg:rgba(45,212,160,0.1); --green-border:rgba(45,212,160,0.25);
+  --red:#f47070; --red-bg:rgba(244,112,112,0.1); --red-border:rgba(244,112,112,0.25);
+  --amber:#f5a623; --amber-bg:rgba(245,166,35,0.1); --amber-border:rgba(245,166,35,0.25);
+  --r:12px; --r-sm:8px; --r-lg:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-
-/* APP LAYOUT */
 .app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:var(--bg)}
-
-/* CARD */
 .card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r-lg);overflow:hidden}
 
 /* LOGIN */
 .login-wrap{width:100%;max-width:400px}
 .logo-area{text-align:center;padding:36px 28px 24px}
 .logo-icon{width:68px;height:68px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;position:relative;overflow:hidden}
-.logo-icon::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(108,95,255,.15),transparent)}
 .logo-icon svg{width:32px;height:32px;z-index:1}
 .logo-area h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
-.logo-area .sub{font-size:13px;color:var(--text2);margin-top:5px;letter-spacing:.2px}
+.logo-area .sub{font-size:13px;color:var(--text2);margin-top:5px}
 .conn-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);margin-top:10px}
 .conn-dot{width:6px;height:6px;border-radius:50%;background:var(--text3)}
 .conn-dot.online{background:var(--green)}
 .login-form{padding:0 24px 28px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.9px;margin-bottom:7px}
-.field input{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--r-sm);padding:11px 14px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .15s}
-.field input:focus{border-color:var(--accent2)}
+.field input{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:var(--r-sm);padding:11px 14px;font-size:14px;color:var(--text);outline:none}
 .err-msg{font-size:12px;color:var(--red);margin-bottom:12px;display:none;padding:10px 12px;background:var(--red-bg);border:0.5px solid var(--red-border);border-radius:var(--r-sm)}
 
 /* BUTTONS */
 .btn{padding:10px 18px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover:not(:disabled){background:#7c6fff}
 .btn-secondary{background:rgba(255,255,255,0.05);color:var(--text2);border:0.5px solid var(--border2)}
-.btn-secondary:hover:not(:disabled){background:rgba(255,255,255,0.09)}
 .btn-danger{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red-border)}
-.btn-danger:hover:not(:disabled){background:rgba(244,112,112,0.18)}
 .btn-green{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green-border)}
-.btn-green:hover:not(:disabled){background:rgba(45,212,160,0.18)}
 .btn-full{width:100%}
 .btn-sm{padding:6px 12px;font-size:12px}
-.btn-xs{padding:4px 10px;font-size:11px}
 
-/* MAIN LAYOUT */
+/* TABS & PANELS */
 .main-wrap{width:100%;max-width:580px;display:none}
 .top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:0.5px solid var(--border)}
 .top-bar-left{display:flex;align-items:center;gap:10px}
 .avatar{width:34px;height:34px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent2)}
-.top-bar-name{font-size:14px;font-weight:600}
-.logout-btn{font-size:12px;padding:5px 12px;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:20px;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s}
-.logout-btn:hover{background:rgba(255,255,255,0.08)}
-
-/* TABS */
+.logout-btn{font-size:12px;padding:5px 12px;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:20px;color:var(--text2);cursor:pointer}
 .tabs{display:flex;padding:0 6px;border-bottom:0.5px solid var(--border);gap:2px}
-.tab{flex:1;padding:11px 8px;text-align:center;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
-.tab:hover{color:var(--text2)}
+.tab{flex:1;padding:11px 8px;text-align:center;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent}
 .tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
-
-/* PANELS */
 .panel{padding:20px;display:none}
 .panel.active{display:block}
+.scroll-area{max-height:440px;overflow-y:auto}
 
-/* STUDENT HOME */
-.point-banner{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--r);padding:24px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
-.point-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(108,95,255,.1),transparent 70%)}
-.point-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:10px}
-.point-val{font-size:52px;font-weight:700;color:var(--accent2);letter-spacing:-2px;line-height:1}
-.point-unit{font-size:18px;font-weight:500;color:var(--text2);margin-left:4px}
-.point-hint{font-size:12px;color:var(--text3);margin-top:10px}
+/* POINT BANNER */
+.point-banner{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:20px}
+.point-val{font-size:48px;font-weight:700;color:var(--accent2);letter-spacing:-2px;line-height:1}
 
-/* SHOP ITEMS */
-.shop-item{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:border-color .15s}
-.shop-item:hover{border-color:var(--border2)}
-.item-icon{width:42px;height:42px;background:var(--surface3);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.item-info{flex:1;min-width:0}
-.item-name{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item-meta{font-size:12px;color:var(--text2)}
-.item-price{font-size:15px;font-weight:700;color:var(--accent2)}
-.item-stock{font-size:11px;color:var(--text3);margin-left:4px}
+/* AUCTION STYLES */
+.auc-card{background:linear-gradient(145deg, var(--surface2), var(--surface));border:1px solid var(--accent-glow);padding:24px;border-radius:var(--r-lg);text-align:center;margin-bottom:20px;position:relative}
+.auc-badge{display:inline-block;padding:4px 12px;background:var(--accent-bg);color:var(--accent2);border-radius:20px;font-size:11px;font-weight:700;margin-bottom:12px;text-transform:uppercase}
+.auc-title{font-size:24px;font-weight:700;margin-bottom:8px}
+.auc-high-bid{font-size:14px;color:var(--text2);margin-bottom:15px}
+.auc-high-bid span{color:var(--green);font-weight:700;font-size:22px}
+.my-bid-info{background:rgba(255,255,255,0.03);padding:12px;border-radius:var(--r);margin-bottom:15px;font-size:13px}
+.my-bid-info b{color:var(--accent2)}
+.bid-input-group{display:flex;gap:8px;max-width:280px;margin:0 auto}
+.bid-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);padding:10px;text-align:center;font-size:16px;font-weight:600}
 
-/* HISTORY */
-.hist-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:0.5px solid var(--border)}
-.hist-item:last-child{border-bottom:none}
-.hist-label{font-size:13px;font-weight:500}
-.hist-date{font-size:11px;color:var(--text3);margin-top:3px}
-.hist-pts{font-size:14px;font-weight:700}
-.plus{color:var(--green)}
-.minus{color:var(--red)}
-
-/* ADMIN */
-.admin-wrap{max-width:640px!important}
-.admin-avatar{background:var(--amber-bg)!important;border-color:var(--amber-border)!important;color:var(--amber)!important}
+/* ADMIN STYLES */
 .admin-section{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:16px}
-.admin-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:12px}
-.input-row{display:flex;gap:8px;margin-bottom:8px;align-items:stretch}
-.input-row input,.input-row select,.admin-input{background:rgba(255,255,255,0.04);color:var(--text);border:0.5px solid var(--border2);padding:10px 12px;border-radius:var(--r-sm);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
-.input-row input:focus,.input-row select:focus,.admin-input:focus{border-color:var(--accent2)}
-.input-row input::placeholder,.admin-input::placeholder{color:var(--text3)}
-.input-row select option{background:#1a1a2e;color:var(--text)}
-.input-full{width:100%;margin-top:8px}
+.admin-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.admin-table th{text-align:left;color:var(--text3);padding:8px;border-bottom:1px solid var(--border)}
+.admin-table td{padding:10px 8px;border-bottom:1px solid var(--border)}
+.winner-row{background:var(--green-bg)}
 
-/* STUDENT CARD (admin) */
-.student-card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:border-color .15s}
-.student-card:hover{border-color:var(--border2)}
-.student-avatar{width:38px;height:38px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent2);flex-shrink:0}
-.student-info{flex:1;min-width:0}
-.student-name{font-size:14px;font-weight:600}
-.student-meta{font-size:12px;color:var(--text2);margin-top:2px}
-.student-pts{font-size:15px;font-weight:700;color:var(--accent2);margin-right:8px}
-.clickable-name{cursor:pointer;border-bottom:1px dashed var(--border2);transition:color .15s}
-.clickable-name:hover{color:var(--accent2)}
-
-/* ORDER CARD */
-.order-card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px}
-.order-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.order-student{font-size:14px;font-weight:600}
-.order-sid{font-size:11px;color:var(--text3);margin-left:4px}
-.order-item{font-size:13px;color:var(--accent2);font-weight:500}
-.order-date{font-size:11px;color:var(--text3)}
-.order-actions{display:flex;gap:6px;margin-top:10px}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-pending{background:var(--amber-bg);color:var(--amber);border:0.5px solid var(--amber-border)}
-.badge-done{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green-border)}
-
-/* MODAL */
-.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
-.modal-wrap.open{display:flex}
-.modal-box{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r-lg);padding:28px;width:100%;max-width:420px;margin:auto}
-.modal-title{font-size:16px;font-weight:700;margin-bottom:20px}
-.modal-input{width:100%;background:rgba(255,255,255,0.04);color:var(--text);border:0.5px solid var(--border2);padding:11px 14px;border-radius:var(--r-sm);font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;transition:border-color .15s}
-.modal-input:focus{border-color:var(--accent2)}
-.modal-input::placeholder{color:var(--text3)}
-.modal-select{width:100%;background:rgba(255,255,255,0.04);color:var(--text);border:0.5px solid var(--border2);padding:11px 14px;border-radius:var(--r-sm);font-size:14px;font-family:inherit;outline:none;margin-bottom:10px}
-.modal-select option{background:#1a1a2e}
-.modal-btns{display:flex;gap:10px;margin-top:4px}
-
-/* HISTORY MODAL (student history in admin) */
-.hist-modal-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:0.5px solid var(--border)}
-.hist-modal-avatar{width:44px;height:44px;background:var(--accent-bg);border:0.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent2);flex-shrink:0}
-.hist-modal-name{font-size:15px;font-weight:700}
-.hist-modal-pts{font-size:13px;color:var(--accent2);margin-top:3px}
-.hist-modal-list{max-height:360px;overflow-y:auto}
-
-/* MISC */
-.empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px}
-.scroll-area{max-height:440px;overflow-y:auto;padding-right:2px}
-.divider{height:0.5px;background:var(--border);margin:12px 0}
-
-/* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(30,30,50,0.95);border:0.5px solid var(--border2);padding:11px 22px;border-radius:30px;font-size:13px;opacity:0;transition:all .25s;z-index:200;pointer-events:none;backdrop-filter:blur(12px)}
+/* TOAST & MODAL */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(30,30,50,0.95);border:0.5px solid var(--border2);padding:11px 22px;border-radius:30px;font-size:13px;opacity:0;transition:all .25s;z-index:200}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-wrap.open{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:28px;width:100%;max-width:400px}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px}
+.refresh-btn{position:absolute;top:15px;right:15px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px}
 </style>
 </head>
 <body>
@@ -194,88 +101,84 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     <div class="card">
       <div class="logo-area">
         <div class="logo-icon">
-          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 6L16 22L24 6" stroke="#a394ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16" cy="26" r="2" fill="#a394ff"/>
-          </svg>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6L16 22L24 6" stroke="#a394ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="26" r="2" fill="#a394ff"/></svg>
         </div>
         <h1>Vitamin</h1>
         <div class="sub">용유중학교 포인트 상점</div>
         <div class="conn-status"><div class="conn-dot" id="connDot"></div><span id="connStatus">연결 중...</span></div>
       </div>
       <div class="login-form">
-        <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디를 입력하세요" autocomplete="username"></div>
-        <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디" autocomplete="username"></div>
+        <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password"></div>
         <p id="loginErr" class="err-msg">아이디 또는 비밀번호가 올바르지 않습니다.</p>
         <button class="btn btn-primary btn-full" onclick="doLogin()">로그인</button>
       </div>
     </div>
   </div>
 
-  <!-- STUDENT -->
+  <!-- STUDENT VIEW -->
   <div class="main-wrap card" id="studentWrap">
     <div class="top-bar">
-      <div class="top-bar-left">
-        <div class="avatar" id="sAvatar"></div>
-        <div class="top-bar-name" id="sName"></div>
-      </div>
+      <div class="top-bar-left"><div class="avatar" id="sAvatar"></div><div class="top-bar-name" id="sName"></div></div>
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
     <div class="tabs">
       <div class="tab active" onclick="sTab('home',this)">홈</div>
       <div class="tab" onclick="sTab('shop',this)">상점</div>
-      <div class="tab" onclick="sTab('history',this)">내역</div>
+      <div class="tab" onclick="sTab('auc',this)">경매(대회)</div>
+      <div class="tab" onclick="sTab('hist',this)">내역</div>
     </div>
     <div class="panel active" id="s-home">
       <div class="point-banner">
-        <div class="point-label">보유 포인트</div>
-        <div><span class="point-val" id="sPoints">0</span><span class="point-unit">P</span></div>
-        <div class="point-hint">포인트를 모아 원하는 아이템을 구매하세요</div>
+        <div style="font-size:11px; color:var(--text3); margin-bottom:8px;">보유 포인트</div>
+        <div><span class="point-val" id="sPoints">0</span><span style="font-size:18px; color:var(--text2); margin-left:5px;">P</span></div>
       </div>
     </div>
     <div class="panel" id="s-shop"><div class="scroll-area" id="shopList"></div></div>
-    <div class="panel" id="s-history"><div class="scroll-area" id="sHistList"></div></div>
+    <div class="panel" id="s-auc"><div id="aucContent"></div></div>
+    <div class="panel" id="s-hist"><div class="scroll-area" id="sHistList"></div></div>
   </div>
 
-  <!-- ADMIN -->
-  <div class="main-wrap card admin-wrap" id="adminWrap" style="max-width:640px">
+  <!-- ADMIN VIEW -->
+  <div class="main-wrap card" id="adminWrap" style="max-width:640px">
     <div class="top-bar">
-      <div class="top-bar-left">
-        <div class="avatar admin-avatar">A</div>
-        <div class="top-bar-name">관리자</div>
-      </div>
+      <div class="top-bar-left"><div class="avatar admin-avatar" style="background:var(--amber-bg); color:var(--amber);">A</div><div class="top-bar-name">관리자 모드</div></div>
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
     <div class="tabs">
-      <div class="tab active" onclick="aTab('orders',this)">주문 관리</div>
+      <div class="tab active" onclick="aTab('orders',this)">주문</div>
       <div class="tab" onclick="aTab('students',this)">학생 관리</div>
+      <div class="tab" onclick="aTab('auc',this)">경매 관리</div>
       <div class="tab" onclick="aTab('shop',this)">상점 관리</div>
     </div>
 
+    <!-- ADMIN: ORDERS -->
     <div class="panel active" id="a-orders">
-      <div class="admin-section">
-        <div class="admin-section-title">학생 필터</div>
-        <select id="orderFilterStudent" class="admin-input input-full" style="margin-top:0" onchange="renderAdminOrders()">
-          <option value="전체">전체 주문 보기</option>
-        </select>
-      </div>
       <div class="scroll-area" id="adminOrders"></div>
     </div>
 
+    <!-- ADMIN: STUDENTS (포인트 지급 기능 복구됨) -->
     <div class="panel" id="a-students">
       <div class="admin-section">
-        <div class="admin-section-title">포인트 지급</div>
-        <div class="input-row">
-          <select id="giveStudent" style="flex:1.5"></select>
-          <input type="number" id="giveAmt" placeholder="포인트" style="flex:1">
+        <div style="font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:12px;">포인트 지급 / 차감</div>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <select id="giveStudent" style="flex:1.5; background:var(--bg); color:var(--text); border:1px solid var(--border2); padding:10px; border-radius:var(--r-sm); font-family:inherit;"></select>
+          <input type="number" id="giveAmt" placeholder="포인트" style="flex:1; background:var(--bg); color:var(--text); border:1px solid var(--border2); padding:10px; border-radius:var(--r-sm); font-family:inherit;">
           <button class="btn btn-primary btn-sm" onclick="givePoints()">지급</button>
         </div>
-        <input type="text" id="giveReason" class="admin-input input-full" placeholder="지급 사유 (예: 청소 우수, 과제 제출)">
+        <input type="text" id="giveReason" placeholder="지급 사유 (예: 청소 우수, 과제 제출)" style="width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border2); padding:10px; border-radius:var(--r-sm); font-family:inherit;">
       </div>
       <div class="scroll-area" id="adminStudentList"></div>
-      <button class="btn btn-green btn-full" style="margin-top:12px" onclick="openAddStudentModal()">+ 학생 등록</button>
+      <button class="btn btn-green btn-full" style="margin-top:12px" onclick="openAddStudentModal()">+ 신규 학생 등록</button>
     </div>
 
+    <!-- ADMIN: AUCTION -->
+    <div class="panel" id="a-auc">
+      <div id="adminAucControl"></div>
+      <div id="adminAucBids" style="margin-top:20px;"></div>
+    </div>
+
+    <!-- ADMIN: SHOP -->
     <div class="panel" id="a-shop">
       <div class="scroll-area" id="adminShopList"></div>
       <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="openAddItemModal()">+ 상품 추가</button>
@@ -284,19 +187,12 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 </div>
 
 <!-- MODAL -->
-<div class="modal-wrap" id="modalWrap">
-  <div class="modal-box">
-    <div class="modal-title" id="modalTitle"></div>
-    <div id="modalContent"></div>
-    <div class="modal-btns" id="modalBtns"></div>
-  </div>
-</div>
-
+<div class="modal-wrap" id="modalWrap"><div class="modal-box"><div class="modal-title" id="modalTitle"></div><div id="modalContent"></div><div class="modal-btns" id="modalBtns"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
-let DATA = { students:[], items:[], orders:[] };
+let DATA = { students:[], items:[], orders:[], auction: { active: false, itemName: '', bids: {}, winner: null } };
 let currentUser = null;
 
 async function dbLoad() {
@@ -307,43 +203,32 @@ async function dbLoad() {
       DATA = {
         students: Array.isArray(json.students) ? json.students : [],
         items: Array.isArray(json.items) ? json.items : [],
-        orders: Array.isArray(json.orders) ? json.orders : []
+        orders: Array.isArray(json.orders) ? json.orders : [],
+        auction: json.auction || { active: false, itemName: '', bids: {}, winner: null }
       };
+      if (!DATA.auction.bids) DATA.auction.bids = {};
     }
     document.getElementById('connStatus').textContent = "온라인";
     document.getElementById('connDot').classList.add('online');
-  } catch(e) {
-    document.getElementById('connStatus').textContent = "오프라인";
-  }
+  } catch(e) { document.getElementById('connStatus').textContent = "연결 오류"; }
 }
 
-async function dbSave() {
-  await fetch(FIREBASE_URL, { method:'PUT', body:JSON.stringify(DATA) });
-}
+async function dbSave() { await fetch(FIREBASE_URL, { method:'PUT', body:JSON.stringify(DATA) }); }
 
 async function doLogin() {
   const id = document.getElementById('loginId').value.trim();
   const pw = document.getElementById('loginPw').value.trim();
-  document.getElementById('loginErr').style.display = 'none';
   await dbLoad();
   if (id === 'admin' && pw === 'admin1234') {
-    currentUser = { role:'admin' };
-    showUI('adminWrap'); renderAdmin();
+    currentUser = { role:'admin' }; showUI('adminWrap'); renderAdmin();
   } else {
     const s = DATA.students.find(x => x.id === id && x.pw === pw);
-    if (s) {
-      currentUser = { role:'student', data:s };
-      showUI('studentWrap'); renderStudent();
-    } else {
-      document.getElementById('loginErr').style.display = 'block';
-    }
+    if (s) { currentUser = { role:'student', data:s }; showUI('studentWrap'); renderStudent(); }
+    else { document.getElementById('loginErr').style.display = 'block'; }
   }
 }
 
-function showUI(id) {
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
-}
+function showUI(id) { document.getElementById('loginWrap').style.display = 'none'; document.getElementById(id).style.display = 'block'; }
 function logout() { location.reload(); }
 
 /* ── STUDENT ── */
@@ -352,273 +237,192 @@ function renderStudent() {
   document.getElementById('sName').textContent = s.name;
   document.getElementById('sAvatar').textContent = s.name[0];
   document.getElementById('sPoints').textContent = Number(s.points).toLocaleString();
-  renderShop();
-  renderStudentHistory(s);
+  renderStudentAuction(); renderShop(); renderStudentHistory(s);
 }
 
-function renderShop() {
-  const list = document.getElementById('shopList');
-  if (!DATA.items.length) { list.innerHTML = '<div class="empty-state">상품이 없습니다</div>'; return; }
+function renderStudentAuction() {
+  const container = document.getElementById('aucContent');
   const s = DATA.students.find(x => x.id === currentUser.data.id);
-  list.innerHTML = DATA.items.map(i => {
-    const canBuy = Number(s.points) >= Number(i.price) && Number(i.stock) > 0;
-    const soldOut = Number(i.stock) <= 0;
-    return `
-    <div class="shop-item">
-      <div class="item-icon">${i.icon}</div>
-      <div class="item-info">
-        <div class="item-name">${i.name}</div>
-        <div class="item-meta"><span class="item-price">${Number(i.price).toLocaleString()} P</span><span class="item-stock">재고 ${i.stock}개</span></div>
-      </div>
-      <button class="btn ${canBuy ? 'btn-primary' : 'btn-secondary'} btn-sm" ${!canBuy ? 'disabled' : ''} onclick="buyItem(${i.id})">
-        ${soldOut ? '품절' : canBuy ? '구매' : '포인트 부족'}
-      </button>
+  const auc = DATA.auction;
+  if (!auc.active && !auc.winner) { container.innerHTML = '<div class="empty-state">진행 중인 경매가 없습니다.</div>'; return; }
+  
+  const bidValues = Object.values(auc.bids).map(b => b.amount);
+  const highBid = bidValues.length > 0 ? Math.max(...bidValues) : 0;
+  const myBid = auc.bids[s.id] ? auc.bids[s.id].amount : 0;
+
+  let html = `
+    <div class="auc-card">
+      <button class="refresh-btn" onclick="dbLoad().then(renderStudentAuction)">🔄</button>
+      <div class="auc-badge">${auc.active ? '라이브 경매 중' : '경매 종료'}</div>
+      <div class="auc-title">${auc.itemName}</div>
+      <div class="auc-high-bid">현재 최고 포인트: <span>${highBid.toLocaleString()} P</span></div>
+      ${auc.active ? `
+        <div class="my-bid-info">나의 현재 응찰액: <b>${myBid.toLocaleString()} P</b></div>
+        <div class="bid-input-group">
+          <input type="number" id="addBidAmt" class="bid-input" placeholder="추가 포인트">
+          <button class="btn btn-primary" onclick="placeBid()">추가 응찰</button>
+        </div>
+      ` : `
+        <div style="background:var(--green-bg); color:var(--green); padding:20px; border-radius:15px; border:1px solid var(--green-border);">
+          <div style="font-size:13px; margin-bottom:5px;">🎊 최종 낙찰 🎊</div>
+          <div style="font-size:20px; font-weight:800;">${auc.winner ? auc.winner.studentName : '없음'}</div>
+          <div style="font-size:14px; margin-top:5px;">축하합니다!</div>
+        </div>
+      `}
     </div>`;
-  }).join('');
+  container.innerHTML = html;
 }
 
-async function buyItem(id) {
-  const i = DATA.items.find(x => x.id === id);
+async function placeBid() {
+  await dbLoad();
+  const amtInput = document.getElementById('addBidAmt');
+  const addAmt = parseInt(amtInput.value);
   const s = DATA.students.find(x => x.id === currentUser.data.id);
-  if (Number(s.points) < Number(i.price)) return;
-  if (!confirm(`[${i.name}]을 구매하시겠습니까?`)) return;
-  s.points = Number(s.points) - Number(i.price);
-  i.stock = Number(i.stock) - 1;
+  if (!DATA.auction.active || isNaN(addAmt) || addAmt <= 0 || s.points < addAmt) { alert("포인트를 확인해주세요."); return; }
+  if (!confirm(`${addAmt}P를 추가하여 응찰하시겠습니까?`)) return;
+  s.points -= addAmt;
   if (!s.history) s.history = [];
-  s.history.push({ label:`상점: ${i.name}`, points:-i.price, date:new Date().toLocaleString() });
-  DATA.orders.unshift({ id:Date.now(), studentName:s.name, studentId:s.id, itemName:i.name, status:'pending', date:new Date().toLocaleString() });
-  await dbSave(); renderStudent(); toast("구매 완료!");
-}
-
-function renderStudentHistory(s) {
-  const list = document.getElementById('sHistList');
-  const hist = (s.history || []).slice().reverse();
-  if (!hist.length) { list.innerHTML = '<div class="empty-state">내역이 없습니다</div>'; return; }
-  list.innerHTML = hist.map(h => `
-    <div class="hist-item">
-      <div>
-        <div class="hist-label">${h.label}</div>
-        <div class="hist-date">${h.date}</div>
-      </div>
-      <div class="hist-pts ${h.points > 0 ? 'plus' : 'minus'}">${h.points > 0 ? '+' : ''}${h.points.toLocaleString()} P</div>
-    </div>`).join('');
+  s.history.push({ label:`경매 응찰: ${DATA.auction.itemName}`, points:-addAmt, date:new Date().toLocaleString() });
+  if (!DATA.auction.bids[s.id]) DATA.auction.bids[s.id] = { studentName: s.name, amount: addAmt };
+  else DATA.auction.bids[s.id].amount += addAmt;
+  await dbSave(); amtInput.value = ''; renderStudent(); toast("응찰 완료!");
 }
 
 /* ── ADMIN ── */
-function renderAdmin() {
-  const sel = document.getElementById('orderFilterStudent');
-  const cur = sel.value;
-  sel.innerHTML = '<option value="전체">전체 주문 보기</option>' +
-    DATA.students.map(s => `<option value="${s.id}" ${cur===s.id?'selected':''}>${s.name} (${s.id})</option>`).join('');
-  renderAdminOrders();
-  renderAdminStudents();
-  renderAdminShop();
+function renderAdmin() { renderAdminOrders(); renderAdminStudents(); renderAdminShop(); renderAdminAuction(); }
+
+function renderAdminAuction() {
+  const ctrl = document.getElementById('adminAucControl');
+  const bidList = document.getElementById('adminAucBids');
+  const auc = DATA.auction;
+  if (!auc.active) {
+    ctrl.innerHTML = `
+      <div class="admin-section">
+        <div style="font-size:14px; font-weight:600; margin-bottom:15px;">새 경매/대회 개최</div>
+        <input type="text" id="newAucName" placeholder="경매 물품 명칭" style="width:100%; background:var(--bg); color:var(--text); border:1px solid var(--border2); padding:10px; border-radius:8px; margin-bottom:10px;">
+        <button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작하기</button>
+      </div>`;
+    if (auc.winner) bidList.innerHTML = `<div class="auc-card">최종 낙찰: ${auc.winner.studentName} (${auc.winner.amount}P)<br><button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="resetAuction()">초기화</button></div>`;
+    else bidList.innerHTML = '';
+  } else {
+    ctrl.innerHTML = `
+      <div class="admin-section" style="position:relative;">
+        <button class="refresh-btn" onclick="dbLoad().then(renderAdminAuction)">🔄</button>
+        <div style="color:var(--accent2); font-weight:700; margin-bottom:10px;">진행 중: ${auc.itemName}</div>
+        <button class="btn btn-danger btn-full" onclick="endAuction()">경매 마감</button>
+      </div>`;
+    const sortedBids = Object.entries(auc.bids).map(([id, data]) => ({ id, ...data })).sort((a,b) => b.amount - a.amount);
+    bidList.innerHTML = `<table class="admin-table"><thead><tr><th>순위</th><th>이름(ID)</th><th>총 응찰액</th></tr></thead><tbody>` + 
+      sortedBids.map((b, idx) => `<tr class="${idx === 0 ? 'winner-row' : ''}"><td>${idx+1}</td><td>${b.studentName}(${b.id})</td><td>${b.amount}P</td></tr>`).join('') + `</tbody></table>`;
+  }
 }
 
-function renderAdminOrders() {
-  const filterId = document.getElementById('orderFilterStudent').value;
-  const list = document.getElementById('adminOrders');
-  const orders = filterId === '전체' ? DATA.orders : DATA.orders.filter(o => o.studentId === filterId);
-  if (!orders.length) { list.innerHTML = '<div class="empty-state">주문 내역이 없습니다</div>'; return; }
-  list.innerHTML = orders.map(o => `
-    <div class="order-card" style="opacity:${o.status==='done'?0.55:1}">
-      <div class="order-header">
-        <div>
-          <span class="order-student">${o.studentName}</span>
-          <span class="order-sid">(${o.studentId})</span>
-        </div>
-        <span class="badge ${o.status==='done'?'badge-done':'badge-pending'}">${o.status==='done'?'완료':'대기'}</span>
-      </div>
-      <div class="order-item">${o.itemName}</div>
-      <div class="order-date">${o.date}</div>
-      ${o.status==='pending'?`
-      <div class="order-actions">
-        <button class="btn btn-green btn-sm" onclick="completeOrder(${o.id})">완료 처리</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">삭제</button>
-      </div>`:`
-      <div class="order-actions">
-        <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">삭제</button>
-      </div>`}
-    </div>`).join('');
+async function startAuction() {
+  const name = document.getElementById('newAucName').value.trim();
+  if (!name) return;
+  DATA.auction = { active: true, itemName: name, bids: {}, winner: null };
+  await dbSave(); renderAdminAuction(); toast("경매 시작!");
 }
 
-async function completeOrder(id) {
-  const o = DATA.orders.find(x => x.id === id);
-  if (o) o.status = 'done';
-  await dbSave(); renderAdminOrders();
+async function endAuction() {
+  if (!confirm("마감하시겠습니까?")) return;
+  const bids = Object.entries(DATA.auction.bids).map(([id, data]) => ({ studentId: id, studentName: data.studentName, amount: data.amount })).sort((a,b) => b.amount - a.amount);
+  DATA.auction.active = false; DATA.auction.winner = bids[0] || null;
+  await dbSave(); renderAdminAuction();
+  alert(DATA.auction.winner ? `낙찰자: ${DATA.auction.winner.studentName}` : "낙찰자 없음");
 }
 
-async function deleteOrder(id) {
-  if (!confirm("주문을 삭제하시겠습니까?")) return;
-  DATA.orders = DATA.orders.filter(x => x.id !== id);
-  await dbSave(); renderAdminOrders();
-}
+async function resetAuction() { DATA.auction = { active: false, itemName: '', bids: {}, winner: null }; await dbSave(); renderAdminAuction(); }
 
-function renderAdminStudents() {
-  const list = document.getElementById('adminStudentList');
-  if (!DATA.students.length) { list.innerHTML = '<div class="empty-state">등록된 학생이 없습니다</div>'; return; }
-  list.innerHTML = DATA.students.map(s => `
-    <div class="student-card">
-      <div class="student-avatar">${s.name[0]}</div>
-      <div class="student-info">
-        <div class="student-name clickable-name" onclick="openStudentHistModal('${s.id}')" title="클릭하여 포인트 내역 보기">${s.name}</div>
-        <div class="student-meta">${s.id}</div>
-      </div>
-      <span class="student-pts">${Number(s.points).toLocaleString()} P</span>
-      <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')">삭제</button>
-    </div>`).join('');
-
-  const gSel = document.getElementById('giveStudent');
-  const curSel = gSel.value;
-  gSel.innerHTML = DATA.students.map(s => `<option value="${s.id}" ${curSel===s.id?'selected':''}>${s.name}</option>`).join('');
-}
-
-function openStudentHistModal(sid) {
-  const s = DATA.students.find(x => x.id === sid);
-  if (!s) return;
-  const hist = (s.history || []).slice().reverse();
-  const histHTML = hist.length
-    ? hist.map(h => `
-      <div class="hist-item">
-        <div>
-          <div class="hist-label">${h.label}</div>
-          <div class="hist-date">${h.date}</div>
-        </div>
-        <div class="hist-pts ${h.points > 0 ? 'plus' : 'minus'}">${h.points > 0 ? '+' : ''}${Number(h.points).toLocaleString()} P</div>
-      </div>`).join('')
-    : '<div class="empty-state">내역이 없습니다</div>';
-
-  const content = `
-    <div class="hist-modal-header">
-      <div class="hist-modal-avatar">${s.name[0]}</div>
-      <div>
-        <div class="hist-modal-name">${s.name} <span style="font-size:12px;color:var(--text3);font-weight:400">(${s.id})</span></div>
-        <div class="hist-modal-pts">${Number(s.points).toLocaleString()} P 보유</div>
-      </div>
-    </div>
-    <div class="hist-modal-list">${histHTML}</div>`;
-
-  openModal(`포인트 내역`, content, [{ label:'닫기', cls:'btn-secondary', fn:closeModal }]);
-}
-
+/* 포인트 지급 기능 */
 async function givePoints() {
   const sid = document.getElementById('giveStudent').value;
   const amt = parseInt(document.getElementById('giveAmt').value);
   const reason = document.getElementById('giveReason').value.trim() || "관리자 지급";
   const s = DATA.students.find(x => x.id === sid);
-  if (!s || isNaN(amt) || amt === 0) { alert("올바른 포인트를 입력해주세요."); return; }
+  if (!s || isNaN(amt)) { alert("정보를 입력하세요."); return; }
   s.points = (Number(s.points) || 0) + amt;
   if (!s.history) s.history = [];
   s.history.push({ label:reason, points:amt, date:new Date().toLocaleString() });
   await dbSave(); renderAdmin(); toast(`${s.name}에게 ${amt}P 지급 완료`);
-  document.getElementById('giveAmt').value = '';
-  document.getElementById('giveReason').value = '';
+  document.getElementById('giveAmt').value = ''; document.getElementById('giveReason').value = '';
 }
 
-async function deleteStudent(id) {
-  if (!confirm("학생의 모든 데이터가 삭제됩니다. 계속하시겠습니까?")) return;
-  DATA.students = DATA.students.filter(s => s.id !== id);
-  DATA.orders = DATA.orders.filter(o => o.studentId !== id);
-  await dbSave(); renderAdmin();
+function renderAdminStudents() {
+  const list = document.getElementById('adminStudentList');
+  list.innerHTML = DATA.students.map(s => `
+    <div style="background:var(--surface2); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+      <div><div style="font-size:14px; font-weight:600;">${s.name}</div><div style="font-size:12px; color:var(--text3);">${s.id}</div></div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-weight:700; color:var(--accent2);">${Number(s.points).toLocaleString()} P</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')">삭제</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('giveStudent').innerHTML = DATA.students.map(s => `<option value="${s.id}">${s.name}(${s.id})</option>`).join('');
 }
+
+/* 기타 관리자 기능 */
+function renderAdminOrders() {
+  const list = document.getElementById('adminOrders');
+  list.innerHTML = DATA.orders.map(o => `
+    <div style="background:var(--surface2); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+      <div><div style="font-size:14px; font-weight:600;">${o.studentName}</div><div style="font-size:13px; color:var(--accent2);">${o.itemName}</div></div>
+      <button class="btn btn-green btn-sm" onclick="deleteOrder(${o.id})">삭제</button>
+    </div>`).join('');
+}
+async function deleteOrder(id) { DATA.orders = DATA.orders.filter(x => x.id !== id); await dbSave(); renderAdminOrders(); }
+async function deleteStudent(id) { if(confirm("삭제?")) { DATA.students = DATA.students.filter(s => s.id !== id); await dbSave(); renderAdminStudents(); } }
 
 function renderAdminShop() {
   const list = document.getElementById('adminShopList');
-  if (!DATA.items.length) { list.innerHTML = '<div class="empty-state">등록된 상품이 없습니다</div>'; return; }
   list.innerHTML = DATA.items.map(i => `
-    <div class="shop-item">
-      <div class="item-icon">${i.icon}</div>
-      <div class="item-info">
-        <div class="item-name">${i.name}</div>
-        <div class="item-meta"><span class="item-price">${Number(i.price).toLocaleString()} P</span><span class="item-stock">재고 ${i.stock}개</span></div>
-      </div>
-      <button class="btn btn-danger btn-sm" onclick="deleteItem(${i.id})">삭제</button>
+    <div style="background:var(--surface2); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+      <div>${i.icon} ${i.name} (${i.price}P)</div><button class="btn btn-danger btn-sm" onclick="deleteItem(${i.id})">삭제</button>
     </div>`).join('');
 }
+async function deleteItem(id) { DATA.items = DATA.items.filter(i => i.id !== id); await dbSave(); renderAdminShop(); }
 
-async function deleteItem(id) {
-  if (!confirm("상품을 삭제하시겠습니까?")) return;
-  DATA.items = DATA.items.filter(i => i.id !== id);
-  await dbSave(); renderAdminShop();
+/* UI 공통 */
+function renderShop() {
+  const list = document.getElementById('shopList');
+  const s = DATA.students.find(x => x.id === currentUser.data.id);
+  list.innerHTML = DATA.items.map(i => `
+    <div class="shop-item" style="background:var(--surface2); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+      <div>${i.icon} <b>${i.name}</b> <br> <span style="font-size:12px; color:var(--accent2)">${i.price}P</span></div>
+      <button class="btn btn-primary btn-sm" ${s.points < i.price ? 'disabled' : ''} onclick="buyItem(${i.id})">구매</button>
+    </div>`).join('');
 }
-
-/* ── MODALS ── */
-function openAddStudentModal() {
-  openModal("신규 학생 등록", `
-    <input class="modal-input" type="text" id="asId" placeholder="아이디 (ID)">
-    <input class="modal-input" type="text" id="asName" placeholder="학생 이름">
-    <input class="modal-input" type="text" id="asPw" placeholder="비밀번호">
-  `, [
-    { label:"등록", cls:"btn-primary", fn: async () => {
-      const id = document.getElementById('asId').value.trim();
-      const name = document.getElementById('asName').value.trim();
-      const pw = document.getElementById('asPw').value.trim();
-      if (id && name && pw) {
-        if (DATA.students.some(s => s.id === id)) { alert("이미 사용 중인 ID입니다."); return; }
-        DATA.students.push({ id, name, pw, points:0, history:[] });
-        await dbSave(); renderAdmin(); closeModal(); toast("학생 등록 완료");
-      }
-    }},
-    { label:"취소", cls:"btn-secondary", fn:closeModal }
-  ]);
+async function buyItem(id) {
+  const i = DATA.items.find(x => x.id === id); const s = DATA.students.find(x => x.id === currentUser.data.id);
+  if(s.points < i.price) return;
+  s.points -= i.price; i.stock -= 1;
+  if (!s.history) s.history = [];
+  s.history.push({ label:`상점: ${i.name}`, points:-i.price, date:new Date().toLocaleString() });
+  DATA.orders.unshift({ id:Date.now(), studentName:s.name, studentId:s.id, itemName:i.name, status:'pending', date:new Date().toLocaleString() });
+  await dbSave(); renderStudent(); toast("구매 완료!");
 }
-
-function openAddItemModal() {
-  openModal("상품 등록", `
-    <input class="modal-input" type="text" id="aiI" placeholder="이모지 아이콘 (예: 🍎)">
-    <input class="modal-input" type="text" id="aiN" placeholder="상품명">
-    <input class="modal-input" type="number" id="aiP" placeholder="가격 (P)">
-    <input class="modal-input" type="number" id="aiS" placeholder="초기 재고" value="10">
-    <select class="modal-input modal-select" id="aiC"><option>간식</option><option>특권</option></select>
-  `, [
-    { label:"추가", cls:"btn-primary", fn: async () => {
-      const n = document.getElementById('aiN').value.trim();
-      const p = parseInt(document.getElementById('aiP').value);
-      const s = parseInt(document.getElementById('aiS').value);
-      if (n && !isNaN(p)) {
-        DATA.items.push({ id:Date.now(), name:n, price:p, icon:document.getElementById('aiI').value||'🎁', stock:isNaN(s)?10:s, cat:document.getElementById('aiC').value });
-        await dbSave(); renderAdmin(); closeModal(); toast("상품 추가 완료");
-      }
-    }},
-    { label:"취소", cls:"btn-secondary", fn:closeModal }
-  ]);
+function renderStudentHistory(s) {
+  const list = document.getElementById('sHistList');
+  list.innerHTML = (s.history || []).slice().reverse().map(h => `<div style="padding:10px; border-bottom:0.5px solid var(--border); display:flex; justify-content:space-between;"><div>${h.label}</div><div style="color:${h.points>0?'var(--green)':'var(--red)'}">${h.points}</div></div>`).join('');
 }
-
+function sTab(id, el) { document.querySelectorAll('#studentWrap .tab, #studentWrap .panel').forEach(x => x.classList.remove('active')); el.classList.add('active'); document.getElementById('s-'+id).classList.add('active'); if(id==='auc') dbLoad().then(renderStudentAuction); }
+function aTab(id, el) { document.querySelectorAll('#adminWrap .tab, #adminWrap .panel').forEach(x => x.classList.remove('active')); el.classList.add('active'); document.getElementById('a-'+id).classList.add('active'); if(id==='auc') dbLoad().then(renderAdminAuction); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
 function openModal(title, content, btns) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content;
   const area = document.getElementById('modalBtns'); area.innerHTML = '';
-  btns.forEach(b => {
-    const btn = document.createElement('button');
-    btn.className = 'btn ' + b.cls;
-    btn.textContent = b.label;
-    btn.onclick = b.fn;
-    area.appendChild(btn);
-  });
+  btns.forEach(b => { const btn = document.createElement('button'); btn.className = 'btn ' + b.cls; btn.textContent = b.label; btn.onclick = b.fn; area.appendChild(btn); });
   document.getElementById('modalWrap').classList.add('open');
 }
 function closeModal() { document.getElementById('modalWrap').classList.remove('open'); }
-document.getElementById('modalWrap').addEventListener('click', e => { if(e.target === document.getElementById('modalWrap')) closeModal(); });
-
-function sTab(id, el) {
-  document.querySelectorAll('#studentWrap .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#studentWrap .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('s-' + id).classList.add('active');
+function openAddStudentModal() {
+  openModal("학생 등록", `<input id="asId" class="bid-input btn-full" style="margin-bottom:8px" placeholder="아이디"><input id="asName" class="bid-input btn-full" style="margin-bottom:8px" placeholder="이름"><input id="asPw" class="bid-input btn-full" placeholder="비번">`,
+    [{label:"등록", cls:"btn-primary", fn: async () => { const id=document.getElementById('asId').value, n=document.getElementById('asName').value, p=document.getElementById('asPw').value; if(id&&n&&p){DATA.students.push({id,name:n,pw:p,points:0,history:[]}); await dbSave(); renderAdmin(); closeModal();} }}, {label:"취소", cls:"btn-secondary", fn:closeModal}]);
 }
-function aTab(id, el) {
-  document.querySelectorAll('#adminWrap .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#adminWrap .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('a-' + id).classList.add('active');
+function openAddItemModal() {
+  openModal("상품 추가", `<input id="aiI" class="bid-input btn-full" style="margin-bottom:8px" placeholder="아이콘"><input id="aiN" class="bid-input btn-full" style="margin-bottom:8px" placeholder="상품명"><input id="aiP" type="number" class="bid-input btn-full" placeholder="가격">`,
+    [{label:"추가", cls:"btn-primary", fn: async () => { const n=document.getElementById('aiN').value, p=parseInt(document.getElementById('aiP').value); if(n&&p){DATA.items.push({id:Date.now(), name:n, price:p, icon:document.getElementById('aiI').value||'🎁', stock:10}); await dbSave(); renderAdmin(); closeModal();} }}, {label:"취소", cls:"btn-secondary", fn:closeModal}]);
 }
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
 dbLoad();
 </script>
 </body>
