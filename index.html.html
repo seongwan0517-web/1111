@@ -1,1178 +1,489 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0046)file:///C:/Users/USER/Downloads/vitamin_9.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitamin - 포인트 상점 & 경매 시스템</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+<title>Vitamin - 포인트 상점 &amp; 경매 시스템</title>
+<link href="./index_files/css2" rel="stylesheet">
 <style>
-
 :root{
-  --bg:#0d0d14;
-  --surface:#171722;
-  --surface2:#202032;
-  --border:rgba(255,255,255,.08);
-
-  --text:#f4f4ff;
-  --text2:#9a9ab5;
-  --text3:#66667e;
-
-  --accent:#6c5fff;
-  --accent2:#a89cff;
-
-  --green:#2dd4a0;
-  --red:#ff6b6b;
-  --amber:#ffb84d;
-
-  --r:14px;
+  --bg:#0d0d14; --surface:#171722; --surface2:#202032; --border:rgba(255,255,255,.08);
+  --text:#f4f4ff; --text2:#9a9ab5; --text3:#66667e;
+  --accent:#6c5fff; --accent2:#a89cff; --green:#2dd4a0; --red:#ff6b6b;
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);}
+button,input,select{font-family:inherit;}
+.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,95,255,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%,rgba(45,212,160,.10) 0%,transparent 60%),var(--bg);}
+.card{width:100%;max-width:620px;background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+.login-hero{position:relative;padding:52px 40px 44px;background:linear-gradient(145deg,#1a1830,#141420);border-bottom:1px solid var(--border);overflow:hidden;text-align:center;}
+.login-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(108,95,255,.22) 0%,transparent 55%),radial-gradient(circle at 75% 70%,rgba(45,212,160,.12) 0%,transparent 50%);pointer-events:none;}
+.login-dots{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;}
+.login-dots span{position:absolute;border-radius:50%;background:var(--accent);opacity:.18;animation:float 6s ease-in-out infinite;}
+.login-dots span:nth-child(1){width:6px;height:6px;top:20%;left:10%;animation-delay:0s;}
+.login-dots span:nth-child(2){width:4px;height:4px;top:60%;left:80%;animation-delay:1.5s;}
+.login-dots span:nth-child(3){width:5px;height:5px;top:80%;left:25%;animation-delay:3s;}
+.login-dots span:nth-child(4){width:3px;height:3px;top:30%;left:65%;animation-delay:4.5s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.logo-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(108,95,255,.15);border:1px solid rgba(108,95,255,.3);border-radius:100px;padding:6px 16px;margin-bottom:20px;font-size:12px;color:var(--accent2);letter-spacing:.08em;}
+.login-hero h1{font-size:56px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#fff 20%,var(--accent2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:10px;position:relative;}
+.login-hero .tagline{color:var(--text2);font-size:14px;position:relative;}
+.login-hero .tagline strong{color:var(--text);font-weight:600;}
+.login-body{padding:32px 40px 36px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-size:15px;transition:border-color .2s;}
+.field input:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.btn{border:none;cursor:pointer;border-radius:10px;padding:12px 16px;font-weight:700;transition:opacity .15s,transform .1s;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,#7b6cff,#5040e0);color:white;box-shadow:0 4px 24px rgba(108,95,255,.35);}
+.btn-danger{background:rgba(255,107,107,.12);color:var(--red);}
+.btn-full{width:100%;}
+.err{display:none;margin-bottom:12px;color:var(--red);font-size:13px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 14px;}
+.main{display:none;}
+.top{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.tabs{display:flex;border-bottom:1px solid var(--border);}
+.tab{flex:1;text-align:center;padding:14px;cursor:pointer;color:var(--text3);}
+.tab.active{color:var(--accent2);border-bottom:2px solid var(--accent);}
+.panel{display:none;padding:20px;}
+.panel.active{display:block;}
+.banner{background:var(--surface2);border-radius:18px;padding:30px;text-align:center;margin-bottom:20px;}
+.point{font-size:52px;color:var(--accent2);font-weight:800;}
+.shop-item,.student-card,.order-card{background:var(--surface2);padding:14px;border-radius:12px;margin-bottom:10px;}
+.flex{display:flex;justify-content:space-between;align-items:center;}
+.small{font-size:12px;color:var(--text3);}
+.history{padding:10px 0;border-bottom:1px solid var(--border);}
+.auction{background:linear-gradient(135deg,#262646,#181826);border:1px solid rgba(108,95,255,.3);border-radius:20px;padding:24px;text-align:center;}
+.auction h2{margin-bottom:10px;}
+.bid{font-size:38px;color:var(--green);font-weight:800;margin:18px 0;}
+input.bid-input{width:100%;background:var(--surface);border:1px solid var(--border);padding:12px;color:white;border-radius:10px;margin-bottom:10px;}
+.admin-section{background:var(--surface2);padding:16px;border-radius:14px;margin-bottom:16px;}
+.table{width:100%;border-collapse:collapse;}
+.table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left;}
+.green{color:var(--green);} .red{color:var(--red);}
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-  font-family:'Pretendard',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-button,input,select{
-  font-family:inherit;
-}
-
-.app{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.card{
-  width:100%;
-  max-width:620px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:22px;
-  overflow:hidden;
-}
-
-/* LOGIN */
-
-.login{
-  padding:40px 30px;
-}
-
-.logo{
-  text-align:center;
-  margin-bottom:30px;
-}
-
-.logo h1{
-  font-size:30px;
-  color:var(--accent2);
-}
-
-.logo p{
-  color:var(--text2);
-  margin-top:6px;
-}
-
-.field{
-  margin-bottom:14px;
-}
-
-.field label{
-  display:block;
-  font-size:12px;
-  color:var(--text2);
-  margin-bottom:6px;
-}
-
-.field input{
-  width:100%;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:13px;
-  border-radius:10px;
-}
-
-.btn{
-  border:none;
-  cursor:pointer;
-  border-radius:10px;
-  padding:12px 16px;
-  font-weight:700;
-}
-
-.btn-primary{
-  background:var(--accent);
-  color:white;
-}
-
-.btn-danger{
-  background:rgba(255,107,107,.12);
-  color:var(--red);
-}
-
-.btn-green{
-  background:rgba(45,212,160,.12);
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1e1e2e;
+  border:1px solid rgba(45,212,160,.4);
   color:var(--green);
+  padding:14px 24px;
+  border-radius:100px;
+  font-size:15px;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s, transform .3s;
+  z-index:9999;
+  white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
 }
-
-.btn-full{
-  width:100%;
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
-
-.err{
-  display:none;
-  margin-bottom:12px;
-  color:var(--red);
-  font-size:13px;
-}
-
-/* MAIN */
-
-.main{
-  display:none;
-}
-
-.top{
-  padding:18px 22px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.tabs{
-  display:flex;
-  border-bottom:1px solid var(--border);
-}
-
-.tab{
-  flex:1;
-  text-align:center;
-  padding:14px;
-  cursor:pointer;
-  color:var(--text3);
-}
-
-.tab.active{
-  color:var(--accent2);
-  border-bottom:2px solid var(--accent);
-}
-
-.panel{
-  display:none;
-  padding:20px;
-}
-
-.panel.active{
-  display:block;
-}
-
-.banner{
-  background:var(--surface2);
-  border-radius:18px;
-  padding:30px;
-  text-align:center;
-  margin-bottom:20px;
-}
-
-.point{
-  font-size:52px;
-  color:var(--accent2);
-  font-weight:800;
-}
-
-.shop-item,
-.student-card,
-.order-card{
-  background:var(--surface2);
-  padding:14px;
-  border-radius:12px;
-  margin-bottom:10px;
-}
-
-.flex{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.small{
-  font-size:12px;
-  color:var(--text3);
-}
-
-.history{
-  padding:10px 0;
-  border-bottom:1px solid var(--border);
-}
-
-.auction{
-  background:linear-gradient(135deg,#262646,#181826);
-  border:1px solid rgba(108,95,255,.3);
-  border-radius:20px;
-  padding:24px;
-  text-align:center;
-}
-
-.auction h2{
-  margin-bottom:10px;
-}
-
-.bid{
-  font-size:38px;
-  color:var(--green);
-  font-weight:800;
-  margin:18px 0;
-}
-
-input.bid-input{
-  width:100%;
-  background:var(--surface);
-  border:1px solid var(--border);
-  padding:12px;
-  color:white;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-
-.admin-section{
-  background:var(--surface2);
-  padding:16px;
-  border-radius:14px;
-  margin-bottom:16px;
-}
-
-.table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-.table th,
-.table td{
-  padding:10px;
-  border-bottom:1px solid var(--border);
-  text-align:left;
-}
-
-.green{
-  color:var(--green);
-}
-
-.red{
-  color:var(--red);
-}
-
 </style>
 </head>
-
 <body>
-
 <div class="app">
 
-  <!-- LOGIN -->
-
   <div class="card" id="loginCard">
-
-    <div class="login">
-
-      <div class="logo">
-        <h1>Vitamin</h1>
-        <p>용유중학교 포인트 시스템</p>
-      </div>
-
-      <div class="field">
-        <label>아이디</label>
-        <input type="text" id="loginId">
-      </div>
-
-      <div class="field">
-        <label>비밀번호</label>
-        <input type="password" id="loginPw">
-      </div>
-
-      <div class="err" id="loginErr">
-        아이디 또는 비밀번호 오류
-      </div>
-
-      <button class="btn btn-primary btn-full" onclick="login()">
-        로그인
-      </button>
-
+    <div class="login-hero">
+      <div class="login-dots"><span></span><span></span><span></span><span></span></div>
+      <div class="logo-pill">용유중학교 포인트 시스템</div>
+      <h1>Vitamin</h1>
+      <div class="tagline">학생 <strong>포인트</strong> 적립 · 상점 · 경매</div>
     </div>
-
+    <div class="login-body">
+      <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디를 입력하세요"></div>
+      <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력하세요"></div>
+      <div class="err" id="loginErr">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+      <button class="btn btn-primary btn-full" onclick="login()">로그인</button>
+    </div>
   </div>
-
-  <!-- STUDENT -->
 
   <div class="card main" id="studentMain">
-
-    <div class="top">
-      <div id="studentName"></div>
-      <button class="btn btn-danger" onclick="logout()">로그아웃</button>
-    </div>
-
+    <div class="top"><div id="studentName"></div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
     <div class="tabs">
-      <div class="tab active" onclick="studentTab('home',this)">홈</div>
-      <div class="tab" onclick="studentTab('shop',this)">상점</div>
-      <div class="tab" onclick="studentTab('auction',this)">경매</div>
-      <div class="tab" onclick="studentTab('history',this)">내역</div>
+      <div class="tab active" onclick="studentTab(&#39;home&#39;,this)">홈</div>
+      <div class="tab" onclick="studentTab(&#39;shop&#39;,this)">상점</div>
+      <div class="tab" onclick="studentTab(&#39;auction&#39;,this)">경매</div>
+      <div class="tab" onclick="studentTab(&#39;history&#39;,this)">내역</div>
     </div>
-
-    <!-- HOME -->
-
     <div class="panel active" id="s-home">
-
-      <div class="banner">
-        <div class="small">보유 포인트</div>
-        <div class="point" id="studentPoints">0</div>
-      </div>
-
+      <div class="banner"><div class="small">보유 포인트</div><div class="point" id="studentPoints">0</div></div>
     </div>
-
-    <!-- SHOP -->
-
-    <div class="panel" id="s-shop">
-      <div id="shopList"></div>
-    </div>
-
-    <!-- AUCTION -->
-
-    <div class="panel" id="s-auction">
-      <div id="studentAuction"></div>
-    </div>
-
-    <!-- HISTORY -->
-
-    <div class="panel" id="s-history">
-      <div id="studentHistory"></div>
-    </div>
-
+    <div class="panel" id="s-shop"><div id="shopList"></div></div>
+    <div class="panel" id="s-auction"><div id="studentAuction"></div></div>
+    <div class="panel" id="s-history"><div id="studentHistory"></div></div>
   </div>
 
-  <!-- ADMIN -->
-
   <div class="card main" id="adminMain">
-
-    <div class="top">
-      <div>관리자 모드</div>
-      <button class="btn btn-danger" onclick="logout()">로그아웃</button>
-    </div>
-
+    <div class="top"><div>관리자 모드</div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
     <div class="tabs">
-      <div class="tab active" onclick="adminTab('students',this)">학생</div>
-      <div class="tab" onclick="adminTab('shop',this)">상점</div>
-      <div class="tab" onclick="adminTab('auction',this)">경매</div>
-      <div class="tab" onclick="adminTab('orders',this)">주문</div>
+      <div class="tab active" onclick="adminTab(&#39;students&#39;,this)">학생</div>
+      <div class="tab" onclick="adminTab(&#39;shop&#39;,this)">상점</div>
+      <div class="tab" onclick="adminTab(&#39;auction&#39;,this)">경매</div>
+      <div class="tab" onclick="adminTab(&#39;orders&#39;,this)">주문</div>
     </div>
-
-    <!-- STUDENTS -->
-
     <div class="panel active" id="a-students">
-
       <div class="admin-section">
-
-        <div class="small" style="margin-bottom:10px">
-          포인트 지급
-        </div>
-
+        <div class="small" style="margin-bottom:10px">포인트 지급</div>
         <div class="field">
-          <select id="giveStudent"
-            style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)">
-          </select>
+          <select id="giveStudent" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)"></select>
         </div>
-
-        <div class="field">
-          <input type="number" id="givePoint" placeholder="포인트">
-        </div>
-
-        <div class="field">
-          <input type="text" id="giveReason" placeholder="사유">
-        </div>
-
-        <button class="btn btn-primary btn-full" onclick="givePoint()">
-          지급하기
-        </button>
-
+        <div class="field"><input type="number" id="giveAmt" placeholder="포인트 (음수 입력시 차감)"></div>
+        <div class="field"><input type="text" id="giveReason" placeholder="사유"></div>
+        <button class="btn btn-primary btn-full" onclick="givePoint()">지급하기</button>
       </div>
-
       <div id="studentList"></div>
-
       <hr style="margin:20px 0;border-color:var(--border)">
-
       <div class="admin-section">
-
-        <div class="small" style="margin-bottom:10px">
-          학생 포인트 지급 내역
-        </div>
-
-        <select id="historyStudent"
-          onchange="renderPointHistory()"
-          style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border);margin-bottom:12px">
-        </select>
-
+        <div class="small" style="margin-bottom:10px">학생 포인트 지급 내역</div>
+        <select id="historyStudent" onchange="renderPointHistory()" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border);margin-bottom:12px"></select>
         <div id="pointHistory"></div>
-
       </div>
-
     </div>
-
-    <!-- SHOP -->
-
     <div class="panel" id="a-shop">
-
       <div class="admin-section">
-
-        <div class="field">
-          <input type="text" id="itemName" placeholder="상품명">
-        </div>
-
-        <div class="field">
-          <input type="number" id="itemPrice" placeholder="가격">
-        </div>
-
-        <button class="btn btn-primary btn-full" onclick="addItem()">
-          상품 추가
-        </button>
-
+        <div class="field"><input type="text" id="itemName" placeholder="상품명"></div>
+        <div class="field"><input type="number" id="itemPrice" placeholder="가격"></div>
+        <button class="btn btn-primary btn-full" onclick="addItem()">상품 추가</button>
       </div>
-
       <div id="adminShopList"></div>
-
     </div>
-
-    <!-- AUCTION -->
-
-    <div class="panel" id="a-auction">
-
-      <div id="adminAuction"></div>
-
-    </div>
-
-    <!-- ORDERS -->
-
-    <div class="panel" id="a-orders">
-      <div id="orderList"></div>
-    </div>
-
+    <div class="panel" id="a-auction"><div id="adminAuction"></div></div>
+    <div class="panel" id="a-orders"><div id="orderList"></div></div>
   </div>
 
 </div>
-
+<div class="toast" id="toast"></div>
 <script>
-
-const FIREBASE_URL =
-"https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
-
-let DATA = {
-  students:[],
-  items:[],
-  orders:[],
-  auction:{
-    active:false,
-    itemName:'',
-    bids:{},
-    winner:null
-  }
-};
-
+const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
+let DATA = { students:[], items:[], orders:[], auction:{active:false,itemName:'',bids:{},winner:null} };
 let currentUser = null;
 
-/* DATABASE */
-
-async function dbLoad(){
-
-  const res = await fetch(FIREBASE_URL);
-  const json = await res.json();
-
-  if(json){
-    DATA = json;
-  }
-
-  if(!DATA.auction){
-    DATA.auction = {
-      active:false,
-      itemName:'',
-      bids:{},
-      winner:null
-    };
-  }
-
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-async function dbSave(){
-
-  await fetch(FIREBASE_URL,{
-    method:'PUT',
-    body:JSON.stringify(DATA)
-  });
-
+async function dbLoad() {
+  try {
+    const res = await fetch(FIREBASE_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json) DATA = json;
+  } catch(e) {
+    alert('데이터베이스 연결 실패: ' + e.message);
+    return false;
+  }
+  if (!DATA.auction)  DATA.auction  = {active:false,itemName:'',bids:{},winner:null};
+  if (!DATA.students) DATA.students = [];
+  if (!DATA.items)    DATA.items    = [];
+  if (!DATA.orders)   DATA.orders   = [];
+  return true;
 }
 
-/* LOGIN */
+async function dbSave() {
+  try {
+    const res = await fetch(FIREBASE_URL, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(DATA)});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch(e) {
+    alert('저장 실패: ' + e.message);
+  }
+}
 
-async function login(){
-
-  await dbLoad();
-
-  const id = loginId.value.trim();
-  const pw = loginPw.value.trim();
-
-  if(id === 'admin' && pw === 'admin1234'){
-
-    currentUser = {
-      role:'admin'
-    };
-
-    loginCard.style.display='none';
-    adminMain.style.display='block';
-
+async function login() {
+  const id  = document.getElementById('loginId').value.trim();
+  const pw  = document.getElementById('loginPw').value.trim();
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  const ok = await dbLoad();
+  if (!ok) return;
+  if (id === 'admin' && pw === 'admin1234') {
+    currentUser = {role:'admin'};
+    document.getElementById('loginCard').style.display  = 'none';
+    document.getElementById('adminMain').style.display  = 'block';
     renderAdmin();
-
     return;
   }
-
-  const s = DATA.students.find(x=>x.id===id && x.pw===pw);
-
-  if(!s){
-    loginErr.style.display='block';
-    return;
-  }
-
-  currentUser = {
-    role:'student',
-    data:s
-  };
-
-  loginCard.style.display='none';
-  studentMain.style.display='block';
-
+  const s = DATA.students.find(x => x.id === id && x.pw === pw);
+  if (!s) { err.style.display = 'block'; return; }
+  currentUser = {role:'student', data:s};
+  document.getElementById('loginCard').style.display   = 'none';
+  document.getElementById('studentMain').style.display = 'block';
   renderStudent();
-
+  startAuctionPoll();
 }
 
-function logout(){
-  location.reload();
-}
+function logout() { stopAuctionPoll(); location.reload(); }
 
-/* STUDENT */
+function getMe() { return DATA.students.find(x => x.id === currentUser.data.id); }
 
-function renderStudent(){
-
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  studentName.innerText = s.name;
-  studentPoints.innerText = s.points;
-
+function renderStudent() {
+  const s = getMe();
+  document.getElementById('studentName').innerText   = s.name;
+  document.getElementById('studentPoints').innerText = s.points;
   renderShop();
   renderStudentHistory();
-  renderStudentAuction();
-
+  renderStudentAuction(true);
 }
 
-function renderShop(){
-
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  shopList.innerHTML = DATA.items.map(i=>`
-
-    <div class="shop-item flex">
-
-      <div>
-        <div>${i.name}</div>
-        <div class="small">${i.price}P</div>
-      </div>
-
-      <button class="btn btn-primary"
-        ${s.points < i.price ? 'disabled':''}
-        onclick="buyItem(${i.id})">
-
-        구매
-
-      </button>
-
-    </div>
-
-  `).join('');
-
+function historyRows(arr) {
+  if (!arr || !arr.length) return '<div class="small">내역이 없습니다.</div>';
+  return arr.slice().reverse().map(function(h) {
+    var cls  = h.points > 0 ? 'green' : 'red';
+    var sign = h.points > 0 ? '+' : '';
+    return '<div class="history flex"><div><div>' + h.label + '</div><div class="small">' + h.date + '</div></div><div class="' + cls + '">' + sign + h.points + 'P</div></div>';
+  }).join('');
 }
 
-async function buyItem(id){
+function renderStudentHistory() {
+  document.getElementById('studentHistory').innerHTML = historyRows(getMe().history);
+}
 
-  const item = DATA.items.find(x=>x.id===id);
+function renderShop() {
+  const s  = getMe();
+  const el = document.getElementById('shopList');
+  if (!DATA.items.length) { el.innerHTML = '<div class="small">등록된 상품이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.items.map(function(i) {
+    return '<div class="shop-item flex"><div><div>' + i.name + '</div><div class="small">' + i.price + 'P</div></div>' +
+      '<button class="btn btn-primary" ' + (s.points < i.price ? 'disabled' : '') + ' onclick="buyItem(' + i.id + ')">구매</button></div>';
+  }).join('');
+}
 
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  if(s.points < item.price){
-    return;
-  }
-
+async function buyItem(itemId) {
+  const item = DATA.items.find(x => x.id === itemId);
+  const s    = getMe();
+  if (!item || s.points < item.price) return;
   s.points -= item.price;
-
-  if(!s.history){
-    s.history = [];
-  }
-
-  s.history.push({
-    label:'상품 구매 - '+item.name,
-    points:-item.price,
-    date:new Date().toLocaleString()
-  });
-
-  DATA.orders.unshift({
-    id:Date.now(),
-    studentName:s.name,
-    itemName:item.name
-  });
-
+  if (!s.history) s.history = [];
+  s.history.push({label:'상품 구매 - ' + item.name, points:-item.price, date:new Date().toLocaleString()});
+  DATA.orders.unshift({id:Date.now(), studentName:s.name, itemName:item.name});
   await dbSave();
-
+  showToast('🛍️ ' + item.name + ' 구매 완료!');
   renderStudent();
-
 }
 
-function renderStudentHistory(){
-
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  studentHistory.innerHTML = (s.history || [])
-  .slice()
-  .reverse()
-  .map(h=>`
-
-    <div class="history flex">
-
-      <div>
-        <div>${h.label}</div>
-        <div class="small">${h.date}</div>
-      </div>
-
-      <div class="${h.points > 0 ? 'green':'red'}">
-        ${h.points}
-      </div>
-
-    </div>
-
-  `).join('');
-
-}
-
-/* AUCTION */
-
-function renderStudentAuction(){
-
-  const auc = DATA.auction;
-
-  if(!auc.active && !auc.winner){
-
-    studentAuction.innerHTML =
-    `<div class="small">진행 중인 경매가 없습니다.</div>`;
-
-    return;
-  }
-
-  const bids = Object.values(auc.bids || {})
-    .map(b=>b.amount);
-
-  const highBid =
-    bids.length ? Math.max(...bids) : 0;
-
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  const myBid =
-    auc.bids[s.id]
-      ? auc.bids[s.id].amount
-      : 0;
-
-  if(auc.active){
-
-    studentAuction.innerHTML = `
-
-      <div class="auction">
-
-        <h2>${auc.itemName}</h2>
-
-        <div>현재 최고 입찰</div>
-
-        <div class="bid">
-          ${highBid}P
-        </div>
-
-        <div style="margin-bottom:15px">
-          내 입찰액 : ${myBid}P
-        </div>
-
-        <input type="number"
-          class="bid-input"
-          id="bidAmount"
-          placeholder="추가 입찰 포인트">
-
-        <button class="btn btn-primary btn-full"
-          onclick="placeBid()">
-
-          입찰하기
-
-        </button>
-
-      </div>
-
-    `;
-
-  }else{
-
-    studentAuction.innerHTML = `
-
-      <div class="auction">
-
-        <h2>경매 종료</h2>
-
-        <div class="bid">
-          ${auc.winner
-            ? auc.winner.studentName
-            : '없음'}
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-async function placeBid(){
-
-  await dbLoad();
-
-  const amt =
-    parseInt(
-      document.getElementById('bidAmount').value
-    );
-
-  const s = DATA.students.find(
-    x=>x.id===currentUser.data.id
-  );
-
-  if(!amt || amt <= 0){
-    return;
-  }
-
-  if(s.points < amt){
-    alert('포인트 부족');
-    return;
-  }
-
-  s.points -= amt;
-
-  if(!s.history){
-    s.history=[];
-  }
-
-  s.history.push({
-    label:'경매 입찰',
-    points:-amt,
-    date:new Date().toLocaleString()
-  });
-
-  if(!DATA.auction.bids[s.id]){
-
-    DATA.auction.bids[s.id] = {
-      studentName:s.name,
-      amount:amt
-    };
-
-  }else{
-
-    DATA.auction.bids[s.id].amount += amt;
-
-  }
-
-  await dbSave();
-
-  renderStudent();
-
-}
-
-/* ADMIN */
-
-function renderAdmin(){
-
-  renderStudents();
-  renderAdminShop();
-  renderAdminAuction();
-  renderOrders();
-
-}
-
-function renderStudents(){
-
-  studentList.innerHTML =
-  DATA.students.map(s=>`
-
-    <div class="student-card flex">
-
-      <div>
-        <div>${s.name}</div>
-        <div class="small">${s.id}</div>
-      </div>
-
-      <div class="green">
-        ${s.points}P
-      </div>
-
-    </div>
-
-  `).join('');
-
-  giveStudent.innerHTML =
-  DATA.students.map(s=>`
-    <option value="${s.id}">
-      ${s.name}
-    </option>
-  `).join('');
-
-  historyStudent.innerHTML =
-  DATA.students.map(s=>`
-    <option value="${s.id}">
-      ${s.name}
-    </option>
-  `).join('');
-
-  renderPointHistory();
-
-}
-
-async function givePoint(){
-
-  const sid = giveStudent.value;
-
-  const amt =
-    parseInt(givePoint.value);
-
-  const reason =
-    giveReason.value || '관리자 지급';
-
-  const s =
-    DATA.students.find(x=>x.id===sid);
-
-  s.points += amt;
-
-  if(!s.history){
-    s.history=[];
-  }
-
-  s.history.push({
-    label:reason,
-    points:amt,
-    date:new Date().toLocaleString()
-  });
-
-  await dbSave();
-
-  renderAdmin();
-
-}
-
-function renderPointHistory(){
-
-  const sid = historyStudent.value;
-
-  const s =
-    DATA.students.find(x=>x.id===sid);
-
-  if(!s || !s.history){
-
-    pointHistory.innerHTML =
-    '<div class="small">내역 없음</div>';
-
-    return;
-  }
-
-  pointHistory.innerHTML =
-  s.history.slice().reverse().map(h=>`
-
-    <div class="history flex">
-
-      <div>
-        <div>${h.label}</div>
-        <div class="small">${h.date}</div>
-      </div>
-
-      <div class="${h.points > 0 ? 'green':'red'}">
-        ${h.points}
-      </div>
-
-    </div>
-
-  `).join('');
-
-}
-
-/* ADMIN SHOP */
-
-async function addItem(){
-
-  const name = itemName.value;
-  const price = parseInt(itemPrice.value);
-
-  DATA.items.push({
-    id:Date.now(),
-    name,
-    price
-  });
-
-  await dbSave();
-
-  renderAdmin();
-
-}
-
-function renderAdminShop(){
-
-  adminShopList.innerHTML =
-  DATA.items.map(i=>`
-
-    <div class="shop-item flex">
-
-      <div>
-        ${i.name}
-      </div>
-
-      <div>
-        ${i.price}P
-      </div>
-
-    </div>
-
-  `).join('');
-
-}
-
-/* ADMIN AUCTION */
-
-function renderAdminAuction(){
-
-  const auc = DATA.auction;
-
-  if(!auc.active){
-
-    adminAuction.innerHTML = `
-
-      <div class="admin-section">
-
-        <div class="field">
-          <input type="text"
-            id="auctionItem"
-            placeholder="경매 상품명">
-        </div>
-
-        <button class="btn btn-primary btn-full"
-          onclick="startAuction()">
-
-          경매 시작
-
-        </button>
-
-      </div>
-
-    `;
-
-    if(auc.winner){
-
-      adminAuction.innerHTML += `
-
-        <div class="auction">
-
-          <h2>최종 낙찰</h2>
-
-          <div class="bid">
-            ${auc.winner.studentName}
-          </div>
-
-          <div>
-            ${auc.winner.amount}P
-          </div>
-
-        </div>
-
-      `;
-
+function renderStudentAuction(forceRedraw) {
+  var auc = DATA.auction;
+  var el  = document.getElementById('studentAuction');
+  if (!auc.active && !auc.winner) { el.innerHTML = '<div class="small">진행 중인 경매가 없습니다.</div>'; return; }
+  var bids    = Object.values(auc.bids || {}).map(function(b) { return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var s       = getMe();
+  // bids 키는 문자열로 저장되므로 String() 변환
+  var myBid   = (auc.bids && auc.bids[String(s.id)]) ? auc.bids[String(s.id)].amount : 0;
+  if (auc.active) {
+    var existingBid = document.getElementById('auc-highbid');
+    if (existingBid && !forceRedraw) {
+      // 폴링 시: 숫자만 업데이트 (input 건드리지 않음)
+      existingBid.textContent = highBid + 'P';
+      var myBidEl = document.getElementById('auc-mybid');
+      if (myBidEl) myBidEl.textContent = '내 입찰액 : ' + myBid + 'P';
+    } else {
+      // 처음 진입하거나 입찰 직후: 전체 재렌더
+      el.innerHTML = '<div class="auction"><h2>' + auc.itemName + '</h2><div>현재 최고 입찰</div><div class="bid" id="auc-highbid">' + highBid + 'P</div><div id="auc-mybid" style="margin-bottom:15px">내 입찰액 : ' + myBid + 'P</div><input type="number" class="bid-input" id="bidAmount" placeholder="추가 입찰 포인트"><button class="btn btn-primary btn-full" onclick="placeBid()">입찰하기</button></div>';
     }
+  } else {
+    el.innerHTML = '<div class="auction"><h2>경매 종료</h2><div class="bid">' + (auc.winner ? auc.winner.studentName : '없음') + '</div><div>' + (auc.winner ? auc.winner.amount + 'P' : '') + '</div></div>';
+  }
+}
 
+async function placeBid() {
+  var amt = parseInt(document.getElementById('bidAmount').value);
+  if (!amt || amt <= 0) return;
+  var s = getMe();
+  if (s.points < amt) { alert('포인트가 부족합니다.'); return; }
+  s.points -= amt;
+  if (!s.history) s.history = [];
+  s.history.push({label:'경매 입찰 - ' + DATA.auction.itemName, points:-amt, date:new Date().toLocaleString()});
+  var sid = String(s.id);
+  if (!DATA.auction.bids[sid]) {
+    DATA.auction.bids[sid] = {studentName:s.name, amount:amt};
+  } else {
+    DATA.auction.bids[sid].amount += amt;
+  }
+  await dbSave();
+  showToast('🔨 입찰 완료! ' + DATA.auction.bids[sid].amount + 'P');
+  renderStudent();
+}
+
+var auctionPollTimer = null;
+
+function startAuctionPoll() {
+  stopAuctionPoll();
+  auctionPollTimer = setInterval(async function() {
+    if (!currentUser || currentUser.role !== 'student') { stopAuctionPoll(); return; }
+    try {
+      var res = await fetch(FIREBASE_URL);
+      var json = await res.json();
+      if (json) {
+        DATA = json;
+        if (!DATA.auction) DATA.auction = {active:false,itemName:'',bids:{},winner:null};
+      }
+    } catch(e) { return; }
+    // 경매 탭이 활성화 상태일 때만 UI 업데이트
+    var auctionPanel = document.getElementById('s-auction');
+    if (auctionPanel && auctionPanel.classList.contains('active')) {
+      renderStudentAuction();
+    }
+    // 경매 종료됐으면 알림 후 폴링 중단
+    if (!DATA.auction.active) {
+      stopAuctionPoll();
+      if (DATA.auction.winner) {
+        var me = getMe();
+        if (DATA.auction.winner.studentId === me.id) {
+          showToast('🏆 축하합니다! 낙찰되었습니다!');
+        } else {
+          showToast('경매가 종료되었습니다.');
+        }
+      }
+    }
+  }, 3000);
+}
+
+function stopAuctionPoll() {
+  if (auctionPollTimer) { clearInterval(auctionPollTimer); auctionPollTimer = null; }
+}
+
+
+function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuction(); renderOrders(); }
+
+function renderStudents() {
+  document.getElementById('studentList').innerHTML = DATA.students.map(function(s) {
+    return '<div class="student-card flex"><div><div>' + s.name + '</div><div class="small">' + s.id + '</div></div><div class="green">' + s.points + 'P</div></div>';
+  }).join('');
+  document.getElementById('giveStudent').innerHTML = DATA.students.map(function(s) {
+    return '<option value="' + s.id + '">' + s.name + '</option>';
+  }).join('');
+  var hs = document.getElementById('historyStudent');
+  var prev = hs.value;
+  hs.innerHTML = DATA.students.map(function(s) {
+    return '<option value="' + s.id + '">' + s.name + '</option>';
+  }).join('');
+  if (prev) hs.value = prev;
+  renderPointHistory();
+}
+
+async function givePoint() {
+  var sid    = document.getElementById('giveStudent').value;
+  var amt    = parseInt(document.getElementById('giveAmt').value);
+  var reason = document.getElementById('giveReason').value.trim() || '관리자 지급';
+  if (!sid || isNaN(amt) || amt === 0) { alert('학생과 포인트를 입력하세요.'); return; }
+  var s = DATA.students.find(function(x) { return x.id === sid; });
+  if (!s) return;
+  s.points += amt;
+  if (!s.history) s.history = [];
+  s.history.push({label:reason, points:amt, date:new Date().toLocaleString()});
+  await dbSave();
+  document.getElementById('giveAmt').value    = '';
+  document.getElementById('giveReason').value = '';
+  renderAdmin();
+}
+
+function renderPointHistory() {
+  var hs = document.getElementById('historyStudent');
+  var ph = document.getElementById('pointHistory');
+  if (!hs || !ph) return;
+  var s = DATA.students.find(function(x) { return x.id === hs.value; });
+  ph.innerHTML = historyRows(s ? s.history : null);
+}
+
+async function addItem() {
+  var name  = document.getElementById('itemName').value.trim();
+  var price = parseInt(document.getElementById('itemPrice').value);
+  if (!name || isNaN(price) || price <= 0) { alert('상품명과 가격을 입력하세요.'); return; }
+  DATA.items.push({id:Date.now(), name:name, price:price});
+  await dbSave();
+  document.getElementById('itemName').value  = '';
+  document.getElementById('itemPrice').value = '';
+  renderAdmin();
+}
+
+function renderAdminShop() {
+  var el = document.getElementById('adminShopList');
+  if (!DATA.items.length) { el.innerHTML = '<div class="small">등록된 상품이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.items.map(function(i) {
+    return '<div class="shop-item flex"><div>' + i.name + '</div><div>' + i.price + 'P</div></div>';
+  }).join('');
+}
+
+function renderAdminAuction() {
+  var auc = DATA.auction;
+  var el  = document.getElementById('adminAuction');
+  if (!auc.active) {
+    var html = '<div class="admin-section"><div class="field"><input type="text" id="auctionItem" placeholder="경매 상품명"></div><button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작</button></div>';
+    if (auc.winner) {
+      html += '<div class="auction"><h2>최종 낙찰</h2><div class="bid">' + auc.winner.studentName + '</div><div>' + auc.winner.amount + 'P</div></div>';
+    }
+    el.innerHTML = html;
     return;
   }
-
-  const sorted =
-    Object.entries(auc.bids)
-    .map(([id,data])=>({
-      id,
-      ...data
-    }))
-    .sort((a,b)=>b.amount-a.amount);
-
-  adminAuction.innerHTML = `
-
-    <div class="auction">
-
-      <h2>${auc.itemName}</h2>
-
-      <button class="btn btn-danger btn-full"
-        onclick="endAuction()">
-
-        경매 종료
-
-      </button>
-
-    </div>
-
-    <table class="table">
-
-      <thead>
-        <tr>
-          <th>순위</th>
-          <th>학생</th>
-          <th>입찰</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        ${sorted.map((b,i)=>`
-
-          <tr>
-
-            <td>${i+1}</td>
-
-            <td>${b.studentName}</td>
-
-            <td>${b.amount}P</td>
-
-          </tr>
-
-        `).join('')}
-
-      </tbody>
-
-    </table>
-
-  `;
-
+  var sorted = Object.entries(auc.bids || {}).map(function(entry) {
+    return {id:entry[0], studentName:entry[1].studentName, amount:entry[1].amount};
+  }).sort(function(a,b) { return b.amount - a.amount; });
+  var rows = sorted.map(function(b, i) {
+    return '<tr><td>' + (i+1) + '</td><td>' + b.studentName + '</td><td>' + b.amount + 'P</td></tr>';
+  }).join('');
+  el.innerHTML = '<div class="auction" style="margin-bottom:16px"><h2>' + auc.itemName + '</h2><div class="bid">' + (sorted.length ? sorted[0].amount + 'P' : '0P') + '</div><button class="btn btn-danger btn-full" onclick="endAuction()">경매 종료</button></div><table class="table"><thead><tr><th>순위</th><th>학생</th><th>입찰</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-async function startAuction(){
-
-  const item =
-    document.getElementById('auctionItem').value;
-
-  DATA.auction = {
-    active:true,
-    itemName:item,
-    bids:{},
-    winner:null
-  };
-
+async function startAuction() {
+  var item = document.getElementById('auctionItem').value.trim();
+  if (!item) { alert('경매 상품명을 입력하세요.'); return; }
+  DATA.auction = {active:true, itemName:item, bids:{}, winner:null};
   await dbSave();
-
   renderAdminAuction();
-
 }
 
-async function endAuction(){
-
-  const bids =
-    Object.entries(DATA.auction.bids)
-    .map(([id,data])=>({
-      studentId:id,
-      studentName:data.studentName,
-      amount:data.amount
-    }))
-    .sort((a,b)=>b.amount-a.amount);
-
+async function endAuction() {
+  var bids = Object.entries(DATA.auction.bids || {}).map(function(entry) {
+    return {studentId:entry[0], studentName:entry[1].studentName, amount:entry[1].amount};
+  }).sort(function(a,b) { return b.amount - a.amount; });
   DATA.auction.active = false;
-
-  DATA.auction.winner =
-    bids[0] || null;
-
+  var winner = bids[0] || null;
+  DATA.auction.winner = winner;
+  // 낙찰자 history에 기록
+  if (winner) {
+    var ws = DATA.students.find(function(x) { return String(x.id) === String(winner.studentId); });
+    if (ws) {
+      if (!ws.history) ws.history = [];
+      ws.history.push({label:'경매 낙찰 - ' + DATA.auction.itemName, points: -winner.amount, date:new Date().toLocaleString()});
+    }
+  }
   await dbSave();
-
   renderAdminAuction();
-
 }
 
-/* ORDERS */
-
-function renderOrders(){
-
-  orderList.innerHTML =
-  DATA.orders.map(o=>`
-
-    <div class="order-card">
-
-      <div>${o.studentName}</div>
-
-      <div class="small">
-        ${o.itemName}
-      </div>
-
-    </div>
-
-  `).join('');
-
+function renderOrders() {
+  var el = document.getElementById('orderList');
+  if (!DATA.orders.length) { el.innerHTML = '<div class="small">주문 내역이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.orders.map(function(o) {
+    return '<div class="order-card"><div>' + o.studentName + '</div><div class="small">' + o.itemName + '</div></div>';
+  }).join('');
 }
 
-/* TABS */
-
-function studentTab(id,el){
-
-  document.querySelectorAll('#studentMain .tab')
-  .forEach(t=>t.classList.remove('active'));
-
-  document.querySelectorAll('#studentMain .panel')
-  .forEach(p=>p.classList.remove('active'));
-
+function studentTab(id, el) {
+  document.querySelectorAll('#studentMain .tab').forEach(function(t)  { t.classList.remove('active'); });
+  document.querySelectorAll('#studentMain .panel').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
-
-  document.getElementById('s-'+id)
-  .classList.add('active');
-
+  document.getElementById('s-' + id).classList.add('active');
 }
-
-function adminTab(id,el){
-
-  document.querySelectorAll('#adminMain .tab')
-  .forEach(t=>t.classList.remove('active'));
-
-  document.querySelectorAll('#adminMain .panel')
-  .forEach(p=>p.classList.remove('active'));
-
+function adminTab(id, el) {
+  document.querySelectorAll('#adminMain .tab').forEach(function(t)  { t.classList.remove('active'); });
+  document.querySelectorAll('#adminMain .panel').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
-
-  document.getElementById('a-'+id)
-  .classList.add('active');
-
+  document.getElementById('a-' + id).classList.add('active');
 }
-
 </script>
 
-</body>
-</html>
+</body></html>
