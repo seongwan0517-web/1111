@@ -3,37 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>용유중학교 Vitamin - 경매 & 포인트 관리</title>
+<title>Vitamin - 포인트 상점 & 경매 시스템</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#0b0b12;
-  --surface:#13131f;
-  --surface2:#1b1b2a;
-  --border:rgba(255,255,255,.08);
-  --border2:rgba(255,255,255,.14);
 
-  --text:#f5f5ff;
-  --text2:#a0a0b8;
-  --text3:#666680;
+:root{
+  --bg:#0d0d14;
+  --surface:#171722;
+  --surface2:#202032;
+  --border:rgba(255,255,255,.08);
+
+  --text:#f4f4ff;
+  --text2:#9a9ab5;
+  --text3:#66667e;
 
   --accent:#6c5fff;
-  --accent2:#a394ff;
-  --accent-bg:rgba(108,95,255,.12);
-  --accent-border:rgba(108,95,255,.28);
+  --accent2:#a89cff;
 
-  --green:#29d391;
-  --green-bg:rgba(41,211,145,.12);
-
+  --green:#2dd4a0;
   --red:#ff6b6b;
-  --red-bg:rgba(255,107,107,.12);
-
   --amber:#ffb84d;
 
-  --r:12px;
-  --r-lg:18px;
+  --r:14px;
 }
 
 *{
@@ -48,60 +41,46 @@ body{
   color:var(--text);
 }
 
+button,input,select{
+  font-family:inherit;
+}
+
 .app{
   min-height:100vh;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   padding:20px;
 }
 
 .card{
+  width:100%;
+  max-width:620px;
   background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:var(--r-lg);
+  border:1px solid var(--border);
+  border-radius:22px;
   overflow:hidden;
 }
 
 /* LOGIN */
-.login-wrap{
-  width:100%;
-  max-width:400px;
+
+.login{
+  padding:40px 30px;
 }
 
-.logo-area{
-  padding:36px 24px 24px;
+.logo{
   text-align:center;
+  margin-bottom:30px;
 }
 
-.logo-icon{
-  width:70px;
-  height:70px;
-  margin:0 auto 18px;
-  border-radius:20px;
-  background:var(--accent-bg);
-  border:1px solid var(--accent-border);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  color:var(--accent2);
+.logo h1{
   font-size:30px;
+  color:var(--accent2);
 }
 
-.logo-area h1{
-  font-size:26px;
-  margin-bottom:6px;
-}
-
-.logo-area .sub{
+.logo p{
   color:var(--text2);
-  font-size:13px;
-}
-
-.login-form{
-  padding:0 24px 28px;
+  margin-top:6px;
 }
 
 .field{
@@ -110,40 +89,26 @@ body{
 
 .field label{
   display:block;
-  margin-bottom:6px;
   font-size:12px;
   color:var(--text2);
+  margin-bottom:6px;
 }
 
-.field input,
-select{
+.field input{
   width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid var(--border2);
-  background:#0f0f18;
+  background:var(--surface2);
+  border:1px solid var(--border);
   color:var(--text);
-  outline:none;
-}
-
-.err-msg{
-  display:none;
-  margin-bottom:12px;
-  padding:10px;
+  padding:13px;
   border-radius:10px;
-  background:var(--red-bg);
-  color:var(--red);
-  font-size:12px;
 }
 
-/* BUTTON */
 .btn{
   border:none;
   cursor:pointer;
   border-radius:10px;
-  padding:10px 16px;
-  font-weight:600;
-  font-family:inherit;
+  padding:12px 16px;
+  font-weight:700;
 }
 
 .btn-primary{
@@ -151,18 +116,13 @@ select{
   color:white;
 }
 
-.btn-secondary{
-  background:#232338;
-  color:var(--text2);
-}
-
 .btn-danger{
-  background:var(--red-bg);
+  background:rgba(255,107,107,.12);
   color:var(--red);
 }
 
 .btn-green{
-  background:var(--green-bg);
+  background:rgba(45,212,160,.12);
   color:var(--green);
 }
 
@@ -170,52 +130,25 @@ select{
   width:100%;
 }
 
-.btn-sm{
-  padding:7px 12px;
-  font-size:12px;
+.err{
+  display:none;
+  margin-bottom:12px;
+  color:var(--red);
+  font-size:13px;
 }
 
 /* MAIN */
-.main-wrap{
-  width:100%;
-  max-width:680px;
+
+.main{
   display:none;
 }
 
-.top-bar{
+.top{
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:16px 20px;
-  border-bottom:1px solid var(--border);
-}
-
-.top-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.avatar{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:var(--accent-bg);
-  color:var(--accent2);
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:700;
-}
-
-.logout-btn{
-  background:#232338;
-  color:var(--text2);
-  border:none;
-  border-radius:20px;
-  padding:7px 12px;
-  cursor:pointer;
 }
 
 .tabs{
@@ -226,7 +159,7 @@ select{
 .tab{
   flex:1;
   text-align:center;
-  padding:12px;
+  padding:14px;
   cursor:pointer;
   color:var(--text3);
 }
@@ -245,119 +178,101 @@ select{
   display:block;
 }
 
-.scroll{
-  max-height:500px;
-  overflow-y:auto;
-}
-
-/* POINT */
-.point-banner{
+.banner{
   background:var(--surface2);
-  border:1px solid var(--border2);
   border-radius:18px;
-  padding:28px;
+  padding:30px;
   text-align:center;
+  margin-bottom:20px;
 }
 
-.point-value{
+.point{
   font-size:52px;
-  font-weight:800;
   color:var(--accent2);
+  font-weight:800;
 }
 
-/* SHOP */
-.shop-item{
+.shop-item,
+.student-card,
+.order-card{
   background:var(--surface2);
-  border-radius:12px;
   padding:14px;
+  border-radius:12px;
   margin-bottom:10px;
+}
 
+.flex{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
-/* ADMIN */
+.small{
+  font-size:12px;
+  color:var(--text3);
+}
+
+.history{
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.auction{
+  background:linear-gradient(135deg,#262646,#181826);
+  border:1px solid rgba(108,95,255,.3);
+  border-radius:20px;
+  padding:24px;
+  text-align:center;
+}
+
+.auction h2{
+  margin-bottom:10px;
+}
+
+.bid{
+  font-size:38px;
+  color:var(--green);
+  font-weight:800;
+  margin:18px 0;
+}
+
+input.bid-input{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:12px;
+  color:white;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
 .admin-section{
   background:var(--surface2);
-  border-radius:12px;
   padding:16px;
+  border-radius:14px;
   margin-bottom:16px;
 }
 
-/* TABLE */
-.admin-table{
+.table{
   width:100%;
   border-collapse:collapse;
 }
 
-.admin-table th,
-.admin-table td{
+.table th,
+.table td{
   padding:10px;
   border-bottom:1px solid var(--border);
   text-align:left;
 }
 
-.winner-row{
-  background:rgba(41,211,145,.1);
+.green{
+  color:var(--green);
 }
 
-/* TOAST */
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#202030;
-  border:1px solid var(--border2);
-  padding:12px 18px;
-  border-radius:30px;
-  opacity:0;
-  transition:.2s;
+.red{
+  color:var(--red);
 }
 
-.toast.show{
-  opacity:1;
-}
-
-/* MODAL */
-.modal-wrap{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-
-  display:none;
-  align-items:center;
-  justify-content:center;
-
-  padding:20px;
-}
-
-.modal-wrap.open{
-  display:flex;
-}
-
-.modal-box{
-  width:100%;
-  max-width:420px;
-  background:var(--surface);
-  border-radius:20px;
-  border:1px solid var(--border2);
-  padding:24px;
-}
-
-.modal-title{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:16px;
-}
-
-.modal-btns{
-  margin-top:18px;
-  display:flex;
-  gap:8px;
-  justify-content:flex-end;
-}
 </style>
 </head>
 
@@ -366,244 +281,235 @@ select{
 <div class="app">
 
   <!-- LOGIN -->
-  <div class="login-wrap" id="loginWrap">
 
-    <div class="card">
+  <div class="card" id="loginCard">
 
-      <div class="logo-area">
-        <div class="logo-icon">V</div>
+    <div class="login">
+
+      <div class="logo">
         <h1>Vitamin</h1>
-        <div class="sub">용유중학교 포인트 상점</div>
+        <p>용유중학교 포인트 시스템</p>
       </div>
 
-      <div class="login-form">
-
-        <div class="field">
-          <label>아이디</label>
-          <input type="text" id="loginId">
-        </div>
-
-        <div class="field">
-          <label>비밀번호</label>
-          <input type="password" id="loginPw">
-        </div>
-
-        <div id="loginErr" class="err-msg">
-          로그인 실패
-        </div>
-
-        <button class="btn btn-primary btn-full" onclick="doLogin()">
-          로그인
-        </button>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- STUDENT -->
-  <div class="main-wrap card" id="studentWrap">
-
-    <div class="top-bar">
-
-      <div class="top-left">
-        <div class="avatar" id="sAvatar"></div>
-        <div id="sName"></div>
+      <div class="field">
+        <label>아이디</label>
+        <input type="text" id="loginId">
       </div>
 
-      <button class="logout-btn" onclick="logout()">
-        로그아웃
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="loginPw">
+      </div>
+
+      <div class="err" id="loginErr">
+        아이디 또는 비밀번호 오류
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="login()">
+        로그인
       </button>
 
     </div>
 
+  </div>
+
+  <!-- STUDENT -->
+
+  <div class="card main" id="studentMain">
+
+    <div class="top">
+      <div id="studentName"></div>
+      <button class="btn btn-danger" onclick="logout()">로그아웃</button>
+    </div>
+
     <div class="tabs">
-      <div class="tab active" onclick="sTab('home',this)">홈</div>
-      <div class="tab" onclick="sTab('shop',this)">상점</div>
-      <div class="tab" onclick="sTab('history',this)">내역</div>
+      <div class="tab active" onclick="studentTab('home',this)">홈</div>
+      <div class="tab" onclick="studentTab('shop',this)">상점</div>
+      <div class="tab" onclick="studentTab('auction',this)">경매</div>
+      <div class="tab" onclick="studentTab('history',this)">내역</div>
     </div>
 
     <!-- HOME -->
+
     <div class="panel active" id="s-home">
 
-      <div class="point-banner">
-        <div style="font-size:12px; color:var(--text2); margin-bottom:10px;">
-          보유 포인트
-        </div>
-
-        <div>
-          <span class="point-value" id="sPoints">0</span>
-          <span style="font-size:20px;">P</span>
-        </div>
+      <div class="banner">
+        <div class="small">보유 포인트</div>
+        <div class="point" id="studentPoints">0</div>
       </div>
 
     </div>
 
     <!-- SHOP -->
+
     <div class="panel" id="s-shop">
-      <div class="scroll" id="shopList"></div>
+      <div id="shopList"></div>
+    </div>
+
+    <!-- AUCTION -->
+
+    <div class="panel" id="s-auction">
+      <div id="studentAuction"></div>
     </div>
 
     <!-- HISTORY -->
+
     <div class="panel" id="s-history">
-      <div class="scroll" id="sHistList"></div>
+      <div id="studentHistory"></div>
     </div>
 
   </div>
 
   <!-- ADMIN -->
-  <div class="main-wrap card" id="adminWrap">
 
-    <div class="top-bar">
+  <div class="card main" id="adminMain">
 
-      <div class="top-left">
-        <div class="avatar" style="background:rgba(255,184,77,.15); color:var(--amber);">
-          A
-        </div>
-
-        <div>관리자</div>
-      </div>
-
-      <button class="logout-btn" onclick="logout()">
-        로그아웃
-      </button>
-
+    <div class="top">
+      <div>관리자 모드</div>
+      <button class="btn btn-danger" onclick="logout()">로그아웃</button>
     </div>
 
     <div class="tabs">
-      <div class="tab active" onclick="aTab('students',this)">학생</div>
-      <div class="tab" onclick="aTab('shop',this)">상점</div>
-      <div class="tab" onclick="aTab('orders',this)">주문</div>
+      <div class="tab active" onclick="adminTab('students',this)">학생</div>
+      <div class="tab" onclick="adminTab('shop',this)">상점</div>
+      <div class="tab" onclick="adminTab('auction',this)">경매</div>
+      <div class="tab" onclick="adminTab('orders',this)">주문</div>
     </div>
 
     <!-- STUDENTS -->
+
     <div class="panel active" id="a-students">
 
       <div class="admin-section">
 
-        <div style="margin-bottom:12px; font-weight:700;">
+        <div class="small" style="margin-bottom:10px">
           포인트 지급
         </div>
 
-        <div style="display:flex; gap:8px; margin-bottom:8px;">
-
-          <select id="giveStudent"></select>
-
-          <input type="number" id="giveAmt" placeholder="포인트">
-
-          <button class="btn btn-primary" onclick="givePoints()">
-            지급
-          </button>
-
+        <div class="field">
+          <select id="giveStudent"
+            style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)">
+          </select>
         </div>
 
-        <input
-          type="text"
-          id="giveReason"
-          placeholder="사유 입력"
-        >
+        <div class="field">
+          <input type="number" id="givePoint" placeholder="포인트">
+        </div>
+
+        <div class="field">
+          <input type="text" id="giveReason" placeholder="사유">
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="givePoint()">
+          지급하기
+        </button>
 
       </div>
 
-      <div id="adminStudentList"></div>
+      <div id="studentList"></div>
+
+      <hr style="margin:20px 0;border-color:var(--border)">
+
       <div class="admin-section">
-  <div style="font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:12px;">
-    학생 포인트 지급 내역
-  </div>
 
-  <select id="historyStudent"
-    onchange="renderPointHistory()"
-    style="width:100%; background:var(--bg); color:var(--text);
-    border:1px solid var(--border2); padding:10px;
-    border-radius:var(--r-sm); margin-bottom:12px;">
+        <div class="small" style="margin-bottom:10px">
+          학생 포인트 지급 내역
+        </div>
 
-  </select>
+        <select id="historyStudent"
+          onchange="renderPointHistory()"
+          style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border);margin-bottom:12px">
+        </select>
 
-  <div id="pointHistoryList"></div>
-</div>
+        <div id="pointHistory"></div>
 
-      <button
-        class="btn btn-green btn-full"
-        style="margin-top:12px;"
-        onclick="openAddStudentModal()"
-      >
-        + 학생 추가
-      </button>
+      </div>
 
     </div>
 
     <!-- SHOP -->
+
     <div class="panel" id="a-shop">
 
-      <div class="scroll" id="adminShopList"></div>
+      <div class="admin-section">
 
-      <button
-        class="btn btn-primary btn-full"
-        style="margin-top:12px;"
-        onclick="openAddItemModal()"
-      >
-        + 상품 추가
-      </button>
+        <div class="field">
+          <input type="text" id="itemName" placeholder="상품명">
+        </div>
+
+        <div class="field">
+          <input type="number" id="itemPrice" placeholder="가격">
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="addItem()">
+          상품 추가
+        </button>
+
+      </div>
+
+      <div id="adminShopList"></div>
+
+    </div>
+
+    <!-- AUCTION -->
+
+    <div class="panel" id="a-auction">
+
+      <div id="adminAuction"></div>
 
     </div>
 
     <!-- ORDERS -->
+
     <div class="panel" id="a-orders">
-
-      <div class="scroll" id="adminOrders"></div>
-
+      <div id="orderList"></div>
     </div>
 
   </div>
 
 </div>
 
-<!-- MODAL -->
-<div class="modal-wrap" id="modalWrap">
-
-  <div class="modal-box">
-
-    <div class="modal-title" id="modalTitle"></div>
-
-    <div id="modalContent"></div>
-
-    <div class="modal-btns" id="modalBtns"></div>
-
-  </div>
-
-</div>
-
-<div class="toast" id="toast"></div>
-
 <script>
+
 const FIREBASE_URL =
 "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
 
 let DATA = {
   students:[],
   items:[],
-  orders:[]
+  orders:[],
+  auction:{
+    active:false,
+    itemName:'',
+    bids:{},
+    winner:null
+  }
 };
 
 let currentUser = null;
 
-/* DB LOAD */
+/* DATABASE */
+
 async function dbLoad(){
 
-  try{
+  const res = await fetch(FIREBASE_URL);
+  const json = await res.json();
 
-    const res = await fetch(FIREBASE_URL);
-    const json = await res.json();
-
-    if(json){
-      DATA = json;
-    }
-
-  }catch(e){
-    console.log(e);
+  if(json){
+    DATA = json;
   }
+
+  if(!DATA.auction){
+    DATA.auction = {
+      active:false,
+      itemName:'',
+      bids:{},
+      winner:null
+    };
+  }
+
 }
 
-/* DB SAVE */
 async function dbSave(){
 
   await fetch(FIREBASE_URL,{
@@ -614,55 +520,44 @@ async function dbSave(){
 }
 
 /* LOGIN */
-async function doLogin(){
 
-  const id =
-    document.getElementById('loginId').value.trim();
-
-  const pw =
-    document.getElementById('loginPw').value.trim();
+async function login(){
 
   await dbLoad();
 
+  const id = loginId.value.trim();
+  const pw = loginPw.value.trim();
+
   if(id === 'admin' && pw === 'admin1234'){
 
-    currentUser = { role:'admin' };
+    currentUser = {
+      role:'admin'
+    };
 
-    showUI('adminWrap');
+    loginCard.style.display='none';
+    adminMain.style.display='block';
 
     renderAdmin();
 
     return;
   }
 
-  const s =
-    DATA.students.find(x =>
-      x.id === id &&
-      x.pw === pw
-    );
+  const s = DATA.students.find(x=>x.id===id && x.pw===pw);
 
-  if(s){
-
-    currentUser = {
-      role:'student',
-      data:s
-    };
-
-    showUI('studentWrap');
-
-    renderStudent();
-
-  }else{
-    document.getElementById('loginErr').style.display='block';
+  if(!s){
+    loginErr.style.display='block';
+    return;
   }
-}
 
-/* UI */
-function showUI(id){
+  currentUser = {
+    role:'student',
+    data:s
+  };
 
-  document.getElementById('loginWrap').style.display='none';
+  loginCard.style.display='none';
+  studentMain.style.display='block';
 
-  document.getElementById(id).style.display='block';
+  renderStudent();
 
 }
 
@@ -671,79 +566,58 @@ function logout(){
 }
 
 /* STUDENT */
+
 function renderStudent(){
 
-  const s =
-    DATA.students.find(x =>
-      x.id === currentUser.data.id
-    );
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
 
-  document.getElementById('sName').textContent =
-    s.name;
-
-  document.getElementById('sAvatar').textContent =
-    s.name[0];
-
-  document.getElementById('sPoints').textContent =
-    Number(s.points).toLocaleString();
+  studentName.innerText = s.name;
+  studentPoints.innerText = s.points;
 
   renderShop();
+  renderStudentHistory();
+  renderStudentAuction();
 
-  renderStudentHistory(s);
 }
 
-/* SHOP */
 function renderShop(){
 
-  const list =
-    document.getElementById('shopList');
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
 
-  const s =
-    DATA.students.find(x =>
-      x.id === currentUser.data.id
-    );
+  shopList.innerHTML = DATA.items.map(i=>`
 
-  list.innerHTML =
-    DATA.items.map(i => `
-      <div class="shop-item">
+    <div class="shop-item flex">
 
-        <div>
-          <div style="font-weight:700;">
-            ${i.icon} ${i.name}
-          </div>
-
-          <div style="
-            font-size:12px;
-            color:var(--accent2);
-            margin-top:4px;
-          ">
-            ${i.price}P
-          </div>
-        </div>
-
-        <button
-          class="btn btn-primary btn-sm"
-          ${s.points < i.price ? 'disabled' : ''}
-          onclick="buyItem(${i.id})"
-        >
-          구매
-        </button>
-
+      <div>
+        <div>${i.name}</div>
+        <div class="small">${i.price}P</div>
       </div>
-    `).join('');
+
+      <button class="btn btn-primary"
+        ${s.points < i.price ? 'disabled':''}
+        onclick="buyItem(${i.id})">
+
+        구매
+
+      </button>
+
+    </div>
+
+  `).join('');
 
 }
 
-/* BUY */
 async function buyItem(id){
 
-  const item =
-    DATA.items.find(x => x.id === id);
+  const item = DATA.items.find(x=>x.id===id);
 
-  const s =
-    DATA.students.find(x =>
-      x.id === currentUser.data.id
-    );
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
 
   if(s.points < item.price){
     return;
@@ -756,7 +630,7 @@ async function buyItem(id){
   }
 
   s.history.push({
-    label:`상품 구매 : ${item.name}`,
+    label:'상품 구매 - '+item.name,
     points:-item.price,
     date:new Date().toLocaleString()
   });
@@ -764,283 +638,247 @@ async function buyItem(id){
   DATA.orders.unshift({
     id:Date.now(),
     studentName:s.name,
-    itemName:item.name,
-    date:new Date().toLocaleString()
+    itemName:item.name
   });
 
   await dbSave();
 
   renderStudent();
 
-  renderAdminOrders();
+}
 
-  toast("구매 완료");
+function renderStudentHistory(){
+
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
+
+  studentHistory.innerHTML = (s.history || [])
+  .slice()
+  .reverse()
+  .map(h=>`
+
+    <div class="history flex">
+
+      <div>
+        <div>${h.label}</div>
+        <div class="small">${h.date}</div>
+      </div>
+
+      <div class="${h.points > 0 ? 'green':'red'}">
+        ${h.points}
+      </div>
+
+    </div>
+
+  `).join('');
 
 }
 
-/* HISTORY */
-function renderStudentHistory(s){
+/* AUCTION */
 
-  const list =
-    document.getElementById('sHistList');
+function renderStudentAuction(){
 
-  const hist =
-    (s.history || []).slice().reverse();
+  const auc = DATA.auction;
 
-  if(hist.length === 0){
+  if(!auc.active && !auc.winner){
 
-    list.innerHTML =
-      `<div style="color:var(--text3)">
-        내역이 없습니다.
-      </div>`;
+    studentAuction.innerHTML =
+    `<div class="small">진행 중인 경매가 없습니다.</div>`;
 
     return;
   }
 
-  list.innerHTML =
-    hist.map(h => `
-      <div style="
-        padding:12px;
-        border-bottom:1px solid var(--border);
+  const bids = Object.values(auc.bids || {})
+    .map(b=>b.amount);
 
-        display:flex;
-        justify-content:space-between;
-      ">
+  const highBid =
+    bids.length ? Math.max(...bids) : 0;
 
-        <div>
-          <div style="font-weight:600;">
-            ${h.label}
-          </div>
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
 
-          <div style="
-            font-size:11px;
-            color:var(--text3);
-            margin-top:4px;
-          ">
-            ${h.date}
-          </div>
+  const myBid =
+    auc.bids[s.id]
+      ? auc.bids[s.id].amount
+      : 0;
+
+  if(auc.active){
+
+    studentAuction.innerHTML = `
+
+      <div class="auction">
+
+        <h2>${auc.itemName}</h2>
+
+        <div>현재 최고 입찰</div>
+
+        <div class="bid">
+          ${highBid}P
         </div>
 
-        <div style="
-          font-weight:700;
-          color:${h.points > 0 ? 'var(--green)' : 'var(--red)'};
-        ">
-          ${h.points > 0 ? '+' : ''}
-          ${h.points}P
+        <div style="margin-bottom:15px">
+          내 입찰액 : ${myBid}P
+        </div>
+
+        <input type="number"
+          class="bid-input"
+          id="bidAmount"
+          placeholder="추가 입찰 포인트">
+
+        <button class="btn btn-primary btn-full"
+          onclick="placeBid()">
+
+          입찰하기
+
+        </button>
+
+      </div>
+
+    `;
+
+  }else{
+
+    studentAuction.innerHTML = `
+
+      <div class="auction">
+
+        <h2>경매 종료</h2>
+
+        <div class="bid">
+          ${auc.winner
+            ? auc.winner.studentName
+            : '없음'}
         </div>
 
       </div>
-    `).join('');
+
+    `;
+
+  }
+
+}
+
+async function placeBid(){
+
+  await dbLoad();
+
+  const amt =
+    parseInt(
+      document.getElementById('bidAmount').value
+    );
+
+  const s = DATA.students.find(
+    x=>x.id===currentUser.data.id
+  );
+
+  if(!amt || amt <= 0){
+    return;
+  }
+
+  if(s.points < amt){
+    alert('포인트 부족');
+    return;
+  }
+
+  s.points -= amt;
+
+  if(!s.history){
+    s.history=[];
+  }
+
+  s.history.push({
+    label:'경매 입찰',
+    points:-amt,
+    date:new Date().toLocaleString()
+  });
+
+  if(!DATA.auction.bids[s.id]){
+
+    DATA.auction.bids[s.id] = {
+      studentName:s.name,
+      amount:amt
+    };
+
+  }else{
+
+    DATA.auction.bids[s.id].amount += amt;
+
+  }
+
+  await dbSave();
+
+  renderStudent();
 
 }
 
 /* ADMIN */
+
 function renderAdmin(){
 
-  renderAdminStudents();
-
+  renderStudents();
   renderAdminShop();
-
-  renderAdminOrders();
+  renderAdminAuction();
+  renderOrders();
 
 }
 
-/* STUDENTS */
-function renderAdminStudents(){
+function renderStudents(){
 
-  const list =
-    document.getElementById('adminStudentList');
+  studentList.innerHTML =
+  DATA.students.map(s=>`
 
-  list.innerHTML =
-    DATA.students.map(s => `
+    <div class="student-card flex">
 
-      <div style="
-        background:var(--surface2);
-        padding:14px;
-        border-radius:12px;
-        margin-bottom:10px;
-      ">
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-        ">
-
-          <div>
-
-            <div style="font-weight:700;">
-              ${s.name}
-            </div>
-
-            <div style="
-              font-size:12px;
-              color:var(--text3);
-              margin-top:4px;
-            ">
-              ${s.id}
-            </div>
-
-          </div>
-
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:8px;
-          ">
-
-            <div style="
-              font-weight:700;
-              color:var(--accent2);
-            ">
-              ${Number(s.points).toLocaleString()}P
-            </div>
-
-            <button
-              class="btn btn-secondary btn-sm"
-              onclick="viewStudentHistory('${s.id}')"
-            >
-              내역
-            </button>
-
-            <button
-              class="btn btn-danger btn-sm"
-              onclick="deleteStudent('${s.id}')"
-            >
-              삭제
-            </button>
-
-          </div>
-
-        </div>
-
+      <div>
+        <div>${s.name}</div>
+        <div class="small">${s.id}</div>
       </div>
 
-    `).join('');
-
-  document.getElementById('giveStudent').innerHTML =
-    DATA.students.map(s =>
-      `<option value="${s.id}">
-        ${s.name} (${s.id})
-      </option>`
-    ).join('');
-
-}
-
-/* HISTORY VIEW */
-function viewStudentHistory(studentId){
-
-  const s =
-    DATA.students.find(x =>
-      x.id === studentId
-    );
-
-  const history =
-    (s.history || []).slice().reverse();
-
-  let html = '';
-
-  if(history.length === 0){
-
-    html =
-      `<div style="
-        text-align:center;
-        color:var(--text3);
-        padding:30px;
-      ">
-        내역이 없습니다.
-      </div>`;
-
-  }else{
-
-    html =
-      history.map(h => `
-        <div style="
-          padding:12px;
-          border-bottom:1px solid var(--border);
-
-          display:flex;
-          justify-content:space-between;
-          gap:10px;
-        ">
-
-          <div>
-
-            <div style="
-              font-weight:700;
-              margin-bottom:4px;
-            ">
-              ${h.label}
-            </div>
-
-            <div style="
-              font-size:11px;
-              color:var(--text3);
-            ">
-              ${h.date}
-            </div>
-
-          </div>
-
-          <div style="
-            font-weight:700;
-            color:${h.points > 0 ? 'var(--green)' : 'var(--red)'};
-          ">
-            ${h.points > 0 ? '+' : ''}
-            ${h.points}P
-          </div>
-
-        </div>
-      `).join('');
-  }
-
-  openModal(
-    `${s.name} 포인트 내역`,
-    `
-      <div style="
-        max-height:400px;
-        overflow-y:auto;
-      ">
-        ${html}
+      <div class="green">
+        ${s.points}P
       </div>
-    `,
-    [
-      {
-        label:'닫기',
-        cls:'btn-secondary',
-        fn:closeModal
-      }
-    ]
-  );
+
+    </div>
+
+  `).join('');
+
+  giveStudent.innerHTML =
+  DATA.students.map(s=>`
+    <option value="${s.id}">
+      ${s.name}
+    </option>
+  `).join('');
+
+  historyStudent.innerHTML =
+  DATA.students.map(s=>`
+    <option value="${s.id}">
+      ${s.name}
+    </option>
+  `).join('');
+
+  renderPointHistory();
+
 }
 
-/* GIVE POINTS */
-async function givePoints(){
+async function givePoint(){
 
-  const sid =
-    document.getElementById('giveStudent').value;
+  const sid = giveStudent.value;
 
   const amt =
-    parseInt(document.getElementById('giveAmt').value);
+    parseInt(givePoint.value);
 
   const reason =
-    document.getElementById('giveReason').value.trim()
-    || '관리자 지급';
+    giveReason.value || '관리자 지급';
 
   const s =
-    DATA.students.find(x =>
-      x.id === sid
-    );
+    DATA.students.find(x=>x.id===sid);
 
-  if(!s || isNaN(amt)){
-    return;
-  }
-
-  s.points =
-    (Number(s.points) || 0) + amt;
+  s.points += amt;
 
   if(!s.history){
-    s.history = [];
+    s.history=[];
   }
 
   s.history.push({
@@ -1053,24 +891,55 @@ async function givePoints(){
 
   renderAdmin();
 
-  toast(`${s.name} ${amt}P 지급 완료`);
-
-  document.getElementById('giveAmt').value='';
-  document.getElementById('giveReason').value='';
-
 }
 
-/* DELETE STUDENT */
-async function deleteStudent(id){
+function renderPointHistory(){
 
-  if(!confirm('삭제하시겠습니까?')){
+  const sid = historyStudent.value;
+
+  const s =
+    DATA.students.find(x=>x.id===sid);
+
+  if(!s || !s.history){
+
+    pointHistory.innerHTML =
+    '<div class="small">내역 없음</div>';
+
     return;
   }
 
-  DATA.students =
-    DATA.students.filter(s =>
-      s.id !== id
-    );
+  pointHistory.innerHTML =
+  s.history.slice().reverse().map(h=>`
+
+    <div class="history flex">
+
+      <div>
+        <div>${h.label}</div>
+        <div class="small">${h.date}</div>
+      </div>
+
+      <div class="${h.points > 0 ? 'green':'red'}">
+        ${h.points}
+      </div>
+
+    </div>
+
+  `).join('');
+
+}
+
+/* ADMIN SHOP */
+
+async function addItem(){
+
+  const name = itemName.value;
+  const price = parseInt(itemPrice.value);
+
+  DATA.items.push({
+    id:Date.now(),
+    name,
+    price
+  });
 
   await dbSave();
 
@@ -1078,372 +947,231 @@ async function deleteStudent(id){
 
 }
 
-/* SHOP ADMIN */
 function renderAdminShop(){
 
-  const list =
-    document.getElementById('adminShopList');
+  adminShopList.innerHTML =
+  DATA.items.map(i=>`
 
-  list.innerHTML =
-    DATA.items.map(i => `
-      <div class="shop-item">
+    <div class="shop-item flex">
 
-        <div>
-          ${i.icon} ${i.name}
-          <div style="
-            color:var(--accent2);
-            margin-top:4px;
-            font-size:12px;
-          ">
-            ${i.price}P
-          </div>
+      <div>
+        ${i.name}
+      </div>
+
+      <div>
+        ${i.price}P
+      </div>
+
+    </div>
+
+  `).join('');
+
+}
+
+/* ADMIN AUCTION */
+
+function renderAdminAuction(){
+
+  const auc = DATA.auction;
+
+  if(!auc.active){
+
+    adminAuction.innerHTML = `
+
+      <div class="admin-section">
+
+        <div class="field">
+          <input type="text"
+            id="auctionItem"
+            placeholder="경매 상품명">
         </div>
 
-        <button
-          class="btn btn-danger btn-sm"
-          onclick="deleteItem(${i.id})"
-        >
-          삭제
+        <button class="btn btn-primary btn-full"
+          onclick="startAuction()">
+
+          경매 시작
+
         </button>
 
       </div>
-    `).join('');
 
-}
+    `;
 
-/* DELETE ITEM */
-async function deleteItem(id){
+    if(auc.winner){
 
-  DATA.items =
-    DATA.items.filter(i =>
-      i.id !== id
-    );
+      adminAuction.innerHTML += `
 
-  await dbSave();
+        <div class="auction">
 
-  renderAdminShop();
+          <h2>최종 낙찰</h2>
 
-}
-
-/* ORDER */
-function renderAdminOrders(){
-
-  const list =
-    document.getElementById('adminOrders');
-
-  list.innerHTML =
-    DATA.orders.map(o => `
-      <div class="shop-item">
-
-        <div>
-
-          <div style="font-weight:700;">
-            ${o.studentName}
+          <div class="bid">
+            ${auc.winner.studentName}
           </div>
 
-          <div style="
-            margin-top:4px;
-            color:var(--accent2);
-          ">
-            ${o.itemName}
+          <div>
+            ${auc.winner.amount}P
           </div>
 
         </div>
 
+      `;
+
+    }
+
+    return;
+  }
+
+  const sorted =
+    Object.entries(auc.bids)
+    .map(([id,data])=>({
+      id,
+      ...data
+    }))
+    .sort((a,b)=>b.amount-a.amount);
+
+  adminAuction.innerHTML = `
+
+    <div class="auction">
+
+      <h2>${auc.itemName}</h2>
+
+      <button class="btn btn-danger btn-full"
+        onclick="endAuction()">
+
+        경매 종료
+
+      </button>
+
+    </div>
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>순위</th>
+          <th>학생</th>
+          <th>입찰</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        ${sorted.map((b,i)=>`
+
+          <tr>
+
+            <td>${i+1}</td>
+
+            <td>${b.studentName}</td>
+
+            <td>${b.amount}P</td>
+
+          </tr>
+
+        `).join('')}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+async function startAuction(){
+
+  const item =
+    document.getElementById('auctionItem').value;
+
+  DATA.auction = {
+    active:true,
+    itemName:item,
+    bids:{},
+    winner:null
+  };
+
+  await dbSave();
+
+  renderAdminAuction();
+
+}
+
+async function endAuction(){
+
+  const bids =
+    Object.entries(DATA.auction.bids)
+    .map(([id,data])=>({
+      studentId:id,
+      studentName:data.studentName,
+      amount:data.amount
+    }))
+    .sort((a,b)=>b.amount-a.amount);
+
+  DATA.auction.active = false;
+
+  DATA.auction.winner =
+    bids[0] || null;
+
+  await dbSave();
+
+  renderAdminAuction();
+
+}
+
+/* ORDERS */
+
+function renderOrders(){
+
+  orderList.innerHTML =
+  DATA.orders.map(o=>`
+
+    <div class="order-card">
+
+      <div>${o.studentName}</div>
+
+      <div class="small">
+        ${o.itemName}
       </div>
-    `).join('');
+
+    </div>
+
+  `).join('');
 
 }
 
-/* MODAL */
-function openModal(title,content,btns){
+/* TABS */
 
-  document.getElementById('modalTitle').textContent =
-    title;
+function studentTab(id,el){
 
-  document.getElementById('modalContent').innerHTML =
-    content;
+  document.querySelectorAll('#studentMain .tab')
+  .forEach(t=>t.classList.remove('active'));
 
-  const area =
-    document.getElementById('modalBtns');
-
-  area.innerHTML = '';
-
-  btns.forEach(b => {
-
-    const btn =
-      document.createElement('button');
-
-    btn.className =
-      'btn ' + b.cls;
-
-    btn.textContent =
-      b.label;
-
-    btn.onclick =
-      b.fn;
-
-    area.appendChild(btn);
-
-  });
-
-  document.getElementById('modalWrap')
-    .classList.add('open');
-
-}
-
-function closeModal(){
-
-  document.getElementById('modalWrap')
-    .classList.remove('open');
-
-}
-
-/* ADD STUDENT */
-function openAddStudentModal(){
-
-  openModal(
-    '학생 추가',
-
-    `
-      <input
-        id="asId"
-        placeholder="아이디"
-        style="
-          width:100%;
-          margin-bottom:8px;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-
-      <input
-        id="asName"
-        placeholder="이름"
-        style="
-          width:100%;
-          margin-bottom:8px;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-
-      <input
-        id="asPw"
-        placeholder="비밀번호"
-        style="
-          width:100%;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-    `,
-
-    [
-      {
-        label:'등록',
-        cls:'btn-primary',
-
-        fn:async()=>{
-
-          const id =
-            document.getElementById('asId').value;
-
-          const name =
-            document.getElementById('asName').value;
-
-          const pw =
-            document.getElementById('asPw').value;
-
-          if(!id || !name || !pw){
-            return;
-          }
-
-          DATA.students.push({
-            id,
-            name,
-            pw,
-            points:0,
-            history:[]
-          });
-
-          await dbSave();
-
-          renderAdmin();
-
-          closeModal();
-
-        }
-      },
-
-      {
-        label:'취소',
-        cls:'btn-secondary',
-        fn:closeModal
-      }
-    ]
-  );
-
-}
-
-/* ADD ITEM */
-function openAddItemModal(){
-
-  openModal(
-    '상품 추가',
-
-    `
-      <input
-        id="aiIcon"
-        placeholder="이모지"
-        style="
-          width:100%;
-          margin-bottom:8px;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-
-      <input
-        id="aiName"
-        placeholder="상품명"
-        style="
-          width:100%;
-          margin-bottom:8px;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-
-      <input
-        type="number"
-        id="aiPrice"
-        placeholder="가격"
-        style="
-          width:100%;
-          padding:10px;
-          border-radius:10px;
-          background:#111;
-          border:1px solid var(--border2);
-          color:white;
-        "
-      >
-    `,
-
-    [
-      {
-        label:'추가',
-        cls:'btn-primary',
-
-        fn:async()=>{
-
-          const icon =
-            document.getElementById('aiIcon').value || '🎁';
-
-          const name =
-            document.getElementById('aiName').value;
-
-          const price =
-            parseInt(document.getElementById('aiPrice').value);
-
-          if(!name || !price){
-            return;
-          }
-
-          DATA.items.push({
-            id:Date.now(),
-            icon,
-            name,
-            price
-          });
-
-          await dbSave();
-
-          renderAdminShop();
-
-          closeModal();
-
-        }
-      },
-
-      {
-        label:'취소',
-        cls:'btn-secondary',
-        fn:closeModal
-      }
-    ]
-  );
-
-}
-
-/* TAB */
-function sTab(id,el){
-
-  document
-    .querySelectorAll('#studentWrap .tab')
-    .forEach(x => x.classList.remove('active'));
-
-  document
-    .querySelectorAll('#studentWrap .panel')
-    .forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('#studentMain .panel')
+  .forEach(p=>p.classList.remove('active'));
 
   el.classList.add('active');
 
   document.getElementById('s-'+id)
-    .classList.add('active');
+  .classList.add('active');
 
 }
 
-function aTab(id,el){
+function adminTab(id,el){
 
-  document
-    .querySelectorAll('#adminWrap .tab')
-    .forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('#adminMain .tab')
+  .forEach(t=>t.classList.remove('active'));
 
-  document
-    .querySelectorAll('#adminWrap .panel')
-    .forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('#adminMain .panel')
+  .forEach(p=>p.classList.remove('active'));
 
   el.classList.add('active');
 
   document.getElementById('a-'+id)
-    .classList.add('active');
+  .classList.add('active');
 
 }
 
-/* TOAST */
-function toast(msg){
-
-  const t =
-    document.getElementById('toast');
-
-  t.textContent = msg;
-
-  t.classList.add('show');
-
-  setTimeout(()=>{
-    t.classList.remove('show');
-  },2000);
-
-}
-
-/* INIT */
-dbLoad();
 </script>
 
 </body>
