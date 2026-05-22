@@ -505,6 +505,21 @@ select{
       </div>
 
       <div id="adminStudentList"></div>
+      <div class="admin-section">
+  <div style="font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; margin-bottom:12px;">
+    학생 포인트 지급 내역
+  </div>
+
+  <select id="historyStudent"
+    onchange="renderPointHistory()"
+    style="width:100%; background:var(--bg); color:var(--text);
+    border:1px solid var(--border2); padding:10px;
+    border-radius:var(--r-sm); margin-bottom:12px;">
+
+  </select>
+
+  <div id="pointHistoryList"></div>
+</div>
 
       <button
         class="btn btn-green btn-full"
