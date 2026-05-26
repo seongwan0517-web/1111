@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/USER/Downloads/vitamin_9.html -->
+<!-- saved from url=(0052)file:///C:/Users/USER/Downloads/vitamin_auction.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 :root{
   --bg:#0d0d14; --surface:#171722; --surface2:#202032; --border:rgba(255,255,255,.08);
   --text:#f4f4ff; --text2:#9a9ab5; --text3:#66667e;
-  --accent:#6c5fff; --accent2:#a89cff; --green:#2dd4a0; --red:#ff6b6b;
+  --accent:#6c5fff; --accent2:#a89cff; --green:#2dd4a0; --red:#ff6b6b; --orange:#ff9f43;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);}
@@ -17,7 +17,7 @@ button,input,select{font-family:inherit;}
 .app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
   background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,95,255,.18) 0%,transparent 60%),
     radial-gradient(ellipse 60% 50% at 80% 90%,rgba(45,212,160,.10) 0%,transparent 60%),var(--bg);}
-.card{width:100%;max-width:620px;background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+.card{width:100%;max-width:660px;background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
 .login-hero{position:relative;padding:52px 40px 44px;background:linear-gradient(145deg,#1a1830,#141420);border-bottom:1px solid var(--border);overflow:hidden;text-align:center;}
 .login-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(108,95,255,.22) 0%,transparent 55%),radial-gradient(circle at 75% 70%,rgba(45,212,160,.12) 0%,transparent 50%);pointer-events:none;}
 .login-dots{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;}
@@ -34,18 +34,21 @@ button,input,select{font-family:inherit;}
 .login-body{padding:32px 40px 36px;}
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
-.field input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-size:15px;transition:border-color .2s;}
-.field input:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-size:15px;transition:border-color .2s;}
+.field input:focus,.field select:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.field select option{background:var(--surface2);}
 .btn{border:none;cursor:pointer;border-radius:10px;padding:12px 16px;font-weight:700;transition:opacity .15s,transform .1s;}
 .btn:active{transform:scale(.97);}
 .btn-primary{background:linear-gradient(135deg,#7b6cff,#5040e0);color:white;box-shadow:0 4px 24px rgba(108,95,255,.35);}
 .btn-danger{background:rgba(255,107,107,.12);color:var(--red);}
+.btn-success{background:rgba(45,212,160,.12);color:var(--green);}
 .btn-full{width:100%;}
+.btn-sm{padding:7px 12px;font-size:13px;}
 .err{display:none;margin-bottom:12px;color:var(--red);font-size:13px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 14px;}
 .main{display:none;}
 .top{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .tabs{display:flex;border-bottom:1px solid var(--border);}
-.tab{flex:1;text-align:center;padding:14px;cursor:pointer;color:var(--text3);}
+.tab{flex:1;text-align:center;padding:14px;cursor:pointer;color:var(--text3);font-size:14px;font-weight:600;}
 .tab.active{color:var(--accent2);border-bottom:2px solid var(--accent);}
 .panel{display:none;padding:20px;}
 .panel.active{display:block;}
@@ -53,45 +56,65 @@ button,input,select{font-family:inherit;}
 .point{font-size:52px;color:var(--accent2);font-weight:800;}
 .shop-item,.student-card,.order-card{background:var(--surface2);padding:14px;border-radius:12px;margin-bottom:10px;}
 .flex{display:flex;justify-content:space-between;align-items:center;}
+.flex-col{display:flex;flex-direction:column;gap:6px;}
 .small{font-size:12px;color:var(--text3);}
 .history{padding:10px 0;border-bottom:1px solid var(--border);}
-.auction{background:linear-gradient(135deg,#262646,#181826);border:1px solid rgba(108,95,255,.3);border-radius:20px;padding:24px;text-align:center;}
-.auction h2{margin-bottom:10px;}
-.bid{font-size:38px;color:var(--green);font-weight:800;margin:18px 0;}
-input.bid-input{width:100%;background:var(--surface);border:1px solid var(--border);padding:12px;color:white;border-radius:10px;margin-bottom:10px;}
 .admin-section{background:var(--surface2);padding:16px;border-radius:14px;margin-bottom:16px;}
 .table{width:100%;border-collapse:collapse;}
-.table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left;}
-.green{color:var(--green);} .red{color:var(--red);}
+.table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px;}
+.table th{color:var(--text3);font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
+.green{color:var(--green);} .red{color:var(--red);} .orange{color:var(--orange);}
+
+/* ── 경매 카드 ── */
+.auction-card{
+  background:linear-gradient(135deg,#222240,#181828);
+  border:1px solid rgba(108,95,255,.25);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:14px;
+  transition:border-color .2s;
+}
+.auction-card:hover{border-color:rgba(108,95,255,.5);}
+.auction-card .ac-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+.auction-card .ac-meta{font-size:12px;color:var(--text3);margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;}
+.auction-card .ac-meta span{display:flex;align-items:center;gap:4px;}
+.ac-bid-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.ac-bid-row input{flex:1;background:var(--surface);border:1px solid var(--border);color:white;padding:10px 14px;border-radius:10px;font-size:14px;}
+.ac-bid-row input:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.bid-display{font-size:28px;font-weight:800;color:var(--green);}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.badge-active{background:rgba(45,212,160,.15);color:var(--green);border:1px solid rgba(45,212,160,.3);}
+.badge-ended{background:rgba(255,107,107,.1);color:var(--red);border:1px solid rgba(255,107,107,.2);}
+.badge-winner{background:rgba(255,159,67,.15);color:var(--orange);border:1px solid rgba(255,159,67,.3);}
+
+/* 관리자 경매 카드 */
+.admin-auction-card{background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
+.admin-auction-card .aa-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.admin-auction-card .aa-title{font-size:15px;font-weight:700;}
+
+/* step 버튼 */
+.step-group{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);}
+.step-group button{background:transparent;border:none;color:var(--text2);padding:10px 16px;cursor:pointer;font-size:18px;font-weight:700;transition:background .15s;}
+.step-group button:hover{background:rgba(255,255,255,.07);}
+.step-group .step-val{padding:10px 18px;min-width:70px;text-align:center;font-weight:700;font-size:15px;color:var(--text);}
 
 .toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
+  position:fixed;bottom:30px;left:50%;
   transform:translateX(-50%) translateY(20px);
-  background:#1e1e2e;
-  border:1px solid rgba(45,212,160,.4);
-  color:var(--green);
-  padding:14px 24px;
-  border-radius:100px;
-  font-size:15px;
-  font-weight:600;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .3s, transform .3s;
-  z-index:9999;
-  white-space:nowrap;
+  background:#1e1e2e;border:1px solid rgba(45,212,160,.4);
+  color:var(--green);padding:14px 24px;border-radius:100px;
+  font-size:15px;font-weight:600;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:9999;white-space:nowrap;
   box-shadow:0 8px 32px rgba(0,0,0,.4);
 }
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.empty{color:var(--text3);font-size:13px;padding:20px 0;text-align:center;}
 </style>
 </head>
 <body>
 <div class="app">
 
+  <!-- ── 로그인 ── -->
   <div class="card" id="loginCard">
     <div class="login-hero">
       <div class="login-dots"><span></span><span></span><span></span><span></span></div>
@@ -107,8 +130,9 @@ input.bid-input{width:100%;background:var(--surface);border:1px solid var(--bord
     </div>
   </div>
 
+  <!-- ── 학생 메인 ── -->
   <div class="card main" id="studentMain">
-    <div class="top"><div id="studentName"></div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
+    <div class="top"><div id="studentName" style="font-weight:700"></div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
     <div class="tabs">
       <div class="tab active" onclick="studentTab(&#39;home&#39;,this)">홈</div>
       <div class="tab" onclick="studentTab(&#39;shop&#39;,this)">상점</div>
@@ -119,12 +143,13 @@ input.bid-input{width:100%;background:var(--surface);border:1px solid var(--bord
       <div class="banner"><div class="small">보유 포인트</div><div class="point" id="studentPoints">0</div></div>
     </div>
     <div class="panel" id="s-shop"><div id="shopList"></div></div>
-    <div class="panel" id="s-auction"><div id="studentAuction"></div></div>
+    <div class="panel" id="s-auction"><div id="studentAuctionList"></div></div>
     <div class="panel" id="s-history"><div id="studentHistory"></div></div>
   </div>
 
+  <!-- ── 관리자 메인 ── -->
   <div class="card main" id="adminMain">
-    <div class="top"><div>관리자 모드</div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
+    <div class="top"><div style="font-weight:700">관리자 모드</div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
     <div class="tabs">
       <div class="tab active" onclick="adminTab(&#39;students&#39;,this)">학생</div>
       <div class="tab" onclick="adminTab(&#39;shop&#39;,this)">상점</div>
@@ -135,7 +160,7 @@ input.bid-input{width:100%;background:var(--surface);border:1px solid var(--bord
       <div class="admin-section">
         <div class="small" style="margin-bottom:10px">포인트 지급</div>
         <div class="field">
-          <select id="giveStudent" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)"></select>
+          <select id="giveStudent" style="background:var(--surface);color:white;border:1px solid var(--border)"></select>
         </div>
         <div class="field"><input type="number" id="giveAmt" placeholder="포인트 (음수 입력시 차감)"></div>
         <div class="field"><input type="text" id="giveReason" placeholder="사유"></div>
@@ -157,50 +182,74 @@ input.bid-input{width:100%;background:var(--surface);border:1px solid var(--bord
       </div>
       <div id="adminShopList"></div>
     </div>
-    <div class="panel" id="a-auction"><div id="adminAuction"></div></div>
+    <div class="panel" id="a-auction">
+      <!-- 새 경매 만들기 -->
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:12px;font-size:13px;font-weight:700;color:var(--text2)">새 경매 시작</div>
+        <div class="field"><label>경매 상품명</label><input type="text" id="auctionItem" placeholder="예) 편의점 상품권 5000원"></div>
+        <div class="field"><label>최소 시작가 (P)</label><input type="number" id="auctionStart" placeholder="예) 100" min="10" step="10"></div>
+        <button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작</button>
+      </div>
+      <div id="adminAuctionList"></div>
+    </div>
     <div class="panel" id="a-orders"><div id="orderList"></div></div>
   </div>
 
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
-let DATA = { students:[], items:[], orders:[], auction:{active:false,itemName:'',bids:{},winner:null} };
+const STEP = 10; // 호가 단위
+
+let DATA = { students:[], items:[], orders:[], auctions:{} };
 let currentUser = null;
 
+/* ── 유틸 ── */
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2500);
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
+function today() { return new Date().toLocaleString('ko-KR'); }
+
+/* ── DB ── */
 async function dbLoad() {
   try {
     const res = await fetch(FIREBASE_URL);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     if (json) DATA = json;
-  } catch(e) {
-    alert('데이터베이스 연결 실패: ' + e.message);
-    return false;
-  }
-  if (!DATA.auction)  DATA.auction  = {active:false,itemName:'',bids:{},winner:null};
+  } catch(e) { alert('데이터베이스 연결 실패: ' + e.message); return false; }
   if (!DATA.students) DATA.students = [];
   if (!DATA.items)    DATA.items    = [];
   if (!DATA.orders)   DATA.orders   = [];
+  if (!DATA.auctions) DATA.auctions = {};
+  // 구버전 단일 auction 마이그레이션
+  if (DATA.auction) {
+    if (DATA.auction.itemName && !DATA.auctions['legacy']) {
+      DATA.auctions['legacy'] = DATA.auction;
+      DATA.auctions['legacy'].id = 'legacy';
+    }
+    delete DATA.auction;
+  }
   return true;
 }
 
 async function dbSave() {
   try {
-    const res = await fetch(FIREBASE_URL, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(DATA)});
+    const res = await fetch(FIREBASE_URL, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(DATA)
+    });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-  } catch(e) {
-    alert('저장 실패: ' + e.message);
-  }
+  } catch(e) { alert('저장 실패: ' + e.message); }
 }
 
+/* ── 로그인/로그아웃 ── */
 async function login() {
   const id  = document.getElementById('loginId').value.trim();
   const pw  = document.getElementById('loginPw').value.trim();
@@ -210,8 +259,8 @@ async function login() {
   if (!ok) return;
   if (id === 'admin' && pw === 'admin1234') {
     currentUser = {role:'admin'};
-    document.getElementById('loginCard').style.display  = 'none';
-    document.getElementById('adminMain').style.display  = 'block';
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('adminMain').style.display = 'block';
     renderAdmin();
     return;
   }
@@ -225,20 +274,20 @@ async function login() {
 }
 
 function logout() { stopAuctionPoll(); location.reload(); }
+function getMe()  { return DATA.students.find(x => x.id === currentUser.data.id); }
 
-function getMe() { return DATA.students.find(x => x.id === currentUser.data.id); }
-
+/* ── 학생 렌더 ── */
 function renderStudent() {
   const s = getMe();
   document.getElementById('studentName').innerText   = s.name;
   document.getElementById('studentPoints').innerText = s.points;
   renderShop();
   renderStudentHistory();
-  renderStudentAuction(true);
+  renderStudentAuctionList();
 }
 
 function historyRows(arr) {
-  if (!arr || !arr.length) return '<div class="small">내역이 없습니다.</div>';
+  if (!arr || !arr.length) return '<div class="empty">내역이 없습니다.</div>';
   return arr.slice().reverse().map(function(h) {
     var cls  = h.points > 0 ? 'green' : 'red';
     var sign = h.points > 0 ? '+' : '';
@@ -253,10 +302,10 @@ function renderStudentHistory() {
 function renderShop() {
   const s  = getMe();
   const el = document.getElementById('shopList');
-  if (!DATA.items.length) { el.innerHTML = '<div class="small">등록된 상품이 없습니다.</div>'; return; }
+  if (!DATA.items.length) { el.innerHTML = '<div class="empty">등록된 상품이 없습니다.</div>'; return; }
   el.innerHTML = DATA.items.map(function(i) {
     return '<div class="shop-item flex"><div><div>' + i.name + '</div><div class="small">' + i.price + 'P</div></div>' +
-      '<button class="btn btn-primary" ' + (s.points < i.price ? 'disabled' : '') + ' onclick="buyItem(' + i.id + ')">구매</button></div>';
+      '<button class="btn btn-primary btn-sm" ' + (s.points < i.price ? 'disabled' : '') + ' onclick="buyItem(' + i.id + ')">구매</button></div>';
   }).join('');
 }
 
@@ -266,110 +315,160 @@ async function buyItem(itemId) {
   if (!item || s.points < item.price) return;
   s.points -= item.price;
   if (!s.history) s.history = [];
-  s.history.push({label:'상품 구매 - ' + item.name, points:-item.price, date:new Date().toLocaleString()});
+  s.history.push({label:'상품 구매 - ' + item.name, points:-item.price, date:today()});
   DATA.orders.unshift({id:Date.now(), studentName:s.name, itemName:item.name});
   await dbSave();
   showToast('🛍️ ' + item.name + ' 구매 완료!');
   renderStudent();
 }
 
-function renderStudentAuction(forceRedraw) {
-  var auc = DATA.auction;
-  var el  = document.getElementById('studentAuction');
-  if (!auc.active && !auc.winner) { el.innerHTML = '<div class="small">진행 중인 경매가 없습니다.</div>'; return; }
-  var bids    = Object.values(auc.bids || {}).map(function(b) { return b.amount; });
-  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+/* ── 학생 경매 목록 ── */
+function renderStudentAuctionList() {
+  var el = document.getElementById('studentAuctionList');
+  var list = Object.values(DATA.auctions || {});
+  if (!list.length) { el.innerHTML = '<div class="empty">진행 중인 경매가 없습니다.</div>'; return; }
+  el.innerHTML = list.map(function(auc) {
+    return buildStudentAuctionCard(auc);
+  }).join('');
+}
+
+function buildStudentAuctionCard(auc) {
   var s       = getMe();
-  // bids 키는 문자열로 저장되므로 String() 변환
-  var myBid   = (auc.bids && auc.bids[String(s.id)]) ? auc.bids[String(s.id)].amount : 0;
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var myEntry = auc.bids && auc.bids[String(s.id)] ? auc.bids[String(s.id)] : null;
+  var myTotal = myEntry ? myEntry.amount : 0;
+  var minBid  = Math.max(auc.startPrice || 10, highBid > 0 ? highBid + STEP : (auc.startPrice || 10));
+  // round up to step
+  if (minBid % STEP !== 0) minBid = Math.ceil(minBid / STEP) * STEP;
+
   if (auc.active) {
-    var existingBid = document.getElementById('auc-highbid');
-    if (existingBid && !forceRedraw) {
-      // 폴링 시: 숫자만 업데이트 (input 건드리지 않음)
-      existingBid.textContent = highBid + 'P';
-      var myBidEl = document.getElementById('auc-mybid');
-      if (myBidEl) myBidEl.textContent = '내 입찰액 : ' + myBid + 'P';
-    } else {
-      // 처음 진입하거나 입찰 직후: 전체 재렌더
-      el.innerHTML = '<div class="auction"><h2>' + auc.itemName + '</h2><div>현재 최고 입찰</div><div class="bid" id="auc-highbid">' + highBid + 'P</div><div id="auc-mybid" style="margin-bottom:15px">내 입찰액 : ' + myBid + 'P</div><input type="number" class="bid-input" id="bidAmount" placeholder="추가 입찰 포인트"><button class="btn btn-primary btn-full" onclick="placeBid()">입찰하기</button></div>';
-    }
+    var isTop  = myTotal > 0 && myTotal === highBid;
+    var badgeCls = isTop ? 'badge-winner' : 'badge-active';
+    var badgeTxt = isTop ? '🥇 최고 입찰자' : '진행 중';
+    return '<div class="auction-card" id="acard-' + auc.id + '">' +
+      '<div class="flex"><div class="ac-title">' + auc.itemName + '</div><span class="badge ' + badgeCls + '">' + badgeTxt + '</span></div>' +
+      '<div class="ac-meta">' +
+        '<span>🏁 시작가 ' + (auc.startPrice||0) + 'P</span>' +
+        '<span>📈 현재 최고 <strong class="green">' + highBid + 'P</strong></span>' +
+        (myTotal > 0 ? '<span>내 입찰 <strong style="color:var(--accent2)">' + myTotal + 'P</strong></span>' : '') +
+      '</div>' +
+      '<div class="ac-bid-row">' +
+        '<div class="step-group">' +
+          '<button onclick="stepBid(\'' + auc.id + '\',-1)">−</button>' +
+          '<div class="step-val" id="step-' + auc.id + '">' + minBid + 'P</div>' +
+          '<button onclick="stepBid(\'' + auc.id + '\',1)">+</button>' +
+        '</div>' +
+        '<button class="btn btn-primary" style="flex:1" onclick="placeBid(\'' + auc.id + '\')">입찰</button>' +
+      '</div>' +
+    '</div>';
   } else {
-    el.innerHTML = '<div class="auction"><h2>경매 종료</h2><div class="bid">' + (auc.winner ? auc.winner.studentName : '없음') + '</div><div>' + (auc.winner ? auc.winner.amount + 'P' : '') + '</div></div>';
+    var won = auc.winner && String(auc.winner.studentId) === String(s.id);
+    return '<div class="auction-card">' +
+      '<div class="flex"><div class="ac-title">' + auc.itemName + '</div><span class="badge badge-ended">종료</span></div>' +
+      '<div class="ac-meta"><span>🏁 시작가 ' + (auc.startPrice||0) + 'P</span></div>' +
+      '<div style="margin-top:10px">' +
+        (auc.winner
+          ? '<span class="badge badge-winner">🏆 낙찰자: ' + auc.winner.studentName + '  ' + auc.winner.amount + 'P</span>' +
+            (won ? '<div style="margin-top:8px;color:var(--orange);font-weight:700">🎉 낙찰되었습니다!</div>' : '')
+          : '<span class="badge badge-ended">낙찰자 없음</span>') +
+      '</div>' +
+    '</div>';
   }
 }
 
-async function placeBid() {
-  var amt = parseInt(document.getElementById('bidAmount').value);
-  if (!amt || amt <= 0) return;
+/* step 버튼 현재값 */
+function stepBid(aucId, dir) {
+  var el   = document.getElementById('step-' + aucId);
+  if (!el) return;
+  var cur  = parseInt(el.textContent) || 0;
+  var next = cur + dir * STEP;
+  // 최솟값 계산
+  var auc     = DATA.auctions[aucId];
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var minBid  = highBid > 0 ? highBid + STEP : (auc.startPrice || 10);
+  if (minBid % STEP !== 0) minBid = Math.ceil(minBid / STEP) * STEP;
+  if (next < minBid) next = minBid;
+  el.textContent = next + 'P';
+}
+
+async function placeBid(aucId) {
+  var auc = DATA.auctions[aucId];
+  if (!auc || !auc.active) return;
+  var el  = document.getElementById('step-' + aucId);
+  var amt = parseInt(el ? el.textContent : 0);
+  if (!amt || amt <= 0) { alert('입찰 금액을 설정하세요.'); return; }
+  if (amt % STEP !== 0) { alert('호가 단위는 ' + STEP + 'P 입니다.'); return; }
   var s = getMe();
+  // 최고 입찰가 확인
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var minBid  = highBid > 0 ? highBid + STEP : (auc.startPrice || 10);
+  if (amt < minBid) { alert('최소 입찰 금액은 ' + minBid + 'P 입니다.'); return; }
   if (s.points < amt) { alert('포인트가 부족합니다.'); return; }
-  s.points -= amt;
-  if (!s.history) s.history = [];
-  s.history.push({label:'경매 입찰 - ' + DATA.auction.itemName, points:-amt, date:new Date().toLocaleString()});
+
   var sid = String(s.id);
-  if (!DATA.auction.bids[sid]) {
-    DATA.auction.bids[sid] = {studentName:s.name, amount:amt};
-  } else {
-    DATA.auction.bids[sid].amount += amt;
-  }
+  var prev = auc.bids && auc.bids[sid] ? auc.bids[sid].amount : 0;
+  var diff = amt - prev; // 추가로 차감할 포인트
+  if (diff <= 0) { alert('현재 내 입찰보다 높은 금액을 입력하세요.'); return; }
+  if (s.points < diff) { alert('포인트가 부족합니다.'); return; }
+
+  s.points -= diff;
+  if (!s.history) s.history = [];
+  s.history.push({label:'경매 입찰 - ' + auc.itemName + ' (' + amt + 'P)', points:-diff, date:today()});
+  if (!auc.bids) auc.bids = {};
+  auc.bids[sid] = {studentName:s.name, amount:amt};
+
   await dbSave();
-  showToast('🔨 입찰 완료! ' + DATA.auction.bids[sid].amount + 'P');
+  showToast('🔨 입찰 완료! ' + amt + 'P');
   renderStudent();
 }
 
+/* ── 폴링 ── */
 var auctionPollTimer = null;
-
 function startAuctionPoll() {
   stopAuctionPoll();
   auctionPollTimer = setInterval(async function() {
     if (!currentUser || currentUser.role !== 'student') { stopAuctionPoll(); return; }
     try {
-      var res = await fetch(FIREBASE_URL);
+      var res  = await fetch(FIREBASE_URL);
       var json = await res.json();
       if (json) {
         DATA = json;
-        if (!DATA.auction) DATA.auction = {active:false,itemName:'',bids:{},winner:null};
+        if (!DATA.auctions) DATA.auctions = {};
+        if (!DATA.students) DATA.students = [];
       }
     } catch(e) { return; }
-    // 경매 탭이 활성화 상태일 때만 UI 업데이트
     var auctionPanel = document.getElementById('s-auction');
     if (auctionPanel && auctionPanel.classList.contains('active')) {
-      renderStudentAuction();
+      renderStudentAuctionList();
     }
-    // 경매 종료됐으면 알림 후 폴링 중단
-    if (!DATA.auction.active) {
-      stopAuctionPoll();
-      if (DATA.auction.winner) {
-        var me = getMe();
-        if (DATA.auction.winner.studentId === me.id) {
-          showToast('🏆 축하합니다! 낙찰되었습니다!');
-        } else {
-          showToast('경매가 종료되었습니다.');
-        }
-      }
-    }
-  }, 3000);
+    // 포인트 업데이트
+    var s = getMe();
+    if (s) document.getElementById('studentPoints').innerText = s.points;
+  }, 4000);
 }
-
 function stopAuctionPoll() {
   if (auctionPollTimer) { clearInterval(auctionPollTimer); auctionPollTimer = null; }
 }
 
-
-function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuction(); renderOrders(); }
+/* ── 관리자 렌더 ── */
+function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuctionList(); renderOrders(); }
 
 function renderStudents() {
   document.getElementById('studentList').innerHTML = DATA.students.map(function(s) {
     return '<div class="student-card flex"><div><div>' + s.name + '</div><div class="small">' + s.id + '</div></div><div class="green">' + s.points + 'P</div></div>';
-  }).join('');
-  document.getElementById('giveStudent').innerHTML = DATA.students.map(function(s) {
+  }).join('') || '<div class="empty">등록된 학생이 없습니다.</div>';
+
+  var opts = DATA.students.map(function(s) {
     return '<option value="' + s.id + '">' + s.name + '</option>';
   }).join('');
+  document.getElementById('giveStudent').innerHTML = opts;
+
   var hs = document.getElementById('historyStudent');
   var prev = hs.value;
-  hs.innerHTML = DATA.students.map(function(s) {
-    return '<option value="' + s.id + '">' + s.name + '</option>';
-  }).join('');
+  hs.innerHTML = opts;
   if (prev) hs.value = prev;
   renderPointHistory();
 }
@@ -379,11 +478,11 @@ async function givePoint() {
   var amt    = parseInt(document.getElementById('giveAmt').value);
   var reason = document.getElementById('giveReason').value.trim() || '관리자 지급';
   if (!sid || isNaN(amt) || amt === 0) { alert('학생과 포인트를 입력하세요.'); return; }
-  var s = DATA.students.find(function(x) { return x.id === sid; });
+  var s = DATA.students.find(function(x){ return x.id === sid; });
   if (!s) return;
   s.points += amt;
   if (!s.history) s.history = [];
-  s.history.push({label:reason, points:amt, date:new Date().toLocaleString()});
+  s.history.push({label:reason, points:amt, date:today()});
   await dbSave();
   document.getElementById('giveAmt').value    = '';
   document.getElementById('giveReason').value = '';
@@ -394,7 +493,7 @@ function renderPointHistory() {
   var hs = document.getElementById('historyStudent');
   var ph = document.getElementById('pointHistory');
   if (!hs || !ph) return;
-  var s = DATA.students.find(function(x) { return x.id === hs.value; });
+  var s = DATA.students.find(function(x){ return x.id === hs.value; });
   ph.innerHTML = historyRows(s ? s.history : null);
 }
 
@@ -411,79 +510,127 @@ async function addItem() {
 
 function renderAdminShop() {
   var el = document.getElementById('adminShopList');
-  if (!DATA.items.length) { el.innerHTML = '<div class="small">등록된 상품이 없습니다.</div>'; return; }
+  if (!DATA.items.length) { el.innerHTML = '<div class="empty">등록된 상품이 없습니다.</div>'; return; }
   el.innerHTML = DATA.items.map(function(i) {
     return '<div class="shop-item flex"><div>' + i.name + '</div><div>' + i.price + 'P</div></div>';
   }).join('');
 }
 
-function renderAdminAuction() {
-  var auc = DATA.auction;
-  var el  = document.getElementById('adminAuction');
-  if (!auc.active) {
-    var html = '<div class="admin-section"><div class="field"><input type="text" id="auctionItem" placeholder="경매 상품명"></div><button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작</button></div>';
-    if (auc.winner) {
-      html += '<div class="auction"><h2>최종 낙찰</h2><div class="bid">' + auc.winner.studentName + '</div><div>' + auc.winner.amount + 'P</div></div>';
-    }
-    el.innerHTML = html;
-    return;
-  }
-  var sorted = Object.entries(auc.bids || {}).map(function(entry) {
-    return {id:entry[0], studentName:entry[1].studentName, amount:entry[1].amount};
-  }).sort(function(a,b) { return b.amount - a.amount; });
-  var rows = sorted.map(function(b, i) {
-    return '<tr><td>' + (i+1) + '</td><td>' + b.studentName + '</td><td>' + b.amount + 'P</td></tr>';
+/* 관리자 경매 목록 */
+function renderAdminAuctionList() {
+  var el   = document.getElementById('adminAuctionList');
+  var list = Object.values(DATA.auctions || {});
+  if (!list.length) { el.innerHTML = '<div class="empty">진행 중인 경매가 없습니다.</div>'; return; }
+  el.innerHTML = list.map(function(auc) {
+    return buildAdminAuctionCard(auc);
   }).join('');
-  el.innerHTML = '<div class="auction" style="margin-bottom:16px"><h2>' + auc.itemName + '</h2><div class="bid">' + (sorted.length ? sorted[0].amount + 'P' : '0P') + '</div><button class="btn btn-danger btn-full" onclick="endAuction()">경매 종료</button></div><table class="table"><thead><tr><th>순위</th><th>학생</th><th>입찰</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+function buildAdminAuctionCard(auc) {
+  var sorted = Object.entries(auc.bids || {}).map(function(e){
+    return {id:e[0], studentName:e[1].studentName, amount:e[1].amount};
+  }).sort(function(a,b){ return b.amount - a.amount; });
+  var highBid = sorted.length ? sorted[0].amount : 0;
+  var rows = sorted.map(function(b,i){
+    return '<tr><td>' + (i+1) + '</td><td>' + b.studentName + '</td><td class="green">' + b.amount + 'P</td></tr>';
+  }).join('');
+
+  var badge = auc.active
+    ? '<span class="badge badge-active">진행 중</span>'
+    : '<span class="badge badge-ended">종료</span>';
+  var action = auc.active
+    ? '<button class="btn btn-danger btn-sm" onclick="endAuction(\'' + auc.id + '\')">경매 종료</button>'
+    : '<button class="btn btn-danger btn-sm" onclick="deleteAuction(\'' + auc.id + '\')">삭제</button>';
+
+  return '<div class="admin-auction-card">' +
+    '<div class="aa-header">' +
+      '<div>' +
+        '<div class="aa-title">' + auc.itemName + '</div>' +
+        '<div class="small" style="margin-top:4px">시작가 ' + (auc.startPrice||0) + 'P · 호가 ' + STEP + 'P 단위 · 현재 최고 <span class="green">' + highBid + 'P</span></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' + badge + action + '</div>' +
+    '</div>' +
+    (auc.winner
+      ? '<div style="margin-bottom:10px"><span class="badge badge-winner">🏆 낙찰: ' + auc.winner.studentName + '  ' + auc.winner.amount + 'P</span></div>'
+      : '') +
+    (rows
+      ? '<table class="table"><thead><tr><th>순위</th><th>학생</th><th>입찰</th></tr></thead><tbody>' + rows + '</tbody></table>'
+      : '<div class="empty" style="padding:10px 0">아직 입찰자가 없습니다.</div>') +
+  '</div>';
 }
 
 async function startAuction() {
-  var item = document.getElementById('auctionItem').value.trim();
-  if (!item) { alert('경매 상품명을 입력하세요.'); return; }
-  DATA.auction = {active:true, itemName:item, bids:{}, winner:null};
+  var item  = document.getElementById('auctionItem').value.trim();
+  var start = parseInt(document.getElementById('auctionStart').value);
+  if (!item)           { alert('경매 상품명을 입력하세요.'); return; }
+  if (isNaN(start) || start < STEP) { alert('최소 시작가를 ' + STEP + 'P 이상으로 입력하세요.'); return; }
+  if (start % STEP !== 0) { alert('시작가는 ' + STEP + 'P 단위여야 합니다.'); return; }
+  var id = 'auc_' + Date.now();
+  DATA.auctions[id] = {
+    id:id,
+    itemName:item,
+    startPrice:start,
+    active:true,
+    bids:{},
+    winner:null,
+    createdAt:today()
+  };
   await dbSave();
-  renderAdminAuction();
+  document.getElementById('auctionItem').value  = '';
+  document.getElementById('auctionStart').value = '';
+  renderAdminAuctionList();
+  showToast('🔨 경매 시작: ' + item);
 }
 
-async function endAuction() {
-  var bids = Object.entries(DATA.auction.bids || {}).map(function(entry) {
-    return {studentId:entry[0], studentName:entry[1].studentName, amount:entry[1].amount};
-  }).sort(function(a,b) { return b.amount - a.amount; });
-  DATA.auction.active = false;
-  var winner = bids[0] || null;
-  DATA.auction.winner = winner;
-  // 낙찰자 history에 기록
+async function endAuction(aucId) {
+  var auc = DATA.auctions[aucId];
+  if (!auc) return;
+  var sorted = Object.entries(auc.bids || {}).map(function(e){
+    return {studentId:e[0], studentName:e[1].studentName, amount:e[1].amount};
+  }).sort(function(a,b){ return b.amount - a.amount; });
+  auc.active = false;
+  var winner = sorted[0] || null;
+  auc.winner = winner;
   if (winner) {
-    var ws = DATA.students.find(function(x) { return String(x.id) === String(winner.studentId); });
+    var ws = DATA.students.find(function(x){ return String(x.id) === String(winner.studentId); });
     if (ws) {
       if (!ws.history) ws.history = [];
-      ws.history.push({label:'경매 낙찰 - ' + DATA.auction.itemName, points: -winner.amount, date:new Date().toLocaleString()});
+      ws.history.push({label:'경매 낙찰 - ' + auc.itemName, points:-winner.amount, date:today()});
     }
   }
   await dbSave();
-  renderAdminAuction();
+  renderAdminAuctionList();
+  showToast('🏁 경매 종료: ' + auc.itemName);
+}
+
+async function deleteAuction(aucId) {
+  if (!confirm('이 경매를 삭제하시겠습니까?')) return;
+  delete DATA.auctions[aucId];
+  await dbSave();
+  renderAdminAuctionList();
 }
 
 function renderOrders() {
   var el = document.getElementById('orderList');
-  if (!DATA.orders.length) { el.innerHTML = '<div class="small">주문 내역이 없습니다.</div>'; return; }
-  el.innerHTML = DATA.orders.map(function(o) {
+  if (!DATA.orders.length) { el.innerHTML = '<div class="empty">주문 내역이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.orders.map(function(o){
     return '<div class="order-card"><div>' + o.studentName + '</div><div class="small">' + o.itemName + '</div></div>';
   }).join('');
 }
 
 function studentTab(id, el) {
-  document.querySelectorAll('#studentMain .tab').forEach(function(t)  { t.classList.remove('active'); });
+  document.querySelectorAll('#studentMain .tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('#studentMain .panel').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
   document.getElementById('s-' + id).classList.add('active');
 }
 function adminTab(id, el) {
-  document.querySelectorAll('#adminMain .tab').forEach(function(t)  { t.classList.remove('active'); });
+  document.querySelectorAll('#adminMain .tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('#adminMain .panel').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
   document.getElementById('a-' + id).classList.add('active');
 }
 </script>
+
 
 </body></html>
