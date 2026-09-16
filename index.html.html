@@ -141,7 +141,7 @@ button,input,select{font-family:inherit;}
       <div class="tab active" onclick="studentTab('home',this)">홈</div>
       <div class="tab" onclick="studentTab('shop',this)">상점</div>
       <div class="tab" onclick="studentTab('auction',this)">경매</div>
-      <div class="tab" onclick="studentTab('vocab',this)">단어시험</div>
+      <div class="tab" onclick="studentTab('vocab',this)">단어/시험</div>
       <div class="tab" onclick="studentTab('history',this)">내역</div>
     </div>
     <div class="panel active" id="s-home">
@@ -222,6 +222,7 @@ button,input,select{font-family:inherit;}
         <select id="vocabScoreDay" onchange="renderAdminVocabScore()" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)"></select>
       </div>
       <div id="adminVocabScoreList"></div>
+      <div id="adminVocabScoreDetail"></div>
       <hr style="margin:20px 0;border-color:var(--border)">
       <div class="admin-section">
         <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">학생별 누적 성적 (전체 Day 합산)</div>
@@ -241,6 +242,7 @@ const STEP = 10; // 호가 단위
 let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{} };
 let currentUser = null;
 let currentQuiz = null;
+let vocabViewLocked = false; // 오답 확인/결과 화면을 보고 있을 때 폴링이 화면을 덮어쓰지 않도록 막는 플래그
 
 /* ── 워드마스터 고등 basic 단어 데이터 (Day1~30) ── */
 const VOCAB_DATA = {
@@ -321,6 +323,25 @@ async function dbSave() {
   } catch(e) { alert('저장 실패: ' + e.message); }
 }
 
+// 저장하기 직전, 서버의 최신 데이터를 먼저 받아와 DATA에 반영합니다.
+// (예: 관리자가 로그인해 있는 동안 학생이 시험을 보거나 포인트를 얻었을 수 있는데,
+//  이걸 확인하지 않고 그냥 저장하면 관리자가 가진 예전 데이터로 통째로 덮어써서
+//  학생의 시험 결과/포인트가 사라지는 문제가 생깁니다. 이를 막기 위한 함수입니다.)
+async function pullLatestData() {
+  try {
+    const res  = await fetch(FIREBASE_URL);
+    if (res.ok) {
+      const json = await res.json();
+      if (json) DATA = json;
+    }
+  } catch(e) { /* 네트워크 실패 시에는 메모리에 있는 현재 DATA로 계속 진행 */ }
+  if (!DATA.students)   DATA.students   = [];
+  if (!DATA.items)      DATA.items      = [];
+  if (!DATA.orders)     DATA.orders     = [];
+  if (!DATA.auctions)   DATA.auctions   = {};
+  if (!DATA.vocabTests) DATA.vocabTests = {};
+}
+
 /* ── 로그인/로그아웃 ── */
 async function login() {
   const id  = document.getElementById('loginId').value.trim();
@@ -383,9 +404,10 @@ function renderShop() {
 }
 
 async function buyItem(itemId) {
+  await pullLatestData();
   const item = DATA.items.find(x => x.id === itemId);
   const s    = getMe();
-  if (!item || s.points < item.price) return;
+  if (!s || !item || s.points < item.price) return;
   s.points -= item.price;
   if (!s.history) s.history = [];
   s.history.push({label:'상품 구매 - ' + item.name, points:-item.price, date:today()});
@@ -467,6 +489,7 @@ function stepBid(aucId, dir) {
 }
 
 async function placeBid(aucId) {
+  await pullLatestData();
   var auc = DATA.auctions[aucId];
   if (!auc || !auc.active) return;
   var el  = document.getElementById('step-' + aucId);
@@ -519,7 +542,7 @@ function startAuctionPoll() {
       renderStudentAuctionList();
     }
     var vocabPanel = document.getElementById('s-vocab');
-    if (vocabPanel && vocabPanel.classList.contains('active') && !currentQuiz) {
+    if (vocabPanel && vocabPanel.classList.contains('active') && !currentQuiz && !vocabViewLocked) {
       renderStudentVocabList();
     }
     // 포인트 업데이트
@@ -539,6 +562,7 @@ async function addStudent() {
   var id   = document.getElementById('newId').value.trim();
   var pw   = document.getElementById('newPw').value.trim();
   if (!name || !id || !pw) { alert('이름, 아이디, 비밀번호를 모두 입력하세요.'); return; }
+  await pullLatestData();
   if (DATA.students.find(function(s){ return s.id === id; })) { alert('이미 사용 중인 아이디입니다.'); return; }
   DATA.students.push({id:id, pw:pw, name:name, points:0, history:[], vocabResults:{}});
   await dbSave();
@@ -550,6 +574,7 @@ async function addStudent() {
 }
 
 async function deleteStudent(sid) {
+  await pullLatestData();
   var s = DATA.students.find(function(x){ return x.id === sid; });
   if (!s) return;
   if (!confirm(s.name + ' 학생을 삭제하시겠습니까?\n(포인트 내역도 모두 삭제됩니다)')) return;
@@ -587,6 +612,7 @@ async function givePoint() {
   var amt    = parseInt(document.getElementById('giveAmt').value);
   var reason = document.getElementById('giveReason').value.trim() || '관리자 지급';
   if (!sid || isNaN(amt) || amt === 0) { alert('학생과 포인트를 입력하세요.'); return; }
+  await pullLatestData();
   var s = DATA.students.find(function(x){ return x.id === sid; });
   if (!s) return;
   s.points += amt;
@@ -610,6 +636,7 @@ async function addItem() {
   var name  = document.getElementById('itemName').value.trim();
   var price = parseInt(document.getElementById('itemPrice').value);
   if (!name || isNaN(price) || price <= 0) { alert('상품명과 가격을 입력하세요.'); return; }
+  await pullLatestData();
   DATA.items.push({id:Date.now(), name:name, price:price});
   await dbSave();
   document.getElementById('itemName').value  = '';
@@ -674,6 +701,7 @@ async function startAuction() {
   if (!item)           { alert('경매 상품명을 입력하세요.'); return; }
   if (isNaN(start) || start < STEP) { alert('최소 시작가를 ' + STEP + 'P 이상으로 입력하세요.'); return; }
   if (start % STEP !== 0) { alert('시작가는 ' + STEP + 'P 단위여야 합니다.'); return; }
+  await pullLatestData();
   var id = 'auc_' + Date.now();
   DATA.auctions[id] = {
     id:id,
@@ -692,6 +720,7 @@ async function startAuction() {
 }
 
 async function endAuction(aucId) {
+  await pullLatestData();
   var auc = DATA.auctions[aucId];
   if (!auc) return;
   var sorted = Object.entries(auc.bids || {}).map(function(e){
@@ -714,6 +743,7 @@ async function endAuction(aucId) {
 
 async function deleteAuction(aucId) {
   if (!confirm('이 경매를 삭제하시겠습니까?')) return;
+  await pullLatestData();
   delete DATA.auctions[aucId];
   await dbSave();
   renderAdminAuctionList();
@@ -733,6 +763,7 @@ function studentTab(id, el) {
   el.classList.add('active');
   document.getElementById('s-' + id).classList.add('active');
   if (id === 'vocab') { currentQuiz = null; renderStudentVocabList(); }
+  if (id === 'history') { renderStudentHistory(); }
 }
 function adminTab(id, el) {
   document.querySelectorAll('#adminMain .tab').forEach(function(t){ t.classList.remove('active'); });
@@ -772,11 +803,13 @@ function renderAdminVocab() {
 }
 
 async function toggleVocabDay(key) {
+  await pullLatestData();
   if (!DATA.vocabTests) DATA.vocabTests = {};
   if (!DATA.vocabTests[key]) DATA.vocabTests[key] = {open:false};
   DATA.vocabTests[key].open = !DATA.vocabTests[key].open;
   await dbSave();
   renderAdminVocab();
+  renderAdminVocabScore();
   showToast(DATA.vocabTests[key].open ? '✅ Day ' + key.replace('day','') + ' 시험 열림' : '🔒 Day ' + key.replace('day','') + ' 시험 닫힘');
 }
 
@@ -804,14 +837,43 @@ function renderAdminVocabScore() {
     var r = s.vocabResults && s.vocabResults[key];
     if (r && r.completed) {
       var pts = (r.pointsAwarded != null) ? r.pointsAwarded : r.score * 10;
-      return '<tr><td>' + s.name + '</td><td class="green">' + r.score + ' / ' + r.total + '</td><td class="green">+' + pts + 'P</td><td>' + r.date + '</td></tr>';
+      var wrongCount = (r.wrongList || []).length;
+      var nameCell = '<button class="btn btn-sm" style="background:transparent;color:var(--accent2);text-decoration:underline;padding:2px 4px;font-weight:700" onclick="showAdminVocabWrong(\'' + s.id + '\',\'' + key + '\')">' + s.name + '</button>';
+      var retriedNote = r.retriedAt ? '<div class="small">재도전 ' + r.retriedAt + '</div>' : '';
+      return '<tr><td>' + nameCell + retriedNote + '</td><td class="green">' + r.score + ' / ' + r.total + '</td><td class="green">+' + pts + 'P</td><td>' + r.date + (wrongCount ? '<div class="small red">오답 ' + wrongCount + '개 (이름 클릭)</div>' : '') + '</td></tr>';
     }
     return '<tr><td>' + s.name + '</td><td class="small">미응시</td><td class="small">-</td><td class="small">-</td></tr>';
   }).join('');
-  el.innerHTML = '<div class="small" style="margin:4px 0 10px">Day ' + dayNum + ' · 현재 상태: ' + (conf.open ? '열림' : '닫힘') + ' (닫혀 있어도 아래 기록은 사라지지 않습니다)</div>' +
+  var detailEl = document.getElementById('adminVocabScoreDetail');
+  if (detailEl) detailEl.innerHTML = ''; // Day를 바꾸면 이전에 열어봤던 학생 오답 상세는 닫음
+  el.innerHTML = '<div class="small" style="margin:4px 0 10px">Day ' + dayNum + ' · 현재 상태: ' + (conf.open ? '열림' : '닫힘') + ' (닫혀 있어도 아래 기록은 사라지지 않습니다) · 이름을 누르면 오답을 볼 수 있어요</div>' +
     '<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>점수</th><th>획득 포인트</th><th>응시일</th></tr></thead><tbody>' +
     (rows || '') + '</tbody></table></div>';
   renderAdminVocabScoreSummary();
+}
+
+// 특정 학생의 특정 Day 오답을 관리자 화면에 표시 (issue #2)
+function showAdminVocabWrong(sid, key) {
+  var s  = DATA.students.find(function(x){ return x.id === sid; });
+  var el = document.getElementById('adminVocabScoreDetail');
+  if (!s || !el) return;
+  var r = s.vocabResults && s.vocabResults[key];
+  var dayNum = key.replace('day', '');
+  if (!r || !r.completed) { el.innerHTML = '<div class="empty">응시 기록이 없습니다.</div>'; return; }
+  if (!r.wrongList || !r.wrongList.length) {
+    el.innerHTML = '<div class="auction-card" style="margin-top:12px">' +
+      '<div class="ac-title">' + s.name + ' · Day ' + dayNum + ' 오답</div>' +
+      '<div class="empty">🎉 틀린 문제가 없습니다!</div></div>';
+    return;
+  }
+  var rows = r.wrongList.map(function(w) {
+    return '<div class="history"><div style="font-weight:700">' + w.word + '</div>' +
+      '<div class="small" style="color:var(--red);margin-top:4px">' + s.name + '님이 고른 답: ' + w.selected + '</div>' +
+      '<div class="small" style="color:var(--green)">정답: ' + w.correct + '</div></div>';
+  }).join('');
+  el.innerHTML = '<div class="auction-card" style="margin-top:12px">' +
+    '<div class="flex"><div class="ac-title">' + s.name + ' · Day ' + dayNum + ' 오답노트</div><span class="badge badge-ended">' + r.wrongList.length + '개 틀림</span></div>' +
+    rows + '</div>';
 }
 
 function renderAdminVocabScoreSummary() {
@@ -855,9 +917,27 @@ function buildVocabQuestions(key) {
   return shuffleArray(questions);
 }
 
+// 오답만 모아 다시 풀 문제를 생성 (issue #3)
+function buildRetryQuestions(key, wrongWords) {
+  var words = VOCAB_DATA[key] || [];
+  var allMeanings = words.map(function(w){ return w[1]; });
+  var wrongSet = {};
+  wrongWords.forEach(function(w){ wrongSet[w] = true; });
+  var filtered = words.filter(function(w){ return wrongSet[w[0]]; });
+  var questions = filtered.map(function(w) {
+    var correct = w[1];
+    var pool = allMeanings.filter(function(m){ return m !== correct; });
+    var distractors = shuffleArray(pool).slice(0, 3);
+    var options = shuffleArray([correct].concat(distractors));
+    return {word: w[0], correct: correct, options: options};
+  });
+  return shuffleArray(questions);
+}
+
 function renderStudentVocabList() {
   var el = document.getElementById('studentVocabList');
   if (!el) return;
+  vocabViewLocked = false;
   var s = getMe();
   if (!s.vocabResults) s.vocabResults = {};
 
@@ -892,10 +972,13 @@ function renderStudentVocabList() {
     if (result && result.completed) {
       // 완료 기록은 시험이 닫혀도 계속 보임 (issue #1)
       var pts = (result.pointsAwarded != null) ? result.pointsAwarded : result.score * 10;
+      var hasWrong = result.wrongList && result.wrongList.length > 0;
       listHtml += '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + i + ' 단어 시험</div>' +
         '<span class="badge badge-winner">' + result.score + ' / ' + result.total + '점 (+' + pts + 'P)</span></div>' +
         '<div class="ac-meta"><span>📅 응시일 ' + result.date + '</span></div>' +
-        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="showVocabWrong(\'' + key + '\')">오답 확인</button></div></div>';
+        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="showVocabWrong(\'' + key + '\')">오답 확인</button>' +
+        (hasWrong ? '<button class="btn btn-success" style="flex:1" onclick="startVocabRetry(\'' + key + '\')">오답 다시 풀기</button>' : '') +
+        '</div></div>';
     } else if (conf.open) {
       var wordCount = (VOCAB_DATA[key] || []).length;
       listHtml += '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + i + ' 단어 시험</div>' +
@@ -929,8 +1012,9 @@ function renderVocabQuestion() {
   var q = currentQuiz.questions[currentQuiz.index];
   var progress = (currentQuiz.index + 1) + ' / ' + currentQuiz.questions.length;
   var dayNum = currentQuiz.key.replace('day', '');
+  var titleLabel = currentQuiz.isRetry ? ' 오답 재도전' : ' 단어 시험';
   var html = '<div class="auction-card">' +
-    '<div class="flex"><div class="ac-title">Day ' + dayNum + ' 단어 시험</div><span class="small">' + progress + '</span></div>' +
+    '<div class="flex"><div class="ac-title">Day ' + dayNum + titleLabel + '</div><span class="small">' + progress + '</span></div>' +
     '<div style="font-size:26px;font-weight:800;margin:24px 0;text-align:center;color:var(--accent2)">' + q.word + '</div>' +
     '<div style="display:flex;flex-direction:column;gap:10px">' +
       q.options.map(function(opt, i) {
@@ -955,12 +1039,27 @@ function answerVocabQuestion(i) {
 }
 
 async function finishVocabTest() {
+  await pullLatestData();
   var s = getMe();
   if (!s.vocabResults) s.vocabResults = {};
+  var key = currentQuiz.key;
   var total = currentQuiz.questions.length;
   var wrongCount = currentQuiz.wrong.length;
   var score = total - wrongCount;
-  var key = currentQuiz.key;
+
+  if (currentQuiz.isRetry) {
+    // 오답 재도전: 최초 점수/포인트는 그대로 두고, 오답노트만 최신 상태로 갱신
+    var prev = s.vocabResults[key] || {};
+    prev.wrongList = currentQuiz.wrong;
+    prev.retriedAt = today();
+    s.vocabResults[key] = prev;
+    await dbSave();
+    currentQuiz = null;
+    showToast('🔁 오답 재도전 완료! ' + score + ' / ' + total + ' 다시 맞춤');
+    showVocabRetryResult(key, score, total);
+    return;
+  }
+
   var pointsEarned = score * 10; // 1문제당 10포인트
   s.vocabResults[key] = {completed: true, score: score, total: total, wrongList: currentQuiz.wrong, date: today(), pointsAwarded: pointsEarned};
   s.points += pointsEarned;
@@ -970,12 +1069,27 @@ async function finishVocabTest() {
   currentQuiz = null;
   var ptsEl = document.getElementById('studentPoints');
   if (ptsEl) ptsEl.innerText = s.points;
+  renderStudentHistory();
   showToast('📝 시험 완료! ' + score + ' / ' + total + ' (+' + pointsEarned + 'P)');
   showVocabResult(key, score, total, pointsEarned);
 }
 
+function startVocabRetry(key) {
+  var s = getMe();
+  var r = s.vocabResults && s.vocabResults[key];
+  if (!r || !r.completed || !r.wrongList || !r.wrongList.length) {
+    alert('다시 풀 오답이 없습니다.');
+    return;
+  }
+  var wrongWords = r.wrongList.map(function(w){ return w.word; });
+  if (!confirm('Day ' + key.replace('day','') + ' 에서 틀렸던 ' + wrongWords.length + '문제만 다시 풀어볼까요?')) return;
+  currentQuiz = {key: key, questions: buildRetryQuestions(key, wrongWords), index: 0, wrong: [], isRetry: true};
+  renderVocabQuestion();
+}
+
 function showVocabResult(key, score, total, pointsEarned) {
   var el = document.getElementById('studentVocabList');
+  vocabViewLocked = true; // 결과 화면을 폴링이 덮어쓰지 않도록 잠금
   var dayNum = key.replace('day', '');
   var ptsLine = (pointsEarned != null) ? '<div class="small" style="color:var(--green);font-weight:700;margin-bottom:6px">+' + pointsEarned + 'P 적립됨</div>' : '';
   el.innerHTML = '<div class="auction-card" style="text-align:center">' +
@@ -988,10 +1102,25 @@ function showVocabResult(key, score, total, pointsEarned) {
     '</div></div>';
 }
 
+function showVocabRetryResult(key, score, total) {
+  var el = document.getElementById('studentVocabList');
+  vocabViewLocked = true; // 결과 화면을 폴링이 덮어쓰지 않도록 잠금
+  var dayNum = key.replace('day', '');
+  el.innerHTML = '<div class="auction-card" style="text-align:center">' +
+    '<div class="ac-title" style="margin-bottom:10px">Day ' + dayNum + ' 오답 재도전 결과</div>' +
+    '<div style="font-size:44px;font-weight:800;color:var(--green);margin:10px 0">' + score + ' / ' + total + '</div>' +
+    '<div class="small" style="margin-bottom:6px">원래 점수와 포인트는 그대로 유지됩니다.</div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px">' +
+      '<button class="btn btn-primary" style="flex:1" onclick="showVocabWrong(\'' + key + '\')">오답 확인</button>' +
+      '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="renderStudentVocabList()">목록으로</button>' +
+    '</div></div>';
+}
+
 function showVocabWrong(key) {
   var s = getMe();
   var result = s.vocabResults[key];
   var el = document.getElementById('studentVocabList');
+  vocabViewLocked = true; // 오답 노트 화면을 폴링이 덮어쓰지 않도록 잠금
   var dayNum = key.replace('day', '');
   if (!result || !result.wrongList || !result.wrongList.length) {
     el.innerHTML = '<div class="auction-card" style="text-align:center">' +
@@ -1008,7 +1137,10 @@ function showVocabWrong(key) {
   el.innerHTML = '<div class="auction-card">' +
     '<div class="flex"><div class="ac-title">Day ' + dayNum + ' 오답 노트</div><span class="badge badge-ended">' + result.wrongList.length + '개 틀림</span></div>' +
     rows +
-    '<button class="btn btn-primary btn-full" style="margin-top:14px" onclick="renderStudentVocabList()">목록으로</button></div>';
+    '<div style="display:flex;gap:8px;margin-top:14px">' +
+      '<button class="btn btn-success" style="flex:1" onclick="startVocabRetry(\'' + key + '\')">오답 다시 풀기</button>' +
+      '<button class="btn btn-primary" style="flex:1" onclick="renderStudentVocabList()">목록으로</button>' +
+    '</div></div>';
 }
 </script>
 
