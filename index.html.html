@@ -1,312 +1,914 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)file:///C:/Users/USER/Downloads/vitamin_auction_1.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitamin - 포인트 상점 &amp; 경매 시스템</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d14; --surface:#171722; --surface2:#202032; --border:rgba(255,255,255,.08);
+  --text:#f4f4ff; --text2:#9a9ab5; --text3:#66667e;
+  --accent:#6c5fff; --accent2:#a89cff; --green:#2dd4a0; --red:#ff6b6b; --orange:#ff9f43;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);}
+button,input,select{font-family:inherit;}
+.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,95,255,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%,rgba(45,212,160,.10) 0%,transparent 60%),var(--bg);}
+.card{width:100%;max-width:660px;background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+.login-hero{position:relative;padding:52px 40px 44px;background:linear-gradient(145deg,#1a1830,#141420);border-bottom:1px solid var(--border);overflow:hidden;text-align:center;}
+.login-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(108,95,255,.22) 0%,transparent 55%),radial-gradient(circle at 75% 70%,rgba(45,212,160,.12) 0%,transparent 50%);pointer-events:none;}
+.login-dots{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;}
+.login-dots span{position:absolute;border-radius:50%;background:var(--accent);opacity:.18;animation:float 6s ease-in-out infinite;}
+.login-dots span:nth-child(1){width:6px;height:6px;top:20%;left:10%;animation-delay:0s;}
+.login-dots span:nth-child(2){width:4px;height:4px;top:60%;left:80%;animation-delay:1.5s;}
+.login-dots span:nth-child(3){width:5px;height:5px;top:80%;left:25%;animation-delay:3s;}
+.login-dots span:nth-child(4){width:3px;height:3px;top:30%;left:65%;animation-delay:4.5s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.logo-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(108,95,255,.15);border:1px solid rgba(108,95,255,.3);border-radius:100px;padding:6px 16px;margin-bottom:20px;font-size:12px;color:var(--accent2);letter-spacing:.08em;}
+.login-hero h1{font-size:56px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#fff 20%,var(--accent2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:10px;position:relative;}
+.login-hero .tagline{color:var(--text2);font-size:14px;position:relative;}
+.login-hero .tagline strong{color:var(--text);font-weight:600;}
+.login-body{padding:32px 40px 36px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
+.field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:10px;font-size:15px;transition:border-color .2s;}
+.field input:focus,.field select:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.field select option{background:var(--surface2);}
+.btn{border:none;cursor:pointer;border-radius:10px;padding:12px 16px;font-weight:700;transition:opacity .15s,transform .1s;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,#7b6cff,#5040e0);color:white;box-shadow:0 4px 24px rgba(108,95,255,.35);}
+.btn-danger{background:rgba(255,107,107,.12);color:var(--red);}
+.btn-success{background:rgba(45,212,160,.12);color:var(--green);}
+.btn-full{width:100%;}
+.btn-sm{padding:7px 12px;font-size:13px;}
+.err{display:none;margin-bottom:12px;color:var(--red);font-size:13px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 14px;}
+.main{display:none;}
+.top{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.tabs{display:flex;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tab{flex:1;text-align:center;padding:14px;cursor:pointer;color:var(--text3);font-size:14px;font-weight:600;min-width:70px;}
+.tab.active{color:var(--accent2);border-bottom:2px solid var(--accent);}
+.panel{display:none;padding:20px;}
+.panel.active{display:block;}
+.banner{background:var(--surface2);border-radius:18px;padding:30px;text-align:center;margin-bottom:20px;}
+.point{font-size:52px;color:var(--accent2);font-weight:800;}
+.shop-item,.student-card,.order-card{background:var(--surface2);padding:14px;border-radius:12px;margin-bottom:10px;}
+.flex{display:flex;justify-content:space-between;align-items:center;}
+.flex-col{display:flex;flex-direction:column;gap:6px;}
+.small{font-size:12px;color:var(--text3);}
+.history{padding:10px 0;border-bottom:1px solid var(--border);}
+.admin-section{background:var(--surface2);padding:16px;border-radius:14px;margin-bottom:16px;}
+.table{width:100%;border-collapse:collapse;}
+.table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px;}
+.table th{color:var(--text3);font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
+.green{color:var(--green);} .red{color:var(--red);} .orange{color:var(--orange);}
+
+/* ── 경매 카드 ── */
+.auction-card{
+  background:linear-gradient(135deg,#222240,#181828);
+  border:1px solid rgba(108,95,255,.25);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:14px;
+  transition:border-color .2s;
+}
+.auction-card:hover{border-color:rgba(108,95,255,.5);}
+.auction-card .ac-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+.auction-card .ac-meta{font-size:12px;color:var(--text3);margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;}
+.auction-card .ac-meta span{display:flex;align-items:center;gap:4px;}
+.ac-bid-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.ac-bid-row input{flex:1;background:var(--surface);border:1px solid var(--border);color:white;padding:10px 14px;border-radius:10px;font-size:14px;}
+.ac-bid-row input:focus{outline:none;border-color:rgba(108,95,255,.5);}
+.bid-display{font-size:28px;font-weight:800;color:var(--green);}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.badge-active{background:rgba(45,212,160,.15);color:var(--green);border:1px solid rgba(45,212,160,.3);}
+.badge-ended{background:rgba(255,107,107,.1);color:var(--red);border:1px solid rgba(255,107,107,.2);}
+.badge-winner{background:rgba(255,159,67,.15);color:var(--orange);border:1px solid rgba(255,159,67,.3);}
+
+/* 관리자 경매 카드 */
+.admin-auction-card{background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
+.admin-auction-card .aa-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.admin-auction-card .aa-title{font-size:15px;font-weight:700;}
+
+/* step 버튼 */
+.step-group{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);}
+.step-group button{background:transparent;border:none;color:var(--text2);padding:10px 16px;cursor:pointer;font-size:18px;font-weight:700;transition:background .15s;}
+.step-group button:hover{background:rgba(255,255,255,.07);}
+.step-group .step-val{padding:10px 18px;min-width:70px;text-align:center;font-weight:700;font-size:15px;color:var(--text);}
+
+.toast{
+  position:fixed;bottom:30px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1e1e2e;border:1px solid rgba(45,212,160,.4);
+  color:var(--green);padding:14px 24px;border-radius:100px;
+  font-size:15px;font-weight:600;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:9999;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.empty{color:var(--text3);font-size:13px;padding:20px 0;text-align:center;}
+
+/* 단어시험 옵션 버튼 */
+.opt-btn{background:var(--surface2);color:var(--text);text-align:left;padding:14px 16px;border-radius:10px;border:1px solid var(--border);font-size:14px;}
+.opt-btn:hover{border-color:rgba(108,95,255,.5);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── 로그인 ── -->
+  <div class="card" id="loginCard">
+    <div class="login-hero">
+      <div class="login-dots"><span></span><span></span><span></span><span></span></div>
+      <div class="logo-pill">용유중학교 포인트 시스템</div>
+      <h1>Vitamin</h1>
+      <div class="tagline">학생 <strong>포인트</strong> 적립 · 상점 · 경매</div>
+    </div>
+    <div class="login-body">
+      <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디를 입력하세요"></div>
+      <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력하세요"></div>
+      <div class="err" id="loginErr">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+      <button class="btn btn-primary btn-full" onclick="login()">로그인</button>
+    </div>
+  </div>
+
+  <!-- ── 학생 메인 ── -->
+  <div class="card main" id="studentMain">
+    <div class="top"><div id="studentName" style="font-weight:700"></div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
+    <div class="tabs">
+      <div class="tab active" onclick="studentTab('home',this)">홈</div>
+      <div class="tab" onclick="studentTab('shop',this)">상점</div>
+      <div class="tab" onclick="studentTab('auction',this)">경매</div>
+      <div class="tab" onclick="studentTab('vocab',this)">단어시험</div>
+      <div class="tab" onclick="studentTab('history',this)">내역</div>
+    </div>
+    <div class="panel active" id="s-home">
+      <div class="banner"><div class="small">보유 포인트</div><div class="point" id="studentPoints">0</div></div>
+    </div>
+    <div class="panel" id="s-shop"><div id="shopList"></div></div>
+    <div class="panel" id="s-auction"><div id="studentAuctionList"></div></div>
+    <div class="panel" id="s-vocab"><div id="studentVocabList"></div></div>
+    <div class="panel" id="s-history"><div id="studentHistory"></div></div>
+  </div>
+
+  <!-- ── 관리자 메인 ── -->
+  <div class="card main" id="adminMain">
+    <div class="top"><div style="font-weight:700">관리자 모드</div><button class="btn btn-danger" onclick="logout()">로그아웃</button></div>
+    <div class="tabs">
+      <div class="tab active" onclick="adminTab('students',this)">학생</div>
+      <div class="tab" onclick="adminTab('shop',this)">상점</div>
+      <div class="tab" onclick="adminTab('auction',this)">경매</div>
+      <div class="tab" onclick="adminTab('vocab',this)">단어시험</div>
+      <div class="tab" onclick="adminTab('orders',this)">주문</div>
+    </div>
+    <div class="panel active" id="a-students">
+      <!-- 학생 추가 -->
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">학생 추가</div>
+        <div class="field"><label>이름</label><input type="text" id="newName" placeholder="홍길동"></div>
+        <div class="field"><label>아이디</label><input type="text" id="newId" placeholder="로그인 아이디"></div>
+        <div class="field"><label>비밀번호</label><input type="text" id="newPw" placeholder="초기 비밀번호"></div>
+        <button class="btn btn-primary btn-full" onclick="addStudent()">학생 추가</button>
+      </div>
+      <!-- 포인트 지급 -->
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">포인트 지급</div>
+        <div class="field">
+          <select id="giveStudent" style="background:var(--surface);color:white;border:1px solid var(--border)"></select>
+        </div>
+        <div class="field"><input type="number" id="giveAmt" placeholder="포인트 (음수 입력시 차감)"></div>
+        <div class="field"><input type="text" id="giveReason" placeholder="사유"></div>
+        <button class="btn btn-primary btn-full" onclick="givePoint()">지급하기</button>
+      </div>
+      <div id="studentList"></div>
+      <hr style="margin:20px 0;border-color:var(--border)">
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px">학생 포인트 지급 내역</div>
+        <select id="historyStudent" onchange="renderPointHistory()" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border);margin-bottom:12px"></select>
+        <div id="pointHistory"></div>
+      </div>
+    </div>
+    <div class="panel" id="a-shop">
+      <div class="admin-section">
+        <div class="field"><input type="text" id="itemName" placeholder="상품명"></div>
+        <div class="field"><input type="number" id="itemPrice" placeholder="가격"></div>
+        <button class="btn btn-primary btn-full" onclick="addItem()">상품 추가</button>
+      </div>
+      <div id="adminShopList"></div>
+    </div>
+    <div class="panel" id="a-auction">
+      <!-- 새 경매 만들기 -->
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:12px;font-size:13px;font-weight:700;color:var(--text2)">새 경매 시작</div>
+        <div class="field"><label>경매 상품명</label><input type="text" id="auctionItem" placeholder="예) 편의점 상품권 5000원"></div>
+        <div class="field"><label>최소 시작가 (P)</label><input type="number" id="auctionStart" placeholder="예) 100" min="10" step="10"></div>
+        <button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작</button>
+      </div>
+      <div id="adminAuctionList"></div>
+    </div>
+    <div class="panel" id="a-vocab">
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">단어시험 관리 (Day 1~30)</div>
+        <div class="small">열기를 누르면 학생들이 해당 Day 시험에 응시할 수 있습니다. 학생은 하루(Day)당 1회만 응시할 수 있고 재응시는 불가능합니다.</div>
+      </div>
+      <div id="adminVocabList"></div>
+    </div>
+    <div class="panel" id="a-orders"><div id="orderList"></div></div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
 <script>
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
-const STEP = 10; 
+const STEP = 10; // 호가 단위
 
-// 샘플 VOCAB_DATA (기존에 사용하시던 VOCAB_DATA 객체가 있다면 이 위치에 덮어씌우시면 됩니다)
-const VOCAB_DATA = {
-  "day1": [["apple", "사과"], ["banana", "바나나"]],
-  "day2": [["cat", "고양이"], ["dog", "개"]]
-};
-
-let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{}, vocabSubmissions:{} };
+let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{} };
 let currentUser = null;
+let currentQuiz = null;
 
-// 페이지 로드 시 초기화
-window.onload = function() {
-  loadData();
+/* ── 워드마스터 고등 basic 단어 데이터 (Day1~30) ── */
+const VOCAB_DATA = {
+day1:[["refuse","거절하다, 받아들이지 않다"],["failure","실패, 낙오"],["recover","회복하다, 되찾다"],["quantity","양, 수량"],["experience","경험하다, 겪다"],["emotion","감정, 정서"],["increase","증가하다, 늘다"],["return","돌아오다, 반납하다"],["disappear","사라지다, 없어지다"],["belief","믿음, 신념"],["success","성공, 성과"],["accept","받아들이다, 수용하다"],["inferior","열등한, 하위의"],["obey","복종하다, 따르다"],["drop","떨어지다, 하락하다"],["similar","비슷한, 유사한"],["advise","조언하다, 충고하다"],["cause","원인, 이유"],["fade","희미해지다, 사라지다"],["reject","거절하다, 기각하다"],["situation","상황, 처지"],["supply","공급하다, 제공하다"],["common","흔한, 공통의"],["certain","확실한, 특정한"],["decrease","감소하다, 줄다"],["express","표현하다, 나타내다"],["select","선택하다, 고르다"],["practical","실용적인, 현실적인"],["advanced","고급의, 진보한"],["share","나누다, 공유하다"],["provide","제공하다, 주다"],["superior","우수한, 상위의"],["moment","순간, 찰나"],["include","포함하다, 포함시키다"],["emerge","나타나다, 드러나다"],["improve","향상되다, 개선하다"],["related","관련된, 연관 있는"],["indifferent","무관심한, 냉담한"],["consider","고려하다, 숙고하다"],["product","제품, 산출물"]],
+day2:[["yield","양보하다, 생산하다"],["conceal","숨기다, 감추다"],["connect","연결하다, 이어주다"],["achieve","달성하다, 이루다"],["trash","쓰레기, 폐기물"],["recognize","알아보다, 인정하다"],["unite","결합하다, 단결하다"],["charity","자선단체, 자비"],["continue","계속하다, 지속되다"],["dedicate","헌신하다, 바치다"],["illegal","불법의, 위법의"],["devote","바치다, 헌신하다"],["complete","완성하다, 끝내다"],["overcome","극복하다, 이겨내다"],["period","기간, 시기"],["notice","알아차리다, 주목하다"],["divide","나누다, 분할하다"],["object","물건, 반대하다"],["establish","설립하다, 확립하다"],["expert","전문가, 숙련자"],["expose","드러내다, 노출시키다"],["combine","결합하다, 합치다"],["accomplish","이루다, 성취하다"],["amount","양, 총계"],["crime","범죄, 죄악"],["ability","능력, 재능"],["empty","비어 있는, 공허한"],["reveal","밝히다, 드러내다"],["separate","분리하다, 갈라놓다"],["deserve","~을 받을 만하다, 자격이 있다"],["local","지역의, 지방의"],["process","처리하다, 과정"],["disease","질병, 병"],["exhausted","지친, 기진맥진한"],["allow","허락하다, 가능하게 하다"],["perceive","인지하다, 감지하다"],["historical","역사적인, 역사와 관련된"],["recent","최근의, 요즘의"],["found","설립하다, 기초를 세우다"]],
+day3:[["benefit","이익, 혜택"],["contact","연락하다, 접촉하다"],["revise","수정하다, 개정하다"],["performance","공연, 수행"],["character","성격, 등장인물"],["add","더하다, 추가하다"],["discourage","낙담시키다, 방해하다"],["encourage","격려하다, 장려하다"],["involve","포함하다, 관련시키다"],["amaze","놀라게 하다, 경탄하게 하다"],["income","수입, 소득"],["damage","손상, 피해"],["feature","특징, 특집으로 다루다"],["due","마감 기한의, 예정된"],["probable","있을 법한, 가능성 있는"],["search","찾다, 수색하다"],["material","재료, 자료"],["resolution","결심, 해결"],["official","공식적인, 공무원"],["diverse","다양한, 여러 가지의"],["depend","의존하다, 달려 있다"],["contain","포함하다, 억누르다"],["distance","거리, 간격"],["concentrate","집중하다, 모으다"],["mark","표시하다, 점수"],["disturb","방해하다, 불안하게 하다"],["various","다양한, 여러 가지의"],["negative","부정적인, 음성의"],["medical","의학의, 의료의"],["profit","이윤, 수익"],["research","연구하다, 조사하다"],["opportunity","기회, 호기"],["investigate","수사하다, 조사하다"],["detail","세부사항, 자세히 설명하다"],["direct","직접적인, 지휘하다"],["examine","검사하다, 조사하다"],["balance","균형, 잔액"],["trait","특징, 특성"],["knowledge","지식, 인식"],["ignore","무시하다, 모른 척하다"]],
+day4:[["forbid","못하게 하다, 금지하다"],["conflict","충돌, 갈등"],["maintain","지속하다, 유지하다"],["passion","강한 감정, 열정"],["support","지원하다, 지지하다"],["concerned","관련 있는, 걱정하는"],["evolution","발전, 진화"],["community","공동체, 지역 사회"],["impact","영향, 충격"],["emphasize","중요시하다, 강조하다"],["function","기능, 역할"],["necessity","필요성, 필수품"],["prohibit","금하다, 막다"],["perspective","시각, 관점"],["emission","방출, 배출"],["active","적극적인, 활동적인"],["tendency","성향, 경향"],["ancient","아주 오래된, 고대의"],["military","군사적인, 군대의"],["entire","전체의, 완전한"],["determine","결정하다, 알아내다"],["influence","영향을 미치다, 영향"],["regular","규칙적인, 정기적인"],["participate","참가하다, 참여하다"],["predict","예측하다, 예언하다"],["respect","존경, 존중하다"],["progress","발전, 진보"],["environment","주변 상황, 환경"],["measure","조치, 측정하다"],["occur","일어나다, 발생하다"],["preference","더 좋아함, 선호"],["immediate","직접적인, 즉각적인"],["suffer","겪다, 고통받다"],["permit","허가증, 허락하다"],["circumstance","형편, 상황"],["forecast","예보, 예측하다"],["conservative","보수적인, 전통적인"],["effort","수고, 노력"],["development","개발, 성장"],["prevent","예방하다, 막다"]],
+day5:[["purchase","구매하다, 구입하다"],["describe","묘사하다, 설명하다"],["recommend","추천하다, 권하다"],["display","전시하다, 보여주다"],["compare","비교하다, 비유하다"],["accident","사고, 우연"],["general","일반적인, 보편적인"],["alarm","경보, 놀람"],["manage","관리하다, 처리하다"],["represent","대표하다, 나타내다"],["fee","요금, 수수료"],["motivate","동기를 부여하다, 자극하다"],["communicate","의사소통하다, 전달하다"],["aim","목표하다, 겨누다"],["observe","관찰하다, 준수하다"],["organize","조직하다, 정리하다"],["handle","다루다, 처리하다"],["exist","존재하다, 살아있다"],["seek","찾다, 구하다"],["aspect","측면, 양상"],["specific","구체적인, 명확한"],["disorder","장애, 혼란"],["claim","주장하다, 요구하다"],["adjust","조정하다, 적응하다"],["treatment","치료, 대우"],["crucial","결정적인, 매우 중요한"],["critical","비판적인, 중대한"],["gather","모으다, 수집하다"],["reward","보상, 사례금"],["confuse","혼란스럽게 하다, 당황하게 하다"],["universal","보편적인, 전 세계적인"],["disappoint","실망시키다, 낙담하게 하다"],["suppose","가정하다, 생각하다"],["arrange","정리하다, 준비하다"],["apologize","사과하다, 용서를 빌다"],["approach","접근하다, 다가가다"],["purpose","목적, 의도"],["exhibit","전시하다, 보여주다"],["demand","요구하다, 필요로 하다"],["attract","끌어들이다, 매료시키다"]],
+day6:[["category","종류, 범주"],["except","~을 제외하고는, 제외하다"],["discuss","논의하다, 토론하다"],["debate","토의하다, 논쟁하다"],["judgment","심판, 판단력"],["consume","먹다, 소비하다"],["alive","생기가 넘치는, 살아 있는"],["valuable","귀중한, 가치 있는"],["complain","항의하다, 불평하다"],["replace","교체하다, 대체하다"],["potential","가능성 있는, 잠재적인"],["norm","규범, 기준"],["standard","기준, 표준"],["advertise","알리다, 광고하다"],["appreciate","진가를 알아보다, 감사하다"],["aware","인식하는, 알고 있는"],["concept","생각, 개념"],["response","반응, 응답"],["stimulate","활성화시키다, 자극하다"],["credit","인정, 신용"],["poison","중독시키다, 독"],["excellent","훌륭한, 뛰어난"],["indicate","지시하다, 나타내다"],["primary","최초의, 주요한"],["essential","본질적인, 필수적인"],["chemical","화학적인, 화학물질"],["eliminate","없애다, 제거하다"],["efficient","효과적인, 능률적인"],["welfare","행복, 복지"],["opinion","생각, 의견"],["locate","찾아내다, 위치하다"],["invention","창작, 발명"],["ideal","완벽한, 이상적인"],["realistic","실현 가능한, 현실적인"],["conclude","끝내다, 결론짓다"],["struggle","애쓰다, 투쟁하다"],["unique","유일한, 독특한"],["afford","제공하다, ~할 여유가 있다"],["proper","올바른, 적절한"],["appropriate","알맞은, 적합한"]],
+day7:[["protest","시위하다, 항의하다"],["organic","유기농의, 유기적인"],["brilliant","멋진, 훌륭한"],["finance","자금을 대다, 재정"],["incredible","믿기 힘든, 놀라운"],["interest","관심, 이자"],["rare","드문, 희귀한"],["ordinary","보통의, 평범한"],["application","신청, 적용"],["define","정의하다, 규정하다"],["donate","기부하다, 기증하다"],["engage","관여하다, 약속하다"],["average","평균, 보통의"],["gender","성별, 성"],["invest","투자하다, 쏟다"],["previous","이전의, 앞의"],["worth","가치 있는, ~의 가치가 있는"],["alternative","대안의, 대체 가능한"],["factor","요인, 요소"],["element","요소, 성분"],["deadly","치명적인, 매우 위험한"],["firm","단단한, 확고한"],["independence","독립, 자립"],["occasion","특별한 일, 경우"],["publish","출판하다, 발표하다"],["reserve","예약하다, 비축하다"],["appearance","외모, 출현"],["appoint","임명하다, 지정하다"],["blend","혼합하다, 섞다"],["barrier","장벽, 장애물"],["obstacle","장애, 방해물"],["blink","눈을 깜박이다, 깜빡이다"],["detect","감지하다, 발견하다"],["education","교육, 학문"],["injured","부상당한, 다친"],["enormous","엄청난, 거대한"],["vast","광대한, 방대한"],["tiny","아주 작은, 조그마한"],["employ","고용하다, 사용하다"],["hire","고용하다, 빌리다"]],
+day8:[["accurate","정확한, 정밀한"],["precise","정밀한, 정확한"],["estimate","추산하다, 평가하다"],["compete","경쟁하다, 겨루다"],["submit","제출하다, 굴복하다"],["grab","움켜쥐다, 낚아채다"],["theory","이론, 학설"],["document","문서, 서류"],["enable","가능하게 하다, ~할 수 있게 하다"],["avoid","피하다, 방지하다"],["escape","도망치다, 벗어나다"],["innovate","혁신하다, 쇄신하다"],["insight","통찰, 이해"],["insurance","보험, 보장"],["infect","감염시키다, 병을 옮기다"],["vehicle","탈것, 차량"],["audition","오디션, 심사"],["belong","소속하다, 속하다"],["celebrate","축하하다, 기념하다"],["consist","구성되다, 이루어지다"],["demonstrate","증명하다, 시위하다"],["defend","방어하다, 지키다"],["disaster","재난, 참사"],["economic","경제의, 경제적인"],["household","가정의, 가사에 관한"],["assign","할당하다, 임명하다"],["transfer","옮기다, 이동하다"],["preserve","보존하다, 지키다"],["access","접근, 이용"],["opposite","반대의, 마주 보는"],["satisfaction","만족, 충족"],["comfort","편안함, 위로"],["ease","쉬움, 완화시키다"],["motion","움직임, 운동"],["operation","수술, 작동"],["blame","비난하다, ~의 탓으로 돌리다"],["refreshing","신선한, 상쾌한"],["trend","경향, 추세"],["journal","일기, 잡지"],["private","사적인, 개인의"]],
+day9:[["revolution","혁명, 대변혁"],["innocent","결백한, 순수한"],["glow","빛나다, 홍조를 띠다"],["corporate","기업의, 법인의"],["reputation","명성, 평판"],["guilty","죄책감이 드는, 유죄의"],["adequate","적절한, 충분한"],["thrust","밀치다, 찌르다"],["equip","장비를 갖추다, 준비시키다"],["deny","부인하다, 거절하다"],["register","등록하다, 기재하다"],["crisis","위기, 고비"],["genius","천재, 비범한 재능"],["delay","미루다, 지연시키다"],["construct","짓다, 구성하다"],["comment","의견, 논평하다"],["alert","경고하다, 방심하지 않는"],["edit","수정하다, 편집하다"],["acknowledge","인정하다, 알다"],["violent","격렬한, 폭력적인"],["gradually","점차적으로, 서서히"],["settle","해결하다, 정착하다"],["commit","저지르다, 약속하다"],["load","짐을 싣다, 부담"],["sustainable","지속 가능한, 유지할 수 있는"],["behavior","행동, 태도"],["mature","성숙한, 다 자란"],["analyze","분석하다, 해석하다"],["punish","처벌하다, 벌주다"],["recall","기억해내다, 회수하다"],["rotation","회전, 순환"],["guarantee","보장하다, 약속하다"],["agent","대리인, 중개인"],["genetic","유전적인, 유전의"],["aggressive","공격적인, 적극적인"],["declare","선언하다, 발표하다"],["remind","상기시키다, 생각나게 하다"],["civilization","문명, 문화"],["vehicle","탈것, 차량"],["insurance","보험, 보장"]],
+day10:[["retire","은퇴하다, 물러나다"],["delicate","섬세한, 민감한"],["horizontal","수평의, 가로의"],["clarify","명확하게 하다, 분명히 하다"],["restriction","제한, 규제"],["athlete","운동선수, 체육인"],["logical","논리적인, 타당한"],["sacrifice","희생하다, 바치다"],["rescue","구조하다, 구하다"],["tremble","떨다, 전율하다"],["broaden","넓히다, 확장하다"],["persist","끈질기게 계속하다, 지속하다"],["electricity","전기, 전류"],["departure","출발, 떠남"],["vertical","수직의, 세로의"],["initial","처음의, 초기의"],["drag","끌다, 끌어당기다"],["fix","고치다, 고정하다"],["ancestor","조상, 선조"],["regulate","규제하다, 조절하다"],["restrict","제한하다, 금지하다"],["possess","소유하다, 지니다"],["extend","연장하다, 확장하다"],["devise","고안하다, 발명하다"],["memorize","암기하다, 기억하다"],["reform","개혁하다, 개선하다"],["individual","개인의, 각각의"],["resist","저항하다, 견디다"],["cautious","조심스러운, 신중한"],["remarkable","주목할 만한, 놀라운"],["apparent","분명한, 겉보기의"],["embrace","껴안다, 받아들이다"],["extinct","멸종된, 사라진"],["length","길이, 기간"],["permanent","영구적인, 불변의"],["temporary","일시적인, 임시의"],["inherit","물려받다, 상속하다"],["obvious","명백한, 확실한"],["aboard","탑승한, ~에 탄"],["qualification","자격, 자격 조건"]],
+day11:[["take into account","고려하다, 감안하다"],["calm down","진정하다, 가라앉히다"],["come true","실현되다, 이루어지다"],["make sense of","이해하다, 뜻을 파악하다"],["contribute to","기여하다, 도움이 되다"],["get along with","~와 잘 지내다, 어울리다"],["have difficulty ~ing","~하는 데 어려움을 겪다, ~하는 것이 힘들다"],["take advantage of","이용하다, 악용하다"],["refer to","언급하다, 지칭하다"],["participate in","~에 참여하다, 참석하다"],["throw away","버리다, 폐기하다"],["take on","떠맡다, 책임지다"],["pick up","집다, 익히다"],["be about to do","막 ~하려 하다, 곧 ~할 예정이다"],["go through","겪다, 조사하다"],["depend on","의존하다, 믿다"],["lead to","~로 이어지다, 초래하다"],["make up","구성하다, 화해하다"],["pay attention to","주의를 기울이다, 집중하다"],["be aware of","~을 알고 있다, 인식하다"],["instead of","~대신에, ~하지 않고"],["bring about","유발하다, 초래하다"],["deal with","처리하다, 다루다"],["at the same time","동시에, 한편으로는"],["due to","~때문에, ~로 인한"],["have an effect on","~에 영향을 주다, 작용하다"],["keep from ~ing","~하지 못하게 하다, 막다"],["take for granted","당연하게 여기다, 대수롭지 않게 생각하다"],["take off","이륙하다, 벗다"],["keep in mind","명심하다, 기억하다"],["be regarded as","~로 여겨지다, 간주되다"],["come up with","떠올리다, 제안하다"],["take over","인수하다, 넘겨받다"],["be proud of","~을 자랑스러워하다, 뿌듯해하다"],["tend to","~하는 경향이 있다, ~하기 쉽다"],["plenty of","많은, 충분한"],["concentrate on","집중하다, 전념하다"],["in terms of","~의 관점에서, ~면에서"],["in addition (to)","~뿐만 아니라, 게다가"]],
+day12:[["dispose of","버리다, 처분하다"],["take turns","교대로 하다, 번갈아 하다"],["make one's way","나아가다, 이동하다"],["carry out","실행하다, 수행하다"],["chances are","아마도 ~일 것이다, ~할 가능성이 있다"],["pay off","성과를 거두다, 빚을 갚다"],["figure out","알아내다, 해결하다"],["suffer from","~을 겪다, ~로 고통받다"],["feel free to do","자유롭게 ~하다, 마음껏 ~하다"],["get used to","익숙해지다, 적응하다"],["can afford to do","~할 여유가 있다, ~할 형편이 되다"],["come upon","우연히 만나다, 발견하다"],["be associated with","~와 관련되다, 연관 짓다"],["put up with","참다, 견디다"],["stand up to","~에 맞서다, 저항하다"],["catch one's eye","눈길을 끌다, 시선을 사로잡다"],["get in touch with","연락하다, 접촉하다"],["catch up with","따라잡다, 뒤처지지 않다"],["go over","검토하다, 반복하다"],["make the most of","최대한 활용하다, 잘 이용하다"],["dig out","찾아내다, 파내다"],["a handful of","소수의, 몇 안 되는"],["head to","~로 향하다, 가다"],["be tempted to do","~하고 싶은 유혹을 느끼다, 끌리다"],["be in charge of","~을 책임지다, 맡다"],["make a fortune","큰돈을 벌다, 부자가 되다"],["call on","방문하다, 요청하다"],["consist of","~으로 구성되다, 이루어지다"],["catch sight of","~을 얼핏 보다, 눈에 띄다"],["regardless of","~에 상관없이, 무관하게"],["turn into","~으로 변하다, 바꾸다"],["out of place","어울리지 않는, 부적절한"],["remind of","~을 생각나게 하다, 상기시키다"],["after all","결국, 어쨌든"],["look into","조사하다, 살펴보다"],["end up","결국 ~하게 되다, ~으로 끝나다"],["keep up with","따라가다, 뒤처지지 않다"],["play a role in","~에서 역할을 하다, 기여하다"],["have in common","공통점을 가지다, 서로 공유하다"],["run out of","~이 다 떨어지다, 바닥나다"]],
+day13:[["hesitate","망설이다, 주저하다"],["astonish","깜짝 놀라게 하다, 경악하게 하다"],["tolerate","참다, 용인하다"],["offend","기분 상하게 하다, 불쾌감을 주다"],["humble","겸손한, 변변치 않은"],["arrogant","거만한, 오만한"],["impulse","충동, 충격"],["resent","분개하다, 억울해하다"],["frustrate","좌절시키다, 방해하다"],["awkward","어색한, 서투른"],["pledge","맹세하다, 서약하다"],["glance","흘낏 보다, 힐끗 보다"],["furious","격노한, 맹렬한"],["empathy","감정이입, 공감"],["eager","열렬한, 간절히 바라는"],["anticipation","예상, 기대"],["timid","소심한, 겁많은"],["sincere","진실된, 성실한"],["delighted","매우 기쁜, 기뻐하는"],["generous","관대한, 너그러운"],["faithful","충실한, 성실한"],["miserable","비참한, 우울한"],["patient","참을성 있는, 인내심 있는"],["ridicule","조롱하다, 비웃다"],["genuine","진짜의, 진심 어린"],["arouse","불러일으키다, 자극하다"],["reluctant","마지못해 하는, 꺼리는"],["responsible","책임감 있는, 책임이 있는"],["irritate","짜증나게 하다, 자극하다"],["ashamed","부끄러운, 창피한"],["jealous","질투하는, 시기하는"],["delight","기쁨을 주다, 즐겁게 하다"],["endure","견디다, 참다"],["fascinate","매료시키다, 마음을 사로잡다"],["compassion","연민, 동정"],["despair","절망하다, 체념하다"],["competent","유능한, 능력 있는"],["crawl","기어가다, 느릿느릿 움직이다"],["applaud","박수 치다, 칭찬하다"]],
+day14:[["supervise","감독하다, 지휘하다"],["certificate","증명서, 자격증"],["colleague","동료, 직장 친구"],["exceed","초과하다, 능가하다"],["challenge","도전, 어려운 일"],["miracle","기적, 놀라운 일"],["strategy","전략, 계획"],["rural","시골의, 지방의"],["spouse","배우자, 결혼한 상대"],["shift","교대 근무, 바꾸다"],["strain","긴장, 부담"],["urban","도시의, 도회적인"],["adventure","모험, 대담한 시도"],["confirm","확인하다, 확정하다"],["deprive","빼앗다, 박탈하다"],["chore","허드렛일, 잡일"],["vacuum","진공, 진공청소기로 청소하다"],["laundry","세탁물, 빨래"],["familiar","익숙한, 친숙한"],["bond","유대, 결속"],["specialize","전문으로 하다, 전공하다"],["outcome","결과, 성과"],["secure","확보하다, 안전하게 하다"],["occupation","직업, 점유"],["orphan","고아, 부모 없는 아이"],["destination","목적지, 도착지"],["fame","명성, 유명세"],["withdraw","인출하다, 물러나다"],["exchange","교환하다, 주고받다"],["collaborate","협력하다, 공동으로 일하다"],["react","반응하다, 대응하다"],["chief","우두머리, 주요한"],["complicated","복잡한, 이해하기 어려운"],["negotiation","협상, 교섭"],["resident","거주자, 주민"],["deposit","예금하다, 두다"],["attendant","안내원, 수행원"],["chase","쫓다, 추적하다"],["be familiar with","~에 익숙하다, 잘 알다"]],
+day15:[["authority","권위, 당국"],["emigrate","이민 가다, 이주하다"],["promote","촉진하다, 승진시키다"],["wield","휘두르다, 행사하다"],["industrialize","산업화하다, 공업화하다"],["ban","금지하다, 금지령"],["govern","통치하다, 지배하다"],["candidate","후보자, 지원자"],["patent","특허, 특허권"],["radical","급진적인, 근본적인"],["fraud","사기, 속임수"],["region","지역, 지방"],["commission","위원회, 수수료"],["suspect","의심하다, 용의자"],["priority","우선순위, 우선사항"],["refuge","피난처, 보호"],["witness","증인, 목격하다"],["justify","정당화하다, 해명하다"],["corrupt","부패한, 타락한"],["poll","여론조사, 투표"],["owe","빚지다, 신세를 지다"],["loan","대출, 빌려주다"],["territory","영토, 영역"],["refund","환불, 환불하다"],["compromise","타협하다, 손상시키다"],["domestic","국내의, 가정의"],["debt","빚, 부채"],["sue","고소하다, 소송을 제기하다"],["fund","자금, 기금"],["diplomat","외교관, 외교적 인물"],["distribute","배포하다, 분배하다"],["administration","행정부, 관리"],["imprison","투옥하다, 감금하다"],["property","재산, 소유물"],["executive","경영진, 행정의"],["equivalent","동등한, 상응하는 것"],["excess","초과, 과잉"],["immigrate","이민 오다, 이주해 오다"],["dominate","지배하다, 우위를 차지하다"],["violate","위반하다, 침해하다"]],
+day16:[["fluid","유체, 액체"],["method","방법, 방식"],["nerve","신경, 용기"],["release","방출하다, 공개하다"],["habitat","서식지, 거주지"],["vapor","증기, 김"],["clone","복제 생물, 복사하다"],["mass","덩어리, 질량"],["predator","포식자, 약탈자"],["toxic","독성의, 유해한"],["ray","광선, 방사선"],["skeleton","해골, 골격"],["gravity","중력, 진지함"],["observation","관찰, 주시"],["branch","가지, 분파"],["mixture","혼합물, 혼합"],["survive","살아남다, 견디다"],["particle","입자, 아주 작은 조각"],["temperature","온도, 체온"],["species","종(種), 종류"],["orbit","궤도, 선회하다"],["stem","줄기, 유래하다"],["vibrate","진동하다, 흔들리다"],["migrate","이주하다, 이동하다"],["liquid","액체, 유동체"],["hypothesis","가설, 추정"],["solid","고체의, 견고한"],["gas","기체, 가스"],["volcanic","화산의, 격렬한"],["expedition","탐험, 원정"],["extract","추출하다, 발췌하다"],["layer","층, 겹"],["neutral","중립의, 중성의"],["astronomy","천문학, 우주 과학"],["lunar","달의, 음력의"],["laboratory","실험실, 연구소"],["tissue","조직, 화장지"],["mammal","포유류, 젖먹이 동물"],["endangered","멸종 위기의, 위험에 처한"]],
+day17:[["spell","철자를 쓰다, 주문을 외다"],["myth","신화, 잘못된 믿음"],["paradox","역설, 모순"],["recite","암송하다, 낭독하다"],["foretell","예언하다, 예측하다"],["draft","초안, 징병"],["context","문맥, 정황"],["inherit","물려받다, 유전되다"],["colonial","식민지의, 식민지 시대의"],["ultimate","궁극적인, 최고의"],["irony","반어, 아이러니"],["series","연속, 시리즈"],["outline","개요, 윤곽"],["imitate","모방하다, 흉내 내다"],["ascend","올라가다, 상승하다"],["noble","고귀한, 귀족의"],["conventional","전통적인, 틀에 박힌"],["oppose","반대하다, 대항하다"],["philosophy","철학, 인생관"],["shallow","얕은, 피상적인"],["substance","물질, 본질"],["absolute","절대적인, 완전한"],["heritage","유산, 전통"],["tragic","비극적인, 슬픈"],["minister","장관, 목사"],["simplify","단순화하다, 쉽게 하다"],["everlasting","영원한, 끊임없는"],["ritual","의식, 의례적인 일"],["plot","줄거리, 음모"],["conquer","정복하다, 이기다"],["profound","깊은, 심오한"],["literal","글자 그대로의, 문자 그대로의"],["translate","번역하다, 해석하다"],["spirit","정신, 영혼"],["artistic","예술적인, 감각 있는"],["artificial","인공적인, 거짓된"],["modify","수정하다, 변경하다"],["descend","내려가다, 하강하다"],["imply","암시하다, 내포하다"]],
+day18:[["coordinate","조정하다, 조직하다"],["theme","주제, 테마"],["entertain","즐겁게 하다, 접대하다"],["portrait","초상화, 인물 사진"],["polish","닦다, 다듬다"],["amuse","웃기다, 즐겁게 하다"],["masterpiece","걸작, 대표작"],["architect","건축가, 설계자"],["sculpture","조각, 조각품"],["memorial","기념물, 추모의"],["orchestra","관현악단, 오케스트라"],["frame","틀, 액자"],["entrance","입구, 등장"],["distinguish","구별하다, 두드러지게 하다"],["concrete","구체적인, 콘크리트의"],["abstract","추상적인, 난해한"],["score","악보, 점수"],["magical","마법 같은, 황홀한"],["classical","고전의, 고전적인"],["socialize","사귀다, 교제하다"],["rehearse","리허설하다, 예행연습하다"],["contrast","대조, 차이"],["external","외부의, 밖의"],["collapse","붕괴하다, 무너지다"],["elaborate","정교한, 공들인"],["creative","창의적인, 독창적인"],["institute","기관, 설립하다"],["imaginary","상상의, 가상의"],["differ","다르다, 의견이 일치하지 않다"],["popularity","인기, 대중성"],["harmonize","조화를 이루다, 화음을 넣다"],["internal","내부의, 체내의"],["impressive","인상적인, 감동적인"],["precious","소중한, 귀중한"],["flash","번쩍이다, 섬광"],["priceless","값을 매길 수 없는, 매우 귀중한"],["compose","작곡하다, 구성하다"],["proportion","비율, 균형"],["perform","공연하다, 수행하다"]],
+day19:[["navigate","항해하다, 길을 찾다"],["visual","시각적인, 눈에 보이는"],["statistics","통계, 통계 자료"],["multiply","곱하다, 증가시키다"],["shipment","배송, 선적"],["automatic","자동의, 자동적인"],["bump","부딪치다, 충돌하다"],["electronic","전자의, 전자기기의"],["ride","타다, 태워주다"],["reckless","무모한, 부주의한"],["mechanical","기계의, 기계적인"],["angle","각도, 관점"],["virtual","가상의, 사실상의"],["commute","통근하다, 교환하다"],["maximize","극대화하다, 최대한 활용하다"],["nuclear","핵의, 원자력의"],["astronaut","우주비행사, 우주 탐험가"],["inspect","점검하다, 조사하다"],["equation","방정식, 동일시"],["sort","분류하다, 종류"],["download","다운로드하다, 내려받다"],["passenger","승객, 탑승객"],["minimize","최소화하다, 축소하다"],["install","설치하다, 장착하다"],["upload","업로드하다, 전송하다"],["rush","서두르다, 돌진하다"],["manual","수동의, 설명서"],["activate","작동시키다, 활성화하다"],["crash","충돌하다, 고장 나다"],["pedestrian","보행자, 도보 여행자"],["aircraft","항공기, 비행기"],["assemble","조립하다, 모이다"],["rough","거친, 대강의"],["spare","여분의, 아끼다"],["recharge","재충전하다, 다시 채우다"],["transport","운송하다, 수송하다"],["loosen","느슨하게 하다, 풀다"],["circuit","회로, 순환"],["numerous","수많은, 다양한"],["accelerate","가속하다, 촉진하다"]],
+day20:[["fatigue","피로, 피곤함"],["stretch","늘이다, 스트레칭하다"],["flavor","맛, 풍미"],["chronic","만성적인, 오래 지속되는"],["digestion","소화, 소화 작용"],["obesity","비만, 과체중 상태"],["posture","자세, 태도"],["opponent","상대, 반대자"],["symptom","증상, 징후"],["therapy","치료, 요법"],["scent","향기, 냄새"],["faint","기절하다, 희미한"],["nutrient","영양소, 영양분"],["track","트랙, 추적하다"],["fiber","섬유질, 섬유"],["target","목표, 표적"],["surgery","수술, 외과 치료"],["stroke","뇌졸중, 타격"],["portion","부분, 1인분"],["physical","신체적인, 물리적인"],["outlive","더 오래 살다, ~보다 오래 지속되다"],["heal","치유하다, 낫다"],["recipe","조리법, 비결"],["row","줄, 노 젓기"],["edible","먹을 수 있는, 식용의"],["muscle","근육, 근력"],["inject","주사하다, 주입하다"],["acute","급성의, 날카로운"],["cure","치료하다, 해결하다"],["immune","면역의, 면제된"],["prescribe","처방하다, 규정하다"],["spill","엎지르다, 유출하다"],["diagnose","진단하다, 분석하다"],["overweight","과체중의, 비만의"],["stir","휘젓다, 자극하다"],["pregnant","임신한, 의미심장한"],["extreme","극도의, 극단적인"],["breath","숨, 호흡"],["bleed","피를 흘리다, 출혈하다"],["flexible","유연한, 융통성 있는"]],
+day21:[["trigger","유발하다, 방아쇠"],["scholarship","장학금, 학문"],["isolate","고립시키다, 격리하다"],["grant","수여하다, 보조금"],["intermediate","중급의, 중간의"],["presentation","발표, 제출"],["captive","포로, 사로잡힌"],["attempt","시도하다, 노력하다"],["admire","감탄하다, 존경하다"],["academic","학문적인, 학구적인"],["detach","떼어내다, 분리하다"],["enroll","등록하다, 입학하다"],["policy","정책, 방침"],["bother","괴롭히다, 귀찮게 하다"],["award","상, 수여하다"],["evaluate","평가하다, 감정하다"],["voluntary","자발적인, 자원하는"],["encounter","마주치다, 우연한 만남"],["dictate","명령하다, 받아쓰게 하다"],["typical","전형적인, 일반적인"],["discipline","훈육, 학문 분야"],["attach","붙이다, 애착을 느끼다"],["pupil","학생, 눈동자"],["prestige","명성, 위신"],["strict","엄격한, 철저한"],["guidance","지도, 안내"],["aid","도움, 원조"],["disguise","변장하다, 숨기다"],["argue","논쟁하다, 주장하다"],["range","범위, 다양성"],["assist","돕다, 거들다"],["gratitude","감사, 고마움"],["invade","침입하다, 침해하다"],["recruit","모집하다, 신병"],["formal","공식적인, 격식을 갖춘"],["intelligent","똑똑한, 지능 있는"],["collective","집단의, 공동의"],["instruct","지시하다, 교육하다"],["interact","상호작용하다, 소통하다"],["inevitable","피할 수 없는, 불가피한"]],
+day22:[["identify","식별하다, 확인하다"],["pessimist","비관주의자, 비관적인 사람"],["attribute","~의 탓으로 돌리다, 속성"],["sudden","갑작스러운, 돌연한"],["associate","연관짓다, 동료"],["undergo","겪다, 경험하다"],["optimist","낙관주의자, 낙천적인 사람"],["ensure","보장하다, 확실하게 하다"],["abrupt","갑작스러운, 퉁명스러운"],["assumption","가정, 추정"],["exclude","제외하다, 배제하다"],["psychology","심리학, 심리"],["stress","스트레스, 강조하다"],["manipulate","조종하다, 능숙하게 다루다"],["illusion","환상, 착각"],["burden","부담, 짐"],["cheat","속이다, 부정행위를 하다"],["skeptical","회의적인, 의심 많은"],["persuade","설득하다, 권유하다"],["anxiety","불안, 염려"],["innate","타고난, 선천적인"],["convince","납득시키다, 확신시키다"],["dreadful","무시무시한, 끔찍한"],["wander","돌아다니다, 헤매다"],["relief","안도, 경감"],["favorable","호의적인, 유리한"],["frighten","겁주다, 놀라게 하다"],["intended","의도된, 계획된"],["uncomfortable","불편한, 거북한"],["mental","정신의, 마음의"],["horrible","끔찍한, 소름 끼치는"],["boost","증진시키다, 증가시키다"],["afraid","두려운, 걱정하는"],["sensible","분별 있는, 현명한"],["ascribe","~의 탓으로 돌리다, 귀속시키다"],["interfere","간섭하다, 방해하다"],["complex","복잡한, 콤플렉스"],["intend","의도하다, 작정하다"],["uneasy","불안한, 불편한"],["comfortable","편안한, 안락한"]],
+day23:[["deliver","배달하다, 전달하다"],["viewer","시청자, 관람자"],["announce","발표하다, 알리다"],["illustrate","설명하다, 삽화를 넣다"],["stamp","우표, 도장을 찍다"],["portable","휴대용의, 간편한"],["union","결합, 노동조합"],["audience","청중, 관객"],["broadcast","방송하다, 널리 알리다"],["content","내용물, 콘텐츠"],["obscure","모호한, 알려지지 않은"],["wrap","싸다, 포장하다"],["informative","유익한, 정보를 주는"],["mobile","이동식의, 휴대전화"],["appealing","매력적인, 호소력 있는"],["pile","더미, 쌓다"],["satellite","위성, 인공위성"],["commercial","광고, 상업적인"],["wireless","무선의, 무선 전신"],["column","기둥, 신문의 칼럼"],["limitation","제한, 한계"],["parcel","소포, 꾸러미"],["visible","눈에 보이는, 명백한"],["brief","간단한, 짧은"],["enhance","향상시키다, 강화하다"],["compelling","강렬한, 설득력 있는"],["medium","매체, 수단"],["leak","새다, 누설하다"],["stationary","정지된, 움직이지 않는"],["transmit","전송하다, 전달하다"],["envelope","봉투, 싸개"],["convey","전달하다, 나르다"],["signal","신호, 신호를 보내다"],["lessen","줄이다, 약화시키다"],["multitask","여러 작업을 동시에 하다"],["affair","사건, 일"],["collect","모으다, 수집하다"],["evident","분명한, 뚜렷한"],["variable","변수, 변하기 쉬운"],["diminish","줄어들다, 감소시키다"]],
+day24:[["summit","정상, 절정"],["nasty","불쾌한, 심한"],["litter","쓰레기, 어질러진 것"],["ecosystem","생태계, 생태 환경"],["fabric","직물, 구조"],["incline","기울다, 마음이 기울다"],["purify","정화하다, 깨끗이 하다"],["fragile","부서지기 쉬운, 허약한"],["pollution","오염, 공해"],["discard","버리다, 폐기하다"],["fossil","화석, 시대에 뒤떨어진 사람"],["recycle","재활용하다, 재사용하다"],["landfill","쓰레기 매립지, 매립"],["pesticide","농약, 살충제"],["cherish","소중히 여기다, 간직하다"],["conserve","보존하다, 보호하다"],["surface","표면, 외관"],["wasteful","낭비하는, 비효율적인"],["sweep","쓸다, 휩쓸다"],["reduce","줄이다, 축소하다"],["acid","산, 신랄한"],["utilize","활용하다, 이용하다"],["convert","전환하다, 개조하다"],["landscape","풍경, 지형"],["risk","위험, 위태"],["straw","빨대, 지푸라기"],["rotten","썩은, 부패한"],["suitable","적절한, 어울리는"],["atmosphere","대기, 분위기"],["generate","발생시키다, 만들어내다"],["raw","날것의, 가공되지 않은"],["transform","변화시키다, 탈바꿈하다"],["disposable","일회용의, 처분 가능한"],["rainforest","열대우림, 밀림"],["remain","남다, 유지하다"],["steep","가파른, 급격한"],["constant","끊임없는, 일정한"],["cliff","절벽, 낭떠러지"],["resource","자원, 재료"],["peak","절정, 꼭대기"]],
+day25:[["light","빛, 가벼운"],["drain","배수하다, 소모시키다"],["weed","잡초, 제거하다"],["harvest","수확, 추수"],["creature","생물, 피조물"],["phenomenon","현상, 경이로운 것"],["tide","조수, 흐름"],["plow","쟁기질하다, 갈다"],["temperate","온화한, 절제하는"],["transplant","이식하다, 옮겨 심다"],["reap","거두다, 수확하다"],["native","원주민의, 태어난 곳의"],["intense","강렬한, 극심한"],["enrich","풍부하게 하다, 질을 높이다"],["float","뜨다, 떠다니다"],["tropical","열대의, 무더운"],["originate","시작되다, 유래하다"],["climate","기후, 분위기"],["barren","불모의, 메마른"],["durable","내구성 있는, 오래가는"],["earthquake","지진, 대변동"],["annual","매년의, 연례의"],["pest","해충, 성가신 존재"],["melt","녹다, 감정을 누그러뜨리다"],["derive","얻다, 유래하다"],["fertile","비옥한, 다산의"],["fierce","사나운, 격렬한"],["shadow","그림자, 그늘"],["cultivate","경작하다, 기르다"],["freeze","얼다, 얼리다"],["sufficient","충분한, 만족스러운"],["folk","사람들, 민속의"],["resistant","저항하는, 강한"],["humidity","습도, 습기"],["wave","파도, 흔들다"],["crop","농작물, 수확량"],["eruption","폭발, 분출"],["hatch","부화하다, 계획하다"],["ripe","익은, 성숙한"]],
+day26:[["vain","헛된, 자만심이 강한"],["bold","대담한, 선명한"],["check","확인하다, 저지하다"],["pray","기도하다, 간청하다"],["expend","소비하다, 쓰다"],["sometime","언젠가, 한때"],["famine","기근, 굶주림"],["scared","겁먹은, 두려워하는"],["considerable","상당한, 꽤 많은"],["feminine","여성의, 여성스러운"],["custom","관습, 단골"],["still","아직도, 고요한"],["prey","먹이, 희생자"],["correct","수정하다, 맞는"],["sacred","신성한, 종교적인"],["vogue","유행, 인기"],["regard","간주하다, 존중"],["tip","조언, 끝부분"],["vague","모호한, 흐릿한"],["account","계좌, 설명"],["air","공기, 방송하다"],["develop","발전시키다, (사진을) 현상하다"],["site","위치, 장소"],["cite","인용하다, 소환하다"],["expand","확장하다, 팽창하다"],["charge","청구하다, 책임지우다"],["considerate","사려 깊은, 배려하는"],["sometimes","때때로, 가끔"],["bald","대머리의, 노골적인"],["vein","정맥, 기질"]],
+day27:[["lay","놓다, 눕히다"],["bill","청구서, 법안"],["dairy","유제품의, 낙농의"],["grave","무덤, 중대한"],["draw","끌다, 그리다"],["defect","결함, 탈퇴하다"],["diary","일기, 일기장"],["absurd","터무니없는, 불합리한"],["count","세다, 중요하다"],["bear","참다, 낳다"],["contract","계약, 수축하다"],["present","제시하다, 현재의"],["curve","곡선, 구부러지다"],["sound","소리, 건전한"],["complement","보완하다, 보충물"],["absorb","흡수하다, 열중하게 하다"],["principle","원칙, 신조"],["inquire","묻다, 조사하다"],["defeat","패배시키다, 이기다"],["subject","주제, 지배를 받는 사람"],["respectable","존경할 만한, 괜찮은"],["compliment","칭찬, 감사 인사"],["respective","각각의, 개별적인"],["lie","눕다, 놓여 있다"],["lie(거짓말)","거짓말하다, 속이다"],["acquire","얻다, 습득하다"],["hold","잡다, 유지하다"],["carve","새기다, 조각하다"],["require","요구하다, 필요로 하다"],["principal","교장, 주요한"]],
+day28:[["book","예약하다, 책"],["loyal","충성스러운, 성실한"],["raise","올리다, 기르다"],["calculate","계산하다, 예상하다"],["condition","상태, 조건"],["rate","비율, 평가하다"],["globe","지구, 구체"],["press","누르다, 언론"],["current","현재의, 흐름"],["fair","공정한, 박람회"],["term","기간, 용어"],["circulate","순환하다, 유통시키다"],["expire","만료되다, 죽다"],["solution","해결책, 용액"],["terrific","굉장한, 훌륭한"],["rise","오르다, 상승"],["terrible","끔찍한, 형편없는"],["royal","왕실의, 위엄 있는"],["fine","좋은, 벌금"],["inspire","영감을 주다, 고무하다"],["emergency","비상사태, 위급함"],["glove","장갑, 보호 장비"],["desert","사막, 버리다"],["conscience","양심, 도덕심"],["conscious","의식이 있는, 의식하는"],["personnel","인사부, 직원들"],["dessert","디저트, 후식"],["emergence","출현, 등장"],["personal","개인의, 사적인"],["conduct","수행하다, 행동"]],
+day29:[["waste","낭비하다, 쓰레기"],["statue","조각상, 동상"],["brake","브레이크, 제동장치"],["explore","탐험하다, 조사하다"],["vacation","휴가, 방학"],["correspond","일치하다, 편지를 주고받다"],["hostility","적대감, 반감"],["ethical","윤리적인, 도덕적인"],["case","경우, 사건"],["hospitality","환대, 서비스업"],["post","게시하다, 우편"],["state","진술하다, 상태"],["company","회사, 동행"],["sow","씨를 뿌리다, 퍼뜨리다"],["reflect","반사하다, 숙고하다"],["saw","톱, 보다(see의 과거형)"],["dismiss","해고하다, 묵살하다"],["vocation","천직, 직업"],["decline","거절하다, 하락하다"],["waist","허리, 허리둘레"],["suit","정장, 어울리다"],["proceed","계속하다, 나아가다"],["precede","앞서다, 선행하다"],["break","깨다, 휴식"],["status","상태, 지위"],["article","기사, 물품"],["sew","바느질하다, 꿰매다"],["figure","수치, 인물"],["ethnic","민족의, 인종의"],["explode","폭발하다, 터뜨리다"]],
+day30:[["attitude","태도, 자세"],["address","주소, 연설하다"],["block","막다, 블록"],["mediate","중재하다, 조정하다"],["mortal","죽을 운명의, 인간의"],["counsel","상담하다, 조언"],["flat","평평한, 아파트"],["moral","도덕의, 교훈적인"],["issue","문제, 발행하다"],["board","판자, 탑승하다"],["affect","영향을 미치다, 가장하다"],["flight","비행, 도주"],["simultaneously","동시에, 일제히"],["margin","여백, 차이"],["spontaneously","자발적으로, 자연스럽게"],["even","심지어, 평평한"],["altitude","고도, 높이"],["adapt","적응하다, 각색하다"],["meditate","명상하다, 숙고하다"],["council","위원회, 의회"],["reason","이유, 이성"],["adopt","입양하다, 채택하다"],["phase","단계, 국면"],["effect","효과, 결과"],["fright","공포, 놀람"],["phrase","구절, 표현하다"],["spring","봄, 튀다"],["morale","사기, 의욕"],["cover","덮다, 포함하다"]]
 };
 
-async function loadData(){
-  try{
-    let r = await fetch(FIREBASE_URL);
-    let d = await r.json();
-    if(d){
-      DATA = d;
-      if(!DATA.students) DATA.students = [];
-      if(!DATA.items) DATA.items = [];
-      if(!DATA.orders) DATA.orders = [];
-      if(!DATA.auctions) DATA.auctions = {};
-      if(!DATA.vocabTests) DATA.vocabTests = {};
-      if(!DATA.vocabSubmissions) DATA.vocabSubmissions = {};
-    }
-  }catch(e){
-    console.error("데이터 로드 실패:", e);
-  }
+/* ── 유틸 ── */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
-async function saveData(){
-  try{
-    await fetch(FIREBASE_URL, {
+function today() { return new Date().toLocaleString('ko-KR'); }
+
+/* ── DB ── */
+async function dbLoad() {
+  try {
+    const res = await fetch(FIREBASE_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json) DATA = json;
+  } catch(e) { alert('데이터베이스 연결 실패: ' + e.message); return false; }
+  if (!DATA.students) DATA.students = [];
+  if (!DATA.items)    DATA.items    = [];
+  if (!DATA.orders)   DATA.orders   = [];
+  if (!DATA.auctions) DATA.auctions = {};
+  if (!DATA.vocabTests) DATA.vocabTests = {};
+  // 구버전 단일 auction 마이그레이션
+  if (DATA.auction) {
+    if (DATA.auction.itemName && !DATA.auctions['legacy']) {
+      DATA.auctions['legacy'] = DATA.auction;
+      DATA.auctions['legacy'].id = 'legacy';
+    }
+    delete DATA.auction;
+  }
+  return true;
+}
+
+async function dbSave() {
+  try {
+    const res = await fetch(FIREBASE_URL, {
       method:'PUT',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(DATA)
     });
-  }catch(e){
-    console.error("데이터 저장 실패:", e);
-  }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch(e) { alert('저장 실패: ' + e.message); }
 }
 
-// ── 로그인 & 로그아웃 ──
-async function login(){
-  await loadData();
-  let id = document.getElementById('loginId').value.trim();
-  let pw = document.getElementById('loginPw').value.trim();
-  let err = document.getElementById('loginErr');
-  if(err) err.style.display = 'none';
-
-  if(id === 'admin' && pw === 'admin1234'){
-    currentUser = { role:'admin', name:'관리자' };
+/* ── 로그인/로그아웃 ── */
+async function login() {
+  const id  = document.getElementById('loginId').value.trim();
+  const pw  = document.getElementById('loginPw').value.trim();
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  const ok = await dbLoad();
+  if (!ok) return;
+  if (id === 'admin' && pw === 'admin1234') {
+    currentUser = {role:'admin'};
     document.getElementById('loginCard').style.display = 'none';
     document.getElementById('adminMain').style.display = 'block';
     renderAdmin();
     return;
   }
-
-  let st = DATA.students.find(s => s.id === id && s.pw === pw);
-  if(st){
-    currentUser = { role:'student', ...st };
-    document.getElementById('loginCard').style.display = 'none';
-    document.getElementById('studentMain').style.display = 'block';
-    let nameElem = document.getElementById('studentName');
-    if(nameElem) nameElem.innerText = `${st.name} 학생`;
-    renderStudent();
-    return;
-  }
-  if(err) err.style.display = 'block';
+  const s = DATA.students.find(x => x.id === id && x.pw === pw);
+  if (!s) { err.style.display = 'block'; return; }
+  currentUser = {role:'student', data:s};
+  document.getElementById('loginCard').style.display   = 'none';
+  document.getElementById('studentMain').style.display = 'block';
+  renderStudent();
+  startAuctionPoll();
 }
 
-function logout(){
-  currentUser = null;
-  document.getElementById('loginCard').style.display = 'block';
-  document.getElementById('studentMain').style.display = 'none';
-  document.getElementById('adminMain').style.display = 'none';
+function logout() { stopAuctionPoll(); location.reload(); }
+function getMe()  { return DATA.students.find(x => x.id === currentUser.data.id); }
+
+/* ── 학생 렌더 ── */
+function renderStudent() {
+  const s = getMe();
+  document.getElementById('studentName').innerText   = s.name;
+  document.getElementById('studentPoints').innerText = s.points;
+  renderShop();
+  renderStudentHistory();
+  renderStudentAuctionList();
+  renderStudentVocabList();
 }
 
-// ── 교사: 단어시험 관리 ──
-async function toggleVocabTest(day){
-  await loadData();
-  let currentStatus = DATA.vocabTests[day] || false;
-  DATA.vocabTests[day] = !currentStatus;
-  
-  await saveData();
-  showToast(DATA.vocabTests[day] ? `${day} 시험이 열렸습니다.` : `${day} 시험이 마감되었습니다.`);
-  renderAdminVocab();
+function historyRows(arr) {
+  if (!arr || !arr.length) return '<div class="empty">내역이 없습니다.</div>';
+  return arr.slice().reverse().map(function(h) {
+    var cls  = h.points > 0 ? 'green' : 'red';
+    var sign = h.points > 0 ? '+' : '';
+    return '<div class="history flex"><div><div>' + h.label + '</div><div class="small">' + h.date + '</div></div><div class="' + cls + '">' + sign + h.points + 'P</div></div>';
+  }).join('');
 }
 
-function renderAdminVocab(){
-  let h = '';
-  Object.keys(VOCAB_DATA).forEach(day => {
-    let isOpen = DATA.vocabTests[day] || false;
-    let submittedStudents = [];
-    
-    if(DATA.vocabSubmissions && DATA.vocabSubmissions[day]){
-      Object.keys(DATA.vocabSubmissions[day]).forEach(stId => {
-        let sub = DATA.vocabSubmissions[day][stId];
-        let wrongWords = sub.details ? sub.details.filter(w => !w.isCorrect) : [];
-        submittedStudents.push({ ...sub, wrongWords });
-      });
-    }
-
-    h += `<div class="admin-auction-card" style="border:1px solid #ccc;padding:12px;margin-bottom:10px;border-radius:8px;">
-      <div class="aa-header" style="display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div class="aa-title" style="font-size:16px;font-weight:800">${day.toUpperCase()} (${VOCAB_DATA[day].length}단어)</div>
-          <div class="small">상태: ${isOpen ? '<span style="color:green">응시 가능 (OPEN)</span>' : '<span style="color:red">마감됨 (CLOSED)</span>'}</div>
-        </div>
-        <button class="btn ${isOpen ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleVocabTest('${day}')">
-          ${isOpen ? '시험 닫기' : '시험 열기'}
-        </button>
-      </div>`;
-
-    if(submittedStudents.length > 0){
-      h += `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #e5e5e5">
-        <div class="small" style="font-weight:700;margin-bottom:6px">학생별 오답 제출 내역</div>`;
-      submittedStudents.forEach(st => {
-        h += `<div style="background:#f9f9f9;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:13px">
-          <div style="display:flex;justify-content:space-between;">
-            <strong>${st.studentName} (${st.studentId})</strong>
-            <span style="color:green;font-weight:bold">${st.score}점 획득</span>
-          </div>`;
-        
-        if(st.wrongWords.length > 0){
-          h += `<div style="color:red;font-size:12px;margin-top:4px">
-            틀린 단어 (${st.wrongWords.length}개): ${st.wrongWords.map(w => `${w.word}(작성: ${w.userAns || '미입력'})`).join(', ')}
-          </div>`;
-        } else {
-          h += `<div style="color:green;font-size:12px;margin-top:4px">만점 (틀린 단어 없음)</div>`;
-        }
-        h += `</div>`;
-      });
-      h += `</div>`;
-    }
-    h += `</div>`;
-  });
-  
-  let target = document.getElementById('adminVocabList');
-  if(target) target.innerHTML = h;
+function renderStudentHistory() {
+  document.getElementById('studentHistory').innerHTML = historyRows(getMe().history);
 }
 
-// ── 학생: 단어시험 및 오답노트 ──
-function renderStudentVocab(){
-  let h = '';
-  Object.keys(VOCAB_DATA).forEach(day => {
-    let isOpen = DATA.vocabTests[day] || false;
-    let mySub = (DATA.vocabSubmissions && DATA.vocabSubmissions[day]) ? DATA.vocabSubmissions[day][currentUser.id] : null;
-
-    h += `<div class="shop-item" style="border:1px solid #ccc;padding:12px;margin-bottom:10px;border-radius:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div>
-          <strong style="font-size:16px">${day.toUpperCase()}</strong>
-          <span class="small" style="margin-left:8px">총 ${VOCAB_DATA[day].length}문항</span>
-        </div>`;
-
-    if(mySub){
-      h += `<span class="badge" style="background:#e1f5fe;color:#0288d1;padding:4px 8px;border-radius:4px;">제출완료 (${mySub.score}점)</span></div>`;
-      h += `<button class="btn btn-primary btn-sm" onclick="viewMyWrongAnswers('${day}')">오답 노트 및 제출 답안 확인</button>`;
-    } else if(isOpen){
-      h += `<span class="badge" style="background:#e8f5e9;color:#2e7d32;padding:4px 8px;border-radius:4px;">응시 가능</span></div>`;
-      h += `<button class="btn btn-success btn-sm" onclick="startQuiz('${day}')">시험 응시하기</button>`;
-    } else {
-      h += `<span class="badge" style="background:#ffebee;color:#c62828;padding:4px 8px;border-radius:4px;">마감됨</span></div>`;
-      h += `<div class="small" style="color:red">시험이 마감되어 응시할 수 없습니다.</div>`;
-    }
-    h += `</div>`;
-  });
-  
-  let target = document.getElementById('studentVocabList');
-  if(target) target.innerHTML = h;
+function renderShop() {
+  const s  = getMe();
+  const el = document.getElementById('shopList');
+  if (!DATA.items.length) { el.innerHTML = '<div class="empty">등록된 상품이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.items.map(function(i) {
+    return '<div class="shop-item flex"><div><div>' + i.name + '</div><div class="small">' + i.price + 'P</div></div>' +
+      '<button class="btn btn-primary btn-sm" ' + (s.points < i.price ? 'disabled' : '') + ' onclick="buyItem(' + i.id + ')">구매</button></div>';
+  }).join('');
 }
 
-function viewMyWrongAnswers(day){
-  let mySub = DATA.vocabSubmissions[day][currentUser.id];
-  let h = `<div style="background:#f5f5f5;padding:16px;border-radius:12px;margin-bottom:16px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3>${day.toUpperCase()} 내 제출 결과</h3>
-      <button class="btn btn-danger btn-sm" onclick="renderStudentVocab()">목록으로</button>
-    </div>
-    <div style="margin-bottom:10px"><strong>획득 점수:</strong> ${mySub.score}점</div><div>`;
-
-  mySub.details.forEach((item, idx) => {
-    h += `<div style="background:#fff;padding:10px;border-radius:8px;margin-bottom:6px;border:1px solid ${item.isCorrect ? '#a5d6a7' : '#ef9a9a'}">
-      <div><strong>${idx+1}. ${item.word}</strong> (정답: ${item.correctAns})</div>
-      <div class="small" style="margin-top:4px">
-        내가 쓴 답: <span style="font-weight:700;color:${item.isCorrect ? 'green' : 'red'}">${item.userAns || '미입력'}</span> 
-        ${item.isCorrect ? '<span style="color:green">(정답)</span>' : '<span style="color:red">(오답)</span>'}
-      </div>
-    </div>`;
-  });
-  h += `</div></div>`;
-  
-  let target = document.getElementById('studentVocabList');
-  if(target) target.innerHTML = h;
-}
-
-function startQuiz(day){
-  let words = VOCAB_DATA[day];
-  let h = `<div style="background:#f5f5f5;padding:20px;border-radius:14px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h3>${day.toUpperCase()} 단어시험</h3>
-      <button class="btn btn-danger btn-sm" onclick="renderStudentVocab()">취소</button>
-    </div>`;
-  
-  words.forEach((w, i) => {
-    h += `<div style="margin-bottom:10px;">
-      <label style="display:block;margin-bottom:4px;">${i+1}. ${w[0]}</label>
-      <input type="text" id="q_${i}" placeholder="뜻을 입력하세요" style="width:100%;padding:8px;box-sizing:border-box;">
-    </div>`;
-  });
-
-  h += `<button class="btn btn-primary" onclick="submitQuiz('${day}')" style="width:100%;padding:10px;margin-top:10px">제출하기</button></div>`;
-  
-  let target = document.getElementById('studentVocabList');
-  if(target) target.innerHTML = h;
-}
-
-async function submitQuiz(day){
-  await loadData();
-  let words = VOCAB_DATA[day];
-  let score = 0;
-  let details = [];
-
-  words.forEach((w, i) => {
-    let inputElem = document.getElementById(`q_${i}`);
-    let userAns = inputElem ? inputElem.value.trim() : '';
-    let isCorrect = userAns === w[1].trim();
-    if(isCorrect) score += 10;
-
-    details.push({
-      word: w[0],
-      correctAns: w[1],
-      userAns: userAns,
-      isCorrect: isCorrect
-    });
-  });
-
-  if(!DATA.vocabSubmissions) DATA.vocabSubmissions = {};
-  if(!DATA.vocabSubmissions[day]) DATA.vocabSubmissions[day] = {};
-
-  DATA.vocabSubmissions[day][currentUser.id] = {
-    studentId: currentUser.id,
-    studentName: currentUser.name,
-    score: score,
-    details: details,
-    submittedAt: new Date().toLocaleString()
-  };
-
-  let student = DATA.students.find(s => s.id === currentUser.id);
-  if(student){
-    student.points = (student.points || 0) + score;
-    currentUser.points = student.points;
-    if(!student.history) student.history = [];
-    student.history.unshift({
-      date: new Date().toLocaleDateString(),
-      amt: score,
-      reason: `${day.toUpperCase()} 단어시험 (${score}점)`
-    });
-  }
-
-  await saveData();
-  showToast(`${score}점을 획득했습니다!`);
+async function buyItem(itemId) {
+  const item = DATA.items.find(x => x.id === itemId);
+  const s    = getMe();
+  if (!item || s.points < item.price) return;
+  s.points -= item.price;
+  if (!s.history) s.history = [];
+  s.history.push({label:'상품 구매 - ' + item.name, points:-item.price, date:today()});
+  DATA.orders.unshift({id:Date.now(), studentName:s.name, itemName:item.name});
+  await dbSave();
+  showToast('🛍️ ' + item.name + ' 구매 완료!');
   renderStudent();
 }
 
-// ── UI 탭 & 렌더링 ──
-function studentTab(tab, el){
-  document.querySelectorAll('#studentMain .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#studentMain .panel').forEach(p => p.classList.remove('active'));
-  if(el) el.classList.add('active');
-  let target = document.getElementById(`s-${tab}`);
-  if(target) target.classList.add('active');
-  if(tab === 'vocab') renderStudentVocab();
+/* ── 학생 경매 목록 ── */
+function renderStudentAuctionList() {
+  var el = document.getElementById('studentAuctionList');
+  var list = Object.values(DATA.auctions || {});
+  if (!list.length) { el.innerHTML = '<div class="empty">진행 중인 경매가 없습니다.</div>'; return; }
+  el.innerHTML = list.map(function(auc) {
+    return buildStudentAuctionCard(auc);
+  }).join('');
 }
 
-function adminTab(tab, el){
-  document.querySelectorAll('#adminMain .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#adminMain .panel').forEach(p => p.classList.remove('active'));
-  if(el) el.classList.add('active');
-  let target = document.getElementById(`a-${tab}`);
-  if(target) target.classList.add('active');
-  if(tab === 'vocab') renderAdminVocab();
-}
+function buildStudentAuctionCard(auc) {
+  var s       = getMe();
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var myEntry = auc.bids && auc.bids[String(s.id)] ? auc.bids[String(s.id)] : null;
+  var myTotal = myEntry ? myEntry.amount : 0;
+  var minBid  = Math.max(auc.startPrice || 10, highBid > 0 ? highBid + STEP : (auc.startPrice || 10));
+  // round up to step
+  if (minBid % STEP !== 0) minBid = Math.ceil(minBid / STEP) * STEP;
 
-function showToast(msg){
-  let t = document.getElementById('toast');
-  if(t){
-    t.innerText = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+  if (auc.active) {
+    var isTop  = myTotal > 0 && myTotal === highBid;
+    var badgeCls = isTop ? 'badge-winner' : 'badge-active';
+    var badgeTxt = isTop ? '🥇 최고 입찰자' : '진행 중';
+    return '<div class="auction-card" id="acard-' + auc.id + '">' +
+      '<div class="flex"><div class="ac-title">' + auc.itemName + '</div><span class="badge ' + badgeCls + '">' + badgeTxt + '</span></div>' +
+      '<div class="ac-meta">' +
+        '<span>🏁 시작가 ' + (auc.startPrice||0) + 'P</span>' +
+        '<span>📈 현재 최고 <strong class="green">' + highBid + 'P</strong></span>' +
+        (myTotal > 0 ? '<span>내 입찰 <strong style="color:var(--accent2)">' + myTotal + 'P</strong></span>' : '') +
+      '</div>' +
+      '<div class="ac-bid-row">' +
+        '<div class="step-group">' +
+          '<button onclick="stepBid(\'' + auc.id + '\',-1)">−</button>' +
+          '<div class="step-val" id="step-' + auc.id + '">' + minBid + 'P</div>' +
+          '<button onclick="stepBid(\'' + auc.id + '\',1)">+</button>' +
+        '</div>' +
+        '<button class="btn btn-primary" style="flex:1" onclick="placeBid(\'' + auc.id + '\')">입찰</button>' +
+      '</div>' +
+    '</div>';
   } else {
-    alert(msg);
+    var won = auc.winner && String(auc.winner.studentId) === String(s.id);
+    return '<div class="auction-card">' +
+      '<div class="flex"><div class="ac-title">' + auc.itemName + '</div><span class="badge badge-ended">종료</span></div>' +
+      '<div class="ac-meta"><span>🏁 시작가 ' + (auc.startPrice||0) + 'P</span></div>' +
+      '<div style="margin-top:10px">' +
+        (auc.winner
+          ? '<span class="badge badge-winner">🏆 낙찰자: ' + auc.winner.studentName + '  ' + auc.winner.amount + 'P</span>' +
+            (won ? '<div style="margin-top:8px;color:var(--orange);font-weight:700">🎉 낙찰되었습니다!</div>' : '')
+          : '<span class="badge badge-ended">낙찰자 없음</span>') +
+      '</div>' +
+    '</div>';
   }
 }
 
-function renderStudent(){
-  let ptElem = document.getElementById('studentPoints');
-  if(ptElem) ptElem.innerText = currentUser.points || 0;
-  renderStudentVocab();
+/* step 버튼 현재값 */
+function stepBid(aucId, dir) {
+  var el   = document.getElementById('step-' + aucId);
+  if (!el) return;
+  var cur  = parseInt(el.textContent) || 0;
+  var next = cur + dir * STEP;
+  // 최솟값 계산
+  var auc     = DATA.auctions[aucId];
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var minBid  = highBid > 0 ? highBid + STEP : (auc.startPrice || 10);
+  if (minBid % STEP !== 0) minBid = Math.ceil(minBid / STEP) * STEP;
+  if (next < minBid) next = minBid;
+  el.textContent = next + 'P';
 }
 
-function renderAdmin(){
+async function placeBid(aucId) {
+  var auc = DATA.auctions[aucId];
+  if (!auc || !auc.active) return;
+  var el  = document.getElementById('step-' + aucId);
+  var amt = parseInt(el ? el.textContent : 0);
+  if (!amt || amt <= 0) { alert('입찰 금액을 설정하세요.'); return; }
+  if (amt % STEP !== 0) { alert('호가 단위는 ' + STEP + 'P 입니다.'); return; }
+  var s = getMe();
+  // 최고 입찰가 확인
+  var bids    = Object.values(auc.bids || {}).map(function(b){ return b.amount; });
+  var highBid = bids.length ? Math.max.apply(null, bids) : 0;
+  var minBid  = highBid > 0 ? highBid + STEP : (auc.startPrice || 10);
+  if (amt < minBid) { alert('최소 입찰 금액은 ' + minBid + 'P 입니다.'); return; }
+  if (s.points < amt) { alert('포인트가 부족합니다.'); return; }
+
+  var sid = String(s.id);
+  var prev = auc.bids && auc.bids[sid] ? auc.bids[sid].amount : 0;
+  var diff = amt - prev; // 추가로 차감할 포인트
+  if (diff <= 0) { alert('현재 내 입찰보다 높은 금액을 입력하세요.'); return; }
+  if (s.points < diff) { alert('포인트가 부족합니다.'); return; }
+
+  s.points -= diff;
+  if (!s.history) s.history = [];
+  s.history.push({label:'경매 입찰 - ' + auc.itemName + ' (' + amt + 'P)', points:-diff, date:today()});
+  if (!auc.bids) auc.bids = {};
+  auc.bids[sid] = {studentName:s.name, amount:amt};
+
+  await dbSave();
+  showToast('🔨 입찰 완료! ' + amt + 'P');
+  renderStudent();
+}
+
+/* ── 폴링 ── */
+var auctionPollTimer = null;
+function startAuctionPoll() {
+  stopAuctionPoll();
+  auctionPollTimer = setInterval(async function() {
+    if (!currentUser || currentUser.role !== 'student') { stopAuctionPoll(); return; }
+    try {
+      var res  = await fetch(FIREBASE_URL);
+      var json = await res.json();
+      if (json) {
+        DATA = json;
+        if (!DATA.auctions) DATA.auctions = {};
+        if (!DATA.students) DATA.students = [];
+        if (!DATA.vocabTests) DATA.vocabTests = {};
+      }
+    } catch(e) { return; }
+    var auctionPanel = document.getElementById('s-auction');
+    if (auctionPanel && auctionPanel.classList.contains('active')) {
+      renderStudentAuctionList();
+    }
+    var vocabPanel = document.getElementById('s-vocab');
+    if (vocabPanel && vocabPanel.classList.contains('active') && !currentQuiz) {
+      renderStudentVocabList();
+    }
+    // 포인트 업데이트
+    var s = getMe();
+    if (s) document.getElementById('studentPoints').innerText = s.points;
+  }, 4000);
+}
+function stopAuctionPoll() {
+  if (auctionPollTimer) { clearInterval(auctionPollTimer); auctionPollTimer = null; }
+}
+
+/* ── 관리자 렌더 ── */
+function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuctionList(); renderAdminVocab(); renderOrders(); }
+
+async function addStudent() {
+  var name = document.getElementById('newName').value.trim();
+  var id   = document.getElementById('newId').value.trim();
+  var pw   = document.getElementById('newPw').value.trim();
+  if (!name || !id || !pw) { alert('이름, 아이디, 비밀번호를 모두 입력하세요.'); return; }
+  if (DATA.students.find(function(s){ return s.id === id; })) { alert('이미 사용 중인 아이디입니다.'); return; }
+  DATA.students.push({id:id, pw:pw, name:name, points:0, history:[], vocabResults:{}});
+  await dbSave();
+  document.getElementById('newName').value = '';
+  document.getElementById('newId').value   = '';
+  document.getElementById('newPw').value   = '';
+  showToast('✅ ' + name + ' 학생이 추가되었습니다.');
+  renderStudents();
+}
+
+async function deleteStudent(sid) {
+  var s = DATA.students.find(function(x){ return x.id === sid; });
+  if (!s) return;
+  if (!confirm(s.name + ' 학생을 삭제하시겠습니까?\n(포인트 내역도 모두 삭제됩니다)')) return;
+  DATA.students = DATA.students.filter(function(x){ return x.id !== sid; });
+  await dbSave();
+  showToast('🗑️ ' + s.name + ' 삭제 완료');
+  renderStudents();
+}
+
+function renderStudents() {
+  document.getElementById('studentList').innerHTML = DATA.students.map(function(s) {
+    return '<div class="student-card flex">' +
+      '<div><div style="font-weight:600">' + s.name + '</div><div class="small">ID: ' + s.id + ' · PW: ' + s.pw + '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<div class="green" style="font-weight:700">' + s.points + 'P</div>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteStudent(\'' + s.id + '\')">삭제</button>' +
+      '</div>' +
+    '</div>';
+  }).join('') || '<div class="empty">등록된 학생이 없습니다.</div>';
+
+  var opts = DATA.students.map(function(s) {
+    return '<option value="' + s.id + '">' + s.name + '</option>';
+  }).join('');
+  document.getElementById('giveStudent').innerHTML = opts;
+
+  var hs = document.getElementById('historyStudent');
+  var prev = hs.value;
+  hs.innerHTML = opts;
+  if (prev) hs.value = prev;
+  renderPointHistory();
+}
+
+async function givePoint() {
+  var sid    = document.getElementById('giveStudent').value;
+  var amt    = parseInt(document.getElementById('giveAmt').value);
+  var reason = document.getElementById('giveReason').value.trim() || '관리자 지급';
+  if (!sid || isNaN(amt) || amt === 0) { alert('학생과 포인트를 입력하세요.'); return; }
+  var s = DATA.students.find(function(x){ return x.id === sid; });
+  if (!s) return;
+  s.points += amt;
+  if (!s.history) s.history = [];
+  s.history.push({label:reason, points:amt, date:today()});
+  await dbSave();
+  document.getElementById('giveAmt').value    = '';
+  document.getElementById('giveReason').value = '';
+  renderAdmin();
+}
+
+function renderPointHistory() {
+  var hs = document.getElementById('historyStudent');
+  var ph = document.getElementById('pointHistory');
+  if (!hs || !ph) return;
+  var s = DATA.students.find(function(x){ return x.id === hs.value; });
+  ph.innerHTML = historyRows(s ? s.history : null);
+}
+
+async function addItem() {
+  var name  = document.getElementById('itemName').value.trim();
+  var price = parseInt(document.getElementById('itemPrice').value);
+  if (!name || isNaN(price) || price <= 0) { alert('상품명과 가격을 입력하세요.'); return; }
+  DATA.items.push({id:Date.now(), name:name, price:price});
+  await dbSave();
+  document.getElementById('itemName').value  = '';
+  document.getElementById('itemPrice').value = '';
+  renderAdmin();
+}
+
+function renderAdminShop() {
+  var el = document.getElementById('adminShopList');
+  if (!DATA.items.length) { el.innerHTML = '<div class="empty">등록된 상품이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.items.map(function(i) {
+    return '<div class="shop-item flex"><div>' + i.name + '</div><div>' + i.price + 'P</div></div>';
+  }).join('');
+}
+
+/* 관리자 경매 목록 */
+function renderAdminAuctionList() {
+  var el   = document.getElementById('adminAuctionList');
+  var list = Object.values(DATA.auctions || {});
+  if (!list.length) { el.innerHTML = '<div class="empty">진행 중인 경매가 없습니다.</div>'; return; }
+  el.innerHTML = list.map(function(auc) {
+    return buildAdminAuctionCard(auc);
+  }).join('');
+}
+
+function buildAdminAuctionCard(auc) {
+  var sorted = Object.entries(auc.bids || {}).map(function(e){
+    return {id:e[0], studentName:e[1].studentName, amount:e[1].amount};
+  }).sort(function(a,b){ return b.amount - a.amount; });
+  var highBid = sorted.length ? sorted[0].amount : 0;
+  var rows = sorted.map(function(b,i){
+    return '<tr><td>' + (i+1) + '</td><td>' + b.studentName + '</td><td class="green">' + b.amount + 'P</td></tr>';
+  }).join('');
+
+  var badge = auc.active
+    ? '<span class="badge badge-active">진행 중</span>'
+    : '<span class="badge badge-ended">종료</span>';
+  var action = auc.active
+    ? '<button class="btn btn-danger btn-sm" onclick="endAuction(\'' + auc.id + '\')">경매 종료</button>'
+    : '<button class="btn btn-danger btn-sm" onclick="deleteAuction(\'' + auc.id + '\')">삭제</button>';
+
+  return '<div class="admin-auction-card">' +
+    '<div class="aa-header">' +
+      '<div>' +
+        '<div class="aa-title">' + auc.itemName + '</div>' +
+        '<div class="small" style="margin-top:4px">시작가 ' + (auc.startPrice||0) + 'P · 호가 ' + STEP + 'P 단위 · 현재 최고 <span class="green">' + highBid + 'P</span></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' + badge + action + '</div>' +
+    '</div>' +
+    (auc.winner
+      ? '<div style="margin-bottom:10px"><span class="badge badge-winner">🏆 낙찰: ' + auc.winner.studentName + '  ' + auc.winner.amount + 'P</span></div>'
+      : '') +
+    (rows
+      ? '<table class="table"><thead><tr><th>순위</th><th>학생</th><th>입찰</th></tr></thead><tbody>' + rows + '</tbody></table>'
+      : '<div class="empty" style="padding:10px 0">아직 입찰자가 없습니다.</div>') +
+  '</div>';
+}
+
+async function startAuction() {
+  var item  = document.getElementById('auctionItem').value.trim();
+  var start = parseInt(document.getElementById('auctionStart').value);
+  if (!item)           { alert('경매 상품명을 입력하세요.'); return; }
+  if (isNaN(start) || start < STEP) { alert('최소 시작가를 ' + STEP + 'P 이상으로 입력하세요.'); return; }
+  if (start % STEP !== 0) { alert('시작가는 ' + STEP + 'P 단위여야 합니다.'); return; }
+  var id = 'auc_' + Date.now();
+  DATA.auctions[id] = {
+    id:id,
+    itemName:item,
+    startPrice:start,
+    active:true,
+    bids:{},
+    winner:null,
+    createdAt:today()
+  };
+  await dbSave();
+  document.getElementById('auctionItem').value  = '';
+  document.getElementById('auctionStart').value = '';
+  renderAdminAuctionList();
+  showToast('🔨 경매 시작: ' + item);
+}
+
+async function endAuction(aucId) {
+  var auc = DATA.auctions[aucId];
+  if (!auc) return;
+  var sorted = Object.entries(auc.bids || {}).map(function(e){
+    return {studentId:e[0], studentName:e[1].studentName, amount:e[1].amount};
+  }).sort(function(a,b){ return b.amount - a.amount; });
+  auc.active = false;
+  var winner = sorted[0] || null;
+  auc.winner = winner;
+  if (winner) {
+    var ws = DATA.students.find(function(x){ return String(x.id) === String(winner.studentId); });
+    if (ws) {
+      if (!ws.history) ws.history = [];
+      ws.history.push({label:'경매 낙찰 - ' + auc.itemName, points:-winner.amount, date:today()});
+    }
+  }
+  await dbSave();
+  renderAdminAuctionList();
+  showToast('🏁 경매 종료: ' + auc.itemName);
+}
+
+async function deleteAuction(aucId) {
+  if (!confirm('이 경매를 삭제하시겠습니까?')) return;
+  delete DATA.auctions[aucId];
+  await dbSave();
+  renderAdminAuctionList();
+}
+
+function renderOrders() {
+  var el = document.getElementById('orderList');
+  if (!DATA.orders.length) { el.innerHTML = '<div class="empty">주문 내역이 없습니다.</div>'; return; }
+  el.innerHTML = DATA.orders.map(function(o){
+    return '<div class="order-card"><div>' + o.studentName + '</div><div class="small">' + o.itemName + '</div></div>';
+  }).join('');
+}
+
+function studentTab(id, el) {
+  document.querySelectorAll('#studentMain .tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('#studentMain .panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('s-' + id).classList.add('active');
+  if (id === 'vocab') { currentQuiz = null; renderStudentVocabList(); }
+}
+function adminTab(id, el) {
+  document.querySelectorAll('#adminMain .tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('#adminMain .panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('a-' + id).classList.add('active');
+}
+
+/* ── 단어시험 : 관리자 ── */
+function renderAdminVocab() {
+  var el = document.getElementById('adminVocabList');
+  if (!el) return;
+  var html = '';
+  for (var i = 1; i <= 30; i++) {
+    var key = 'day' + i;
+    var wordCount = (VOCAB_DATA[key] || []).length;
+    var conf = (DATA.vocabTests && DATA.vocabTests[key]) ? DATA.vocabTests[key] : {open:false};
+    var completedCount = DATA.students.filter(function(s) {
+      return s.vocabResults && s.vocabResults[key] && s.vocabResults[key].completed;
+    }).length;
+    html += '<div class="admin-auction-card">' +
+      '<div class="aa-header">' +
+        '<div>' +
+          '<div class="aa-title">Day ' + i + '</div>' +
+          '<div class="small" style="margin-top:4px">단어 ' + wordCount + '개 · 응시 완료 ' + completedCount + '명 / 전체 ' + DATA.students.length + '명</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          (conf.open
+            ? '<span class="badge badge-active">열림</span><button class="btn btn-danger btn-sm" onclick="toggleVocabDay(\'' + key + '\')">닫기</button>'
+            : '<span class="badge badge-ended">닫힘</span><button class="btn btn-success btn-sm" onclick="toggleVocabDay(\'' + key + '\')">열기</button>') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  el.innerHTML = html;
+}
+
+async function toggleVocabDay(key) {
+  if (!DATA.vocabTests) DATA.vocabTests = {};
+  if (!DATA.vocabTests[key]) DATA.vocabTests[key] = {open:false};
+  DATA.vocabTests[key].open = !DATA.vocabTests[key].open;
+  await dbSave();
   renderAdminVocab();
+  showToast(DATA.vocabTests[key].open ? '✅ Day ' + key.replace('day','') + ' 시험 열림' : '🔒 Day ' + key.replace('day','') + ' 시험 닫힘');
+}
+
+/* ── 단어시험 : 학생 ── */
+function shuffleArray(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function buildVocabQuestions(key) {
+  var words = VOCAB_DATA[key] || [];
+  var allMeanings = words.map(function(w){ return w[1]; });
+  var questions = words.map(function(w) {
+    var correct = w[1];
+    var pool = allMeanings.filter(function(m){ return m !== correct; });
+    var distractors = shuffleArray(pool).slice(0, 3);
+    var options = shuffleArray([correct].concat(distractors));
+    return {word: w[0], correct: correct, options: options};
+  });
+  return shuffleArray(questions);
+}
+
+function renderStudentVocabList() {
+  var el = document.getElementById('studentVocabList');
+  if (!el) return;
+  var s = getMe();
+  if (!s.vocabResults) s.vocabResults = {};
+  var openDays = [];
+  for (var i = 1; i <= 30; i++) {
+    var key = 'day' + i;
+    if (DATA.vocabTests && DATA.vocabTests[key] && DATA.vocabTests[key].open) openDays.push(key);
+  }
+  if (!openDays.length) { el.innerHTML = '<div class="empty">아직 열린 단어 시험이 없습니다.</div>'; return; }
+  el.innerHTML = openDays.map(function(key) {
+    var dayNum = key.replace('day', '');
+    var result = s.vocabResults[key];
+    if (result && result.completed) {
+      return '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + dayNum + ' 단어 시험</div>' +
+        '<span class="badge badge-winner">' + result.score + ' / ' + result.total + '점</span></div>' +
+        '<div class="ac-meta"><span>📅 응시일 ' + result.date + '</span></div>' +
+        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="showVocabWrong(\'' + key + '\')">오답 확인</button></div></div>';
+    } else {
+      var wordCount = (VOCAB_DATA[key] || []).length;
+      return '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + dayNum + ' 단어 시험</div>' +
+        '<span class="badge badge-active">응시 가능</span></div>' +
+        '<div class="ac-meta"><span>📝 총 ' + wordCount + '문제 · 4지선다</span></div>' +
+        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="startVocabTest(\'' + key + '\')">시험 시작</button></div></div>';
+    }
+  }).join('');
+}
+
+function startVocabTest(key) {
+  var s = getMe();
+  if (s.vocabResults && s.vocabResults[key] && s.vocabResults[key].completed) {
+    alert('이미 응시한 시험입니다. 재응시는 불가능합니다.');
+    renderStudentVocabList();
+    return;
+  }
+  if (!confirm('Day ' + key.replace('day','') + ' 단어 시험을 시작하시겠습니까?\n한 번 시작하면 재응시가 불가능합니다.')) return;
+  currentQuiz = {key: key, questions: buildVocabQuestions(key), index: 0, wrong: []};
+  renderVocabQuestion();
+}
+
+function renderVocabQuestion() {
+  var el = document.getElementById('studentVocabList');
+  var q = currentQuiz.questions[currentQuiz.index];
+  var progress = (currentQuiz.index + 1) + ' / ' + currentQuiz.questions.length;
+  var dayNum = currentQuiz.key.replace('day', '');
+  var html = '<div class="auction-card">' +
+    '<div class="flex"><div class="ac-title">Day ' + dayNum + ' 단어 시험</div><span class="small">' + progress + '</span></div>' +
+    '<div style="font-size:26px;font-weight:800;margin:24px 0;text-align:center;color:var(--accent2)">' + q.word + '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:10px">' +
+      q.options.map(function(opt, i) {
+        return '<button class="btn opt-btn" onclick="answerVocabQuestion(' + i + ')">' + (i+1) + '. ' + opt + '</button>';
+      }).join('') +
+    '</div></div>';
+  el.innerHTML = html;
+}
+
+function answerVocabQuestion(i) {
+  var q = currentQuiz.questions[currentQuiz.index];
+  var selected = q.options[i];
+  if (selected !== q.correct) {
+    currentQuiz.wrong.push({word: q.word, correct: q.correct, selected: selected});
+  }
+  currentQuiz.index++;
+  if (currentQuiz.index < currentQuiz.questions.length) {
+    renderVocabQuestion();
+  } else {
+    finishVocabTest();
+  }
+}
+
+async function finishVocabTest() {
+  var s = getMe();
+  if (!s.vocabResults) s.vocabResults = {};
+  var total = currentQuiz.questions.length;
+  var wrongCount = currentQuiz.wrong.length;
+  var score = total - wrongCount;
+  var key = currentQuiz.key;
+  s.vocabResults[key] = {completed: true, score: score, total: total, wrongList: currentQuiz.wrong, date: today()};
+  await dbSave();
+  currentQuiz = null;
+  showToast('📝 시험 완료! ' + score + ' / ' + total);
+  showVocabResult(key, score, total);
+}
+
+function showVocabResult(key, score, total) {
+  var el = document.getElementById('studentVocabList');
+  var dayNum = key.replace('day', '');
+  el.innerHTML = '<div class="auction-card" style="text-align:center">' +
+    '<div class="ac-title" style="margin-bottom:10px">Day ' + dayNum + ' 시험 결과</div>' +
+    '<div style="font-size:44px;font-weight:800;color:var(--green);margin:10px 0">' + score + ' / ' + total + '</div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px">' +
+      '<button class="btn btn-primary" style="flex:1" onclick="showVocabWrong(\'' + key + '\')">오답 확인</button>' +
+      '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="renderStudentVocabList()">목록으로</button>' +
+    '</div></div>';
+}
+
+function showVocabWrong(key) {
+  var s = getMe();
+  var result = s.vocabResults[key];
+  var el = document.getElementById('studentVocabList');
+  var dayNum = key.replace('day', '');
+  if (!result || !result.wrongList || !result.wrongList.length) {
+    el.innerHTML = '<div class="auction-card" style="text-align:center">' +
+      '<div class="ac-title" style="margin-bottom:10px">Day ' + dayNum + ' 오답 노트</div>' +
+      '<div class="empty">🎉 틀린 문제가 없습니다!</div>' +
+      '<button class="btn btn-primary btn-full" onclick="renderStudentVocabList()">목록으로</button></div>';
+    return;
+  }
+  var rows = result.wrongList.map(function(w) {
+    return '<div class="history"><div style="font-weight:700">' + w.word + '</div>' +
+      '<div class="small" style="color:var(--red);margin-top:4px">내가 고른 답: ' + w.selected + '</div>' +
+      '<div class="small" style="color:var(--green)">정답: ' + w.correct + '</div></div>';
+  }).join('');
+  el.innerHTML = '<div class="auction-card">' +
+    '<div class="flex"><div class="ac-title">Day ' + dayNum + ' 오답 노트</div><span class="badge badge-ended">' + result.wrongList.length + '개 틀림</span></div>' +
+    rows +
+    '<button class="btn btn-primary btn-full" style="margin-top:14px" onclick="renderStudentVocabList()">목록으로</button></div>';
 }
 </script>
+
+
+</body></html>
