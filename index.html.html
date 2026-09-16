@@ -2,11 +2,19 @@
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
 const STEP = 10; 
 
+// 샘플 VOCAB_DATA (기존에 사용하시던 VOCAB_DATA 객체가 있다면 이 위치에 덮어씌우시면 됩니다)
+const VOCAB_DATA = {
+  "day1": [["apple", "사과"], ["banana", "바나나"]],
+  "day2": [["cat", "고양이"], ["dog", "개"]]
+};
+
 let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{}, vocabSubmissions:{} };
 let currentUser = null;
-let currentQuiz = null;
 
-// [VOCAB_DATA 생략 - 기존 단어 데이터 유지]
+// 페이지 로드 시 초기화
+window.onload = function() {
+  loadData();
+};
 
 async function loadData(){
   try{
@@ -44,7 +52,7 @@ async function login(){
   let id = document.getElementById('loginId').value.trim();
   let pw = document.getElementById('loginPw').value.trim();
   let err = document.getElementById('loginErr');
-  err.style.display = 'none';
+  if(err) err.style.display = 'none';
 
   if(id === 'admin' && pw === 'admin1234'){
     currentUser = { role:'admin', name:'관리자' };
@@ -59,11 +67,12 @@ async function login(){
     currentUser = { role:'student', ...st };
     document.getElementById('loginCard').style.display = 'none';
     document.getElementById('studentMain').style.display = 'block';
-    document.getElementById('studentName').innerText = `${st.name} 학생`;
+    let nameElem = document.getElementById('studentName');
+    if(nameElem) nameElem.innerText = `${st.name} 학생`;
     renderStudent();
     return;
   }
-  err.style.display = 'block';
+  if(err) err.style.display = 'block';
 }
 
 function logout(){
@@ -73,12 +82,10 @@ function logout(){
   document.getElementById('adminMain').style.display = 'none';
 }
 
-// ── 교사: 단어시험 관리 기능 (문제 1, 2, 3 해결) ──
+// ── 교사: 단어시험 관리 ──
 async function toggleVocabTest(day){
   await loadData();
   let currentStatus = DATA.vocabTests[day] || false;
-  
-  // 핵심 수정: 시험을 닫더라도 제출된 데이터(vocabSubmissions)와 포인트를 절대 삭제하지 않음!
   DATA.vocabTests[day] = !currentStatus;
   
   await saveData();
@@ -90,10 +97,9 @@ function renderAdminVocab(){
   let h = '';
   Object.keys(VOCAB_DATA).forEach(day => {
     let isOpen = DATA.vocabTests[day] || false;
-    
-    // 교사가 제출한 학생 목록 및 틀린 항목을 확인하는 기능
     let submittedStudents = [];
-    if(DATA.vocabSubmissions[day]){
+    
+    if(DATA.vocabSubmissions && DATA.vocabSubmissions[day]){
       Object.keys(DATA.vocabSubmissions[day]).forEach(stId => {
         let sub = DATA.vocabSubmissions[day][stId];
         let wrongWords = sub.details ? sub.details.filter(w => !w.isCorrect) : [];
@@ -101,11 +107,11 @@ function renderAdminVocab(){
       });
     }
 
-    h += `<div class="admin-auction-card">
-      <div class="aa-header">
+    h += `<div class="admin-auction-card" style="border:1px solid #ccc;padding:12px;margin-bottom:10px;border-radius:8px;">
+      <div class="aa-header" style="display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div class="aa-title" style="font-size:16px;font-weight:800">${day.toUpperCase()} (${VOCAB_DATA[day].length}단어)</div>
-          <div class="small">상태: ${isOpen ? '<span class="green">응시 가능 (OPEN)</span>' : '<span class="red">마감됨 (CLOSED)</span>'}</div>
+          <div class="small">상태: ${isOpen ? '<span style="color:green">응시 가능 (OPEN)</span>' : '<span style="color:red">마감됨 (CLOSED)</span>'}</div>
         </div>
         <button class="btn ${isOpen ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleVocabTest('${day}')">
           ${isOpen ? '시험 닫기' : '시험 열기'}
@@ -113,21 +119,21 @@ function renderAdminVocab(){
       </div>`;
 
     if(submittedStudents.length > 0){
-      h += `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-        <div class="small" style="font-weight:700;color:var(--accent2);margin-bottom:6px">학생별 오답 제출 내역</div>`;
+      h += `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #e5e5e5">
+        <div class="small" style="font-weight:700;margin-bottom:6px">학생별 오답 제출 내역</div>`;
       submittedStudents.forEach(st => {
-        h += `<div style="background:var(--surface);padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:13px">
-          <div class="flex">
+        h += `<div style="background:#f9f9f9;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:13px">
+          <div style="display:flex;justify-content:space-between;">
             <strong>${st.studentName} (${st.studentId})</strong>
-            <span class="green">${st.score}점 획득</span>
+            <span style="color:green;font-weight:bold">${st.score}점 획득</span>
           </div>`;
         
         if(st.wrongWords.length > 0){
-          h += `<div class="red" style="font-size:12px;margin-top:4px">
+          h += `<div style="color:red;font-size:12px;margin-top:4px">
             틀린 단어 (${st.wrongWords.length}개): ${st.wrongWords.map(w => `${w.word}(작성: ${w.userAns || '미입력'})`).join(', ')}
           </div>`;
         } else {
-          h += `<div class="green" style="font-size:12px;margin-top:4px">만점 (틀린 단어 없음)</div>`;
+          h += `<div style="color:green;font-size:12px;margin-top:4px">만점 (틀린 단어 없음)</div>`;
         }
         h += `</div>`;
       });
@@ -135,64 +141,87 @@ function renderAdminVocab(){
     }
     h += `</div>`;
   });
-  document.getElementById('adminVocabList').innerHTML = h;
+  
+  let target = document.getElementById('adminVocabList');
+  if(target) target.innerHTML = h;
 }
 
-// ── 학생: 단어시험 및 오답 노트 기능 ──
+// ── 학생: 단어시험 및 오답노트 ──
 function renderStudentVocab(){
   let h = '';
   Object.keys(VOCAB_DATA).forEach(day => {
     let isOpen = DATA.vocabTests[day] || false;
-    let mySub = DATA.vocabSubmissions[day] ? DATA.vocabSubmissions[day][currentUser.id] : null;
+    let mySub = (DATA.vocabSubmissions && DATA.vocabSubmissions[day]) ? DATA.vocabSubmissions[day][currentUser.id] : null;
 
-    h += `<div class="shop-item flex" style="flex-direction:column;align-items:stretch;gap:10px">
-      <div class="flex">
+    h += `<div class="shop-item" style="border:1px solid #ccc;padding:12px;margin-bottom:10px;border-radius:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div>
           <strong style="font-size:16px">${day.toUpperCase()}</strong>
           <span class="small" style="margin-left:8px">총 ${VOCAB_DATA[day].length}문항</span>
         </div>`;
 
-    // 핵심 수정: 시험이 닫혀도 제출 기록(mySub)이 있으면 오답 확인 가능!
     if(mySub){
-      h += `<span class="badge badge-winner">제출완료 (${mySub.score}점)</span></div>`;
+      h += `<span class="badge" style="background:#e1f5fe;color:#0288d1;padding:4px 8px;border-radius:4px;">제출완료 (${mySub.score}점)</span></div>`;
       h += `<button class="btn btn-primary btn-sm" onclick="viewMyWrongAnswers('${day}')">오답 노트 및 제출 답안 확인</button>`;
     } else if(isOpen){
-      h += `<span class="badge badge-active">응시 가능</span></div>`;
+      h += `<span class="badge" style="background:#e8f5e9;color:#2e7d32;padding:4px 8px;border-radius:4px;">응시 가능</span></div>`;
       h += `<button class="btn btn-success btn-sm" onclick="startQuiz('${day}')">시험 응시하기</button>`;
     } else {
-      h += `<span class="badge badge-ended">마감됨</span></div>`;
-      h += `<div class="small red">시험이 마감되어 응시할 수 없습니다.</div>`;
+      h += `<span class="badge" style="background:#ffebee;color:#c62828;padding:4px 8px;border-radius:4px;">마감됨</span></div>`;
+      h += `<div class="small" style="color:red">시험이 마감되어 응시할 수 없습니다.</div>`;
     }
     h += `</div>`;
   });
-  document.getElementById('studentVocabList').innerHTML = h;
+  
+  let target = document.getElementById('studentVocabList');
+  if(target) target.innerHTML = h;
 }
 
-// 학생 오답 확인 모달/화면
 function viewMyWrongAnswers(day){
   let mySub = DATA.vocabSubmissions[day][currentUser.id];
-  let h = `<div style="background:var(--surface2);padding:16px;border-radius:12px;margin-bottom:16px">
-    <div class="flex" style="margin-bottom:12px">
-      <h3 style="color:var(--accent2)">${day.toUpperCase()} 내 제출 결과</h3>
+  let h = `<div style="background:#f5f5f5;padding:16px;border-radius:12px;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3>${day.toUpperCase()} 내 제출 결과</h3>
       <button class="btn btn-danger btn-sm" onclick="renderStudentVocab()">목록으로</button>
     </div>
-    <div style="margin-bottom:10px"><strong>획득 점수:</strong> ${mySub.score}점</div>
-    <div class="space-y-2">`;
+    <div style="margin-bottom:10px"><strong>획득 점수:</strong> ${mySub.score}점</div><div>`;
 
   mySub.details.forEach((item, idx) => {
-    h += `<div style="background:var(--surface);padding:10px;border-radius:8px;margin-bottom:6px;border:1px solid ${item.isCorrect ? 'rgba(45,212,160,.3)' : 'rgba(255,107,107,.3)'}">
+    h += `<div style="background:#fff;padding:10px;border-radius:8px;margin-bottom:6px;border:1px solid ${item.isCorrect ? '#a5d6a7' : '#ef9a9a'}">
       <div><strong>${idx+1}. ${item.word}</strong> (정답: ${item.correctAns})</div>
       <div class="small" style="margin-top:4px">
-        내가 쓴 답: <span class="${item.isCorrect ? 'green' : 'red'}" style="font-weight:700">${item.userAns || '미입력'}</span> 
-        ${item.isCorrect ? '<span class="green">(정답)</span>' : '<span class="red">(오답)</span>'}
+        내가 쓴 답: <span style="font-weight:700;color:${item.isCorrect ? 'green' : 'red'}">${item.userAns || '미입력'}</span> 
+        ${item.isCorrect ? '<span style="color:green">(정답)</span>' : '<span style="color:red">(오답)</span>'}
       </div>
     </div>`;
   });
   h += `</div></div>`;
-  document.getElementById('studentVocabList').innerHTML = h;
+  
+  let target = document.getElementById('studentVocabList');
+  if(target) target.innerHTML = h;
 }
 
-// 시험 제출 처리 (상세 정/오답 기록 저장)
+function startQuiz(day){
+  let words = VOCAB_DATA[day];
+  let h = `<div style="background:#f5f5f5;padding:20px;border-radius:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3>${day.toUpperCase()} 단어시험</h3>
+      <button class="btn btn-danger btn-sm" onclick="renderStudentVocab()">취소</button>
+    </div>`;
+  
+  words.forEach((w, i) => {
+    h += `<div style="margin-bottom:10px;">
+      <label style="display:block;margin-bottom:4px;">${i+1}. ${w[0]}</label>
+      <input type="text" id="q_${i}" placeholder="뜻을 입력하세요" style="width:100%;padding:8px;box-sizing:border-box;">
+    </div>`;
+  });
+
+  h += `<button class="btn btn-primary" onclick="submitQuiz('${day}')" style="width:100%;padding:10px;margin-top:10px">제출하기</button></div>`;
+  
+  let target = document.getElementById('studentVocabList');
+  if(target) target.innerHTML = h;
+}
+
 async function submitQuiz(day){
   await loadData();
   let words = VOCAB_DATA[day];
@@ -200,11 +229,11 @@ async function submitQuiz(day){
   let details = [];
 
   words.forEach((w, i) => {
-    let userAns = document.getElementById(`q_${i}`).value.trim();
+    let inputElem = document.getElementById(`q_${i}`);
+    let userAns = inputElem ? inputElem.value.trim() : '';
     let isCorrect = userAns === w[1].trim();
     if(isCorrect) score += 10;
 
-    // 틀린 단어 및 정답 상세 데이터 수집
     details.push({
       word: w[0],
       correctAns: w[1],
@@ -213,9 +242,9 @@ async function submitQuiz(day){
     });
   });
 
+  if(!DATA.vocabSubmissions) DATA.vocabSubmissions = {};
   if(!DATA.vocabSubmissions[day]) DATA.vocabSubmissions[day] = {};
 
-  // 제출 결과 DB 저장 (시험을 닫아도 삭제되지 않음)
   DATA.vocabSubmissions[day][currentUser.id] = {
     studentId: currentUser.id,
     studentName: currentUser.name,
@@ -224,7 +253,6 @@ async function submitQuiz(day){
     submittedAt: new Date().toLocaleString()
   };
 
-  // 학생 포인트 지급 및 내역 기록
   let student = DATA.students.find(s => s.id === currentUser.id);
   if(student){
     student.points = (student.points || 0) + score;
@@ -242,56 +270,43 @@ async function submitQuiz(day){
   renderStudent();
 }
 
-// ── 기타 공통 UI 렌더링 함수들 (기존 기능 유지) ──
+// ── UI 탭 & 렌더링 ──
 function studentTab(tab, el){
   document.querySelectorAll('#studentMain .tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('#studentMain .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(`s-${tab}`).classList.add('active');
+  if(el) el.classList.add('active');
+  let target = document.getElementById(`s-${tab}`);
+  if(target) target.classList.add('active');
   if(tab === 'vocab') renderStudentVocab();
 }
 
 function adminTab(tab, el){
   document.querySelectorAll('#adminMain .tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('#adminMain .panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(`a-${tab}`).classList.add('active');
+  if(el) el.classList.add('active');
+  let target = document.getElementById(`a-${tab}`);
+  if(target) target.classList.add('active');
   if(tab === 'vocab') renderAdminVocab();
 }
 
 function showToast(msg){
   let t = document.getElementById('toast');
-  t.innerText = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  if(t){
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  } else {
+    alert(msg);
+  }
 }
 
 function renderStudent(){
-  document.getElementById('studentPoints').innerText = currentUser.points || 0;
+  let ptElem = document.getElementById('studentPoints');
+  if(ptElem) ptElem.innerText = currentUser.points || 0;
   renderStudentVocab();
 }
 
 function renderAdmin(){
   renderAdminVocab();
-}
-
-// 퀴즈 시작 화면
-function startQuiz(day){
-  let words = VOCAB_DATA[day];
-  let h = `<div style="background:var(--surface2);padding:20px;border-radius:14px">
-    <div class="flex" style="margin-bottom:16px">
-      <h3>${day.toUpperCase()} 단어시험</h3>
-      <button class="btn btn-danger btn-sm" onclick="renderStudentVocab()">취소</button>
-    </div>`;
-  
-  words.forEach((w, i) => {
-    h += `<div class="field">
-      <label>${i+1}. ${w[0]}</label>
-      <input type="text" id="q_${i}" placeholder="뜻을 입력하세요">
-    </div>`;
-  });
-
-  h += `<button class="btn btn-primary btn-full" onclick="submitQuiz('${day}')" style="margin-top:10px">제출하기</button></div>`;
-  document.getElementById('studentVocabList').innerHTML = h;
 }
 </script>
