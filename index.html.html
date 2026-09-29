@@ -113,6 +113,45 @@ button,input,select{font-family:inherit;}
 /* 단어시험 옵션 버튼 */
 .opt-btn{background:var(--surface2);color:var(--text);text-align:left;padding:14px 16px;border-radius:10px;border:1px solid var(--border);font-size:14px;}
 .opt-btn:hover{border-color:rgba(108,95,255,.5);}
+/* ── 수학시험 (사진 문제) ── */
+.btn[disabled]{opacity:.4;cursor:not-allowed;}
+@media (max-width:480px){.tab{font-size:12.5px;padding:14px 2px;min-width:0;white-space:nowrap;}}
+.math-fig{background:#fff;border-radius:12px;padding:8px;text-align:center;margin:14px 0;cursor:zoom-in;position:relative;}
+.math-fig img{display:block;width:100%;height:auto;border-radius:6px;}
+.math-fig .zoom-hint{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:3px 9px;border-radius:100px;}
+.math-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.math-choice{min-height:64px;font-size:24px;font-weight:800;text-align:center;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);}
+.math-choice.selected{border-color:var(--accent);background:rgba(108,95,255,.28);color:#fff;}
+.math-sol-title{font-size:13px;font-weight:700;color:var(--text2);margin:16px 0 6px;}
+.math-slot{display:flex;flex-direction:column;gap:8px;}
+.math-slot img{width:100%;max-height:260px;object-fit:contain;background:#fff;border-radius:10px;padding:6px;cursor:zoom-in;}
+.math-slot-empty{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:26px;text-align:center;color:var(--text3);font-size:13px;}
+.math-slot-btns{display:flex;gap:8px;}
+.math-ans{display:flex;gap:8px;}
+.math-ans button{flex:1;padding:12px 0;font-size:18px;}
+.math-ans button.selected{background:var(--accent);color:#fff;}
+.math-ans button:not(.selected){background:var(--surface);color:var(--text2);border:1px solid var(--border);}
+.crop-modal,.zoom-modal{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:9000;display:none;align-items:center;justify-content:center;padding:16px;}
+.crop-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;max-width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;}
+.crop-box canvas{touch-action:none;cursor:crosshair;border-radius:8px;max-width:100%;}
+.crop-btns{display:flex;gap:8px;width:100%;}
+.crop-btns .btn{flex:1;font-size:13px;padding:11px 6px;}
+.zoom-modal{align-items:flex-start;justify-content:flex-start;padding:0;overflow:auto;background:#000;}
+.zoom-modal img{width:170vw;max-width:none;height:auto;background:#fff;display:block;}
+.zoom-close{position:fixed;top:14px;right:14px;z-index:9001;background:rgba(30,30,46,.92);color:#fff;border:1px solid var(--border);border-radius:100px;padding:10px 18px;font-weight:700;font-size:14px;}
+#adminMain .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+#adminMain .tabs::-webkit-scrollbar{display:none;}
+#adminMain .tab{flex:none;padding:14px 14px;}
+.batch-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.batch-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:4px 6px 4px 4px;}
+.batch-chip img{width:30px;height:30px;object-fit:cover;border-radius:6px;background:#fff;}
+.batch-chip span{font-size:12px;font-weight:700;}
+.batch-chip button{background:none;border:none;color:var(--red);font-size:15px;padding:0 4px;cursor:pointer;}
+.batch-day-input{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.batch-day-input input{width:80px;padding:10px;border-radius:10px;background:var(--surface);color:var(--text);border:1px solid var(--border);font-size:16px;text-align:center;}
+.batch-sheet-thumb{width:100%;max-height:320px;object-fit:contain;background:#fff;border-radius:12px;cursor:zoom-in;}
+.batch-pending-thumb{width:100%;max-height:220px;object-fit:contain;background:#fff;border-radius:12px;cursor:zoom-in;}
+.batch-warn{background:rgba(255,180,70,.15);color:#ffb446;border-radius:10px;padding:8px 12px;font-size:12.5px;margin:8px 0;}
 </style>
 </head>
 <body>
@@ -141,7 +180,8 @@ button,input,select{font-family:inherit;}
       <div class="tab active" onclick="studentTab('home',this)">홈</div>
       <div class="tab" onclick="studentTab('shop',this)">상점</div>
       <div class="tab" onclick="studentTab('auction',this)">경매</div>
-      <div class="tab" onclick="studentTab('vocab',this)">단어/시험</div>
+      <div class="tab" onclick="studentTab('vocab',this)">단어시험</div>
+      <div class="tab" onclick="studentTab('math',this)">수학시험</div>
       <div class="tab" onclick="studentTab('history',this)">내역</div>
     </div>
     <div class="panel active" id="s-home">
@@ -150,6 +190,7 @@ button,input,select{font-family:inherit;}
     <div class="panel" id="s-shop"><div id="shopList"></div></div>
     <div class="panel" id="s-auction"><div id="studentAuctionList"></div></div>
     <div class="panel" id="s-vocab"><div id="studentVocabList"></div></div>
+    <div class="panel" id="s-math"><div id="studentMathList"></div></div>
     <div class="panel" id="s-history"><div id="studentHistory"></div></div>
   </div>
 
@@ -162,6 +203,8 @@ button,input,select{font-family:inherit;}
       <div class="tab" onclick="adminTab('auction',this)">경매</div>
       <div class="tab" onclick="adminTab('vocab',this)">단어시험</div>
       <div class="tab" onclick="adminTab('vocabscore',this)">단어성적</div>
+      <div class="tab" onclick="adminTab('math',this)">수학시험</div>
+      <div class="tab" onclick="adminTab('mathscore',this)">수학성적</div>
       <div class="tab" onclick="adminTab('orders',this)">주문</div>
     </div>
     <div class="panel active" id="a-students">
@@ -229,17 +272,51 @@ button,input,select{font-family:inherit;}
         <div id="adminVocabScoreSummary"></div>
       </div>
     </div>
+    <div class="panel" id="a-math">
+      <div class="admin-section" id="adminMathIntro">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">수학시험 관리 (Day 1~30, 하루 1문제)</div>
+        <div class="small">Day마다 문제 사진과 정답(①~④)을 등록한 뒤 '열기'를 누르면 학생이 풀 수 있습니다. 학생은 Day당 1회만 응시하며, 틀리면 등록해 둔 유사 문제를 풀 수 있습니다.</div>
+        <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="openMathBatch()">📥 여러 문제 한 번에 올리기 (사진 한 장에서 계속 잘라내기)</button>
+      </div>
+      <div id="adminMathEditor"></div>
+      <div id="adminMathList"></div>
+    </div>
+    <div class="panel" id="a-mathscore">
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">수학 Day별 성적 (시험을 닫아도 계속 확인 가능합니다)</div>
+        <select id="mathScoreDay" onchange="renderAdminMathScore()" style="width:100%;padding:12px;border-radius:10px;background:var(--surface);color:white;border:1px solid var(--border)"></select>
+      </div>
+      <div id="adminMathScoreList"></div>
+      <hr style="margin:20px 0;border-color:var(--border)">
+      <div class="admin-section">
+        <div class="small" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--text2)">학생별 누적 성적 (수학)</div>
+        <div id="adminMathScoreSummary"></div>
+      </div>
+    </div>
     <div class="panel" id="a-orders"><div id="orderList"></div></div>
   </div>
 
 </div>
+<input type="file" id="mathFile" accept="image/*" style="display:none">
+<div class="crop-modal" id="cropModal">
+  <div class="crop-box">
+    <div class="small" style="text-align:center">드래그해서 문제 부분만 골라 주세요. 고르지 않으면 사진 전체를 씁니다.</div>
+    <canvas id="cropCanvas"></canvas>
+    <div class="crop-btns">
+      <button class="btn" style="background:var(--surface2);color:var(--text)" onclick="closeCropper()">취소</button>
+      <button class="btn" style="background:var(--surface2);color:var(--text)" onclick="finishCrop(false)">전체 사용</button>
+      <button class="btn btn-primary" id="cropUseBtn" disabled onclick="finishCrop(true)">선택 영역 사용</button>
+    </div>
+  </div>
+</div>
+<div class="zoom-modal" id="zoomModal"><button class="zoom-close" onclick="closeMathZoom()">닫기</button><img id="zoomImg" alt="확대 이미지"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const FIREBASE_URL = "https://point-7419d-default-rtdb.asia-southeast1.firebasedatabase.app/data.json";
 const STEP = 10; // 호가 단위
 
-let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{} };
+let DATA = { students:[], items:[], orders:[], auctions:{}, vocabTests:{}, mathTests:{} };
 let currentUser = null;
 let currentQuiz = null;
 let vocabViewLocked = false; // 오답 확인/결과 화면을 보고 있을 때 폴링이 화면을 덮어쓰지 않도록 막는 플래그
@@ -301,6 +378,7 @@ async function dbLoad() {
   if (!DATA.orders)   DATA.orders   = [];
   if (!DATA.auctions) DATA.auctions = {};
   if (!DATA.vocabTests) DATA.vocabTests = {};
+  if (!DATA.mathTests) DATA.mathTests = {};
   // 구버전 단일 auction 마이그레이션
   if (DATA.auction) {
     if (DATA.auction.itemName && !DATA.auctions['legacy']) {
@@ -340,6 +418,7 @@ async function pullLatestData() {
   if (!DATA.orders)     DATA.orders     = [];
   if (!DATA.auctions)   DATA.auctions   = {};
   if (!DATA.vocabTests) DATA.vocabTests = {};
+  if (!DATA.mathTests) DATA.mathTests = {};
 }
 
 /* ── 로그인/로그아웃 ── */
@@ -378,6 +457,7 @@ function renderStudent() {
   renderStudentHistory();
   renderStudentAuctionList();
   renderStudentVocabList();
+  renderStudentMathList();
 }
 
 function historyRows(arr) {
@@ -535,6 +615,7 @@ function startAuctionPoll() {
         if (!DATA.auctions) DATA.auctions = {};
         if (!DATA.students) DATA.students = [];
         if (!DATA.vocabTests) DATA.vocabTests = {};
+  if (!DATA.mathTests) DATA.mathTests = {};
       }
     } catch(e) { return; }
     var auctionPanel = document.getElementById('s-auction');
@@ -544,6 +625,10 @@ function startAuctionPoll() {
     var vocabPanel = document.getElementById('s-vocab');
     if (vocabPanel && vocabPanel.classList.contains('active') && !currentQuiz && !vocabViewLocked) {
       renderStudentVocabList();
+    }
+    var mathPanel = document.getElementById('s-math');
+    if (mathPanel && mathPanel.classList.contains('active') && !currentMath && !mathViewLocked) {
+      renderStudentMathList();
     }
     // 포인트 업데이트
     var s = getMe();
@@ -555,7 +640,7 @@ function stopAuctionPoll() {
 }
 
 /* ── 관리자 렌더 ── */
-function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuctionList(); renderAdminVocab(); renderAdminVocabScore(); renderOrders(); }
+function renderAdmin() { renderStudents(); renderAdminShop(); renderAdminAuctionList(); renderAdminVocab(); renderAdminVocabScore(); renderAdminMath(); renderAdminMathScore(); renderOrders(); }
 
 async function addStudent() {
   var name = document.getElementById('newName').value.trim();
@@ -763,6 +848,7 @@ function studentTab(id, el) {
   el.classList.add('active');
   document.getElementById('s-' + id).classList.add('active');
   if (id === 'vocab') { currentQuiz = null; renderStudentVocabList(); }
+  if (id === 'math')  { currentMath = null; renderStudentMathList(); }
   if (id === 'history') { renderStudentHistory(); }
 }
 function adminTab(id, el) {
@@ -771,6 +857,8 @@ function adminTab(id, el) {
   el.classList.add('active');
   document.getElementById('a-' + id).classList.add('active');
   if (id === 'vocabscore') { renderAdminVocabScore(); }
+  if (id === 'math') { openMathTab(); }
+  if (id === 'mathscore') { openMathScoreTab(); }
 }
 
 /* ── 단어시험 : 관리자 ── */
@@ -805,6 +893,7 @@ function renderAdminVocab() {
 async function toggleVocabDay(key) {
   await pullLatestData();
   if (!DATA.vocabTests) DATA.vocabTests = {};
+  if (!DATA.mathTests) DATA.mathTests = {};
   if (!DATA.vocabTests[key]) DATA.vocabTests[key] = {open:false};
   DATA.vocabTests[key].open = !DATA.vocabTests[key].open;
   await dbSave();
@@ -1142,6 +1231,635 @@ function showVocabWrong(key) {
       '<button class="btn btn-primary" style="flex:1" onclick="renderStudentVocabList()">목록으로</button>' +
     '</div></div>';
 }
+/* ══════════ 수학시험 (사진 문제 · 하루 1문제 · 4지선다) ══════════ */
+const MATH_DAYS = 30;
+const MATH_POINTS = 30;       // 처음 응시에서 정답일 때 포인트
+const MATH_RETRY_POINTS = 0;  // 유사문제를 처음 맞혔을 때 포인트 (0이면 없음)
+const CIRCLED = ['①','②','③','④'];
+// 문제 사진은 용량이 커서 data.json과 분리해 저장합니다 (학생 화면이 4초마다 받는 데이터가 무거워지지 않게)
+const MATH_BASE = FIREBASE_URL.replace(/data\.json$/, '');
+const mathCache = {};
+let currentMath = null;
+let mathViewLocked = false;
+let mathEdit = null;
+
+function mathConf(key) { return (DATA.mathTests && DATA.mathTests[key]) ? DATA.mathTests[key] : {open:false}; }
+
+async function mathFetch(key, force) {
+  if (!force && mathCache[key]) return mathCache[key];
+  const res = await fetch(MATH_BASE + 'mathProblems/' + key + '.json');
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const j = await res.json();
+  mathCache[key] = j;
+  return j;
+}
+async function mathPut(key, obj) {
+  const res = await fetch(MATH_BASE + 'mathProblems/' + key + '.json', {
+    method: obj ? 'PUT' : 'DELETE', headers: {'Content-Type':'application/json'}, body: obj ? JSON.stringify(obj) : undefined
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  mathCache[key] = obj || null;
+}
+
+/* ── 확대 보기 ── */
+function mathZoom(src) { document.getElementById('zoomImg').src = src; document.getElementById('zoomModal').style.display = 'block'; }
+function closeMathZoom() { document.getElementById('zoomModal').style.display = 'none'; }
+
+/* ══ 사진 선택 + 자르기 ══ */
+let crop = {img:null, scale:1, sel:null, start:null, target:null};
+function mathPick(g, f) {
+  crop.target = {g:g, f:f};
+  var inp = document.getElementById('mathFile');
+  inp.value = '';
+  inp.onchange = function() { if (inp.files && inp.files[0]) openCropper(inp.files[0]); };
+  inp.click();
+}
+function openCropper(file) {
+  var url = URL.createObjectURL(file), im = new Image();
+  im.onload = function() {
+    URL.revokeObjectURL(url);
+    crop.img = im; crop.sel = null; crop.start = null;
+    var maxW = Math.min(window.innerWidth - 64, 720), maxH = window.innerHeight * 0.58;
+    crop.scale = Math.min(maxW / im.naturalWidth, maxH / im.naturalHeight, 1);
+    var c = document.getElementById('cropCanvas');
+    c.width = Math.round(im.naturalWidth * crop.scale);
+    c.height = Math.round(im.naturalHeight * crop.scale);
+    drawCrop();
+    document.getElementById('cropModal').style.display = 'flex';
+  };
+  im.onerror = function() { alert('이미지를 열 수 없습니다. 다른 사진으로 시도해 주세요.'); };
+  im.src = url;
+}
+function closeCropper() { document.getElementById('cropModal').style.display = 'none'; crop.img = null; }
+function drawCrop() {
+  var c = document.getElementById('cropCanvas'), ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.drawImage(crop.img, 0, 0, c.width, c.height);
+  var s = crop.sel;
+  if (s && s.w > 0 && s.h > 0) {
+    ctx.fillStyle = 'rgba(0,0,0,.55)';
+    ctx.fillRect(0, 0, c.width, s.y);
+    ctx.fillRect(0, s.y + s.h, c.width, c.height - s.y - s.h);
+    ctx.fillRect(0, s.y, s.x, s.h);
+    ctx.fillRect(s.x + s.w, s.y, c.width - s.x - s.w, s.h);
+    ctx.strokeStyle = '#a89cff'; ctx.lineWidth = 2; ctx.strokeRect(s.x, s.y, s.w, s.h);
+  }
+  document.getElementById('cropUseBtn').disabled = !(s && s.w > 8 && s.h > 8);
+}
+(function() {
+  var c = document.getElementById('cropCanvas');
+  function pos(e) {
+    var r = c.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(c.width,  (e.clientX - r.left) * c.width  / r.width)),
+             y: Math.max(0, Math.min(c.height, (e.clientY - r.top)  * c.height / r.height)) };
+  }
+  c.addEventListener('pointerdown', function(e) { c.setPointerCapture(e.pointerId); crop.start = pos(e); crop.sel = {x:crop.start.x, y:crop.start.y, w:0, h:0}; drawCrop(); });
+  c.addEventListener('pointermove', function(e) {
+    if (!crop.start) return;
+    var p = pos(e);
+    crop.sel = {x:Math.min(p.x, crop.start.x), y:Math.min(p.y, crop.start.y), w:Math.abs(p.x - crop.start.x), h:Math.abs(p.y - crop.start.y)};
+    drawCrop();
+  });
+  function end() { crop.start = null; }
+  c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
+})();
+function finishCrop(useSel) {
+  var im = crop.img, sx = 0, sy = 0, sw = im.naturalWidth, sh = im.naturalHeight;
+  if (useSel && crop.sel && crop.sel.w > 8 && crop.sel.h > 8) {
+    sx = crop.sel.x / crop.scale; sy = crop.sel.y / crop.scale; sw = crop.sel.w / crop.scale; sh = crop.sel.h / crop.scale;
+  }
+  var ow = Math.min(Math.round(sw), 900), oh = Math.round(sh * ow / sw);
+  var out = document.createElement('canvas'); out.width = ow; out.height = oh;
+  var ctx = out.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, ow, oh);
+  ctx.drawImage(im, sx, sy, sw, sh, 0, 0, ow, oh);
+  var data = out.toDataURL('image/jpeg', 0.78);
+  if (crop.target.batch) {
+    document.getElementById('cropModal').style.display = 'none';
+    batchState.pending = {img: data, ans: null};
+    renderMathBatch();
+    return;
+  }
+  mathEdit[crop.target.g][crop.target.f] = data;
+  closeCropper();
+  renderMathEditor();
+}
+
+/* ══ 관리자 : 일괄 등록 (사진 한 장 → 문제 여러 개 연속 등록) ══ */
+let batchState = null;
+function nextEmptyDay(from) {
+  for (var i = from || 1; i <= MATH_DAYS; i++) { if (!mathConf('day' + i).has) return i; }
+  return from || 1;
+}
+function batchPasteHandler(e) {
+  if (!batchState || batchState.img || batchState.pending) return;
+  var items = (e.clipboardData || window.clipboardData).items;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') === 0) { var f = items[i].getAsFile(); if (f) batchLoadImage(f); e.preventDefault(); break; }
+  }
+}
+function openMathBatch() {
+  batchState = {day: nextEmptyDay(1), img: null, pending: null, list: []};
+  document.getElementById('adminMathList').style.display = 'none';
+  document.getElementById('adminMathIntro').style.display = 'none';
+  document.addEventListener('paste', batchPasteHandler);
+  renderMathBatch();
+  window.scrollTo(0, 0);
+}
+function closeMathBatch() {
+  document.removeEventListener('paste', batchPasteHandler);
+  batchState = null;
+  document.getElementById('adminMathEditor').innerHTML = '';
+  document.getElementById('adminMathList').style.display = '';
+  document.getElementById('adminMathIntro').style.display = '';
+  renderAdminMath();
+}
+function batchPick() {
+  var inp = document.getElementById('mathFile'); inp.value = '';
+  inp.onchange = function() { if (inp.files && inp.files[0]) batchLoadImage(inp.files[0]); };
+  inp.click();
+}
+function batchLoadImage(file) {
+  var url = URL.createObjectURL(file), im = new Image();
+  im.onload = function() { URL.revokeObjectURL(url); batchState.img = im; batchState.pending = null; renderMathBatch(); };
+  im.onerror = function() { alert('이미지를 열 수 없습니다. 다른 사진으로 시도해 주세요.'); };
+  im.src = url;
+}
+function batchNewSheet() { batchState.img = null; batchState.pending = null; renderMathBatch(); }
+function batchStartCrop() {
+  crop.target = {batch:true}; crop.img = batchState.img; crop.sel = null; crop.start = null;
+  var maxW = Math.min(window.innerWidth - 64, 720), maxH = window.innerHeight * 0.58;
+  crop.scale = Math.min(maxW / crop.img.naturalWidth, maxH / crop.img.naturalHeight, 1);
+  var c = document.getElementById('cropCanvas');
+  c.width = Math.round(crop.img.naturalWidth * crop.scale); c.height = Math.round(crop.img.naturalHeight * crop.scale);
+  drawCrop();
+  document.getElementById('cropModal').style.display = 'flex';
+}
+function batchCancelPending() { batchState.pending = null; renderMathBatch(); }
+function batchSetAns(n) { batchState.pending.ans = n; renderMathBatch(); }
+function batchSetDay(v) {
+  var n = parseInt(v, 10);
+  if (n >= 1 && n <= MATH_DAYS) batchState.day = n;
+}
+async function batchSaveItem() {
+  var b = batchState, p = b.pending;
+  if (!p.ans) { alert('정답을 먼저 골라 주세요.'); return; }
+  var key = 'day' + b.day, conf = mathConf(key);
+  if (conf.has && !confirm('Day ' + b.day + '에는 이미 등록된 문제가 있어요. 덮어쓸까요? (해설·유사문제는 그대로 남습니다)')) return;
+  var existingR = null;
+  if (conf.has) { try { var cur = await mathFetch(key, true); existingR = (cur && cur.r) || null; } catch(e) {} }
+  var existingSol = null;
+  if (conf.has) { try { var cur2 = await mathFetch(key, true); existingSol = (cur2 && cur2.q && cur2.q.solImg) || null; } catch(e) {} }
+  try { await mathPut(key, {q:{img:p.img, ans:p.ans, solImg:existingSol}, r:existingR}); }
+  catch(e) { alert('저장 실패: ' + e.message); return; }
+  await pullLatestData();
+  if (!DATA.mathTests) DATA.mathTests = {};
+  var c = DATA.mathTests[key] || (DATA.mathTests[key] = {open:false});
+  c.has = true; c.open = false;
+  if (existingR) c.retryOpen = false;
+  await dbSave();
+  b.list.push({day:b.day, thumb:p.img});
+  b.pending = null;
+  b.day = nextEmptyDay(b.day + 1);
+  showToast('💾 Day ' + key.replace('day','') + ' 저장됨 (닫힘 상태)');
+  renderMathBatch();
+}
+async function batchDeleteDay(day) {
+  if (!confirm('Day ' + day + ' 문제를 삭제할까요?')) return;
+  var key = 'day' + day;
+  try { await mathPut(key, null); } catch(e) { alert('삭제 실패: ' + e.message); return; }
+  await pullLatestData();
+  var conf = DATA.mathTests && DATA.mathTests[key];
+  if (conf) { conf.has = false; conf.retryHas = false; conf.open = false; }
+  await dbSave();
+  batchState.list = batchState.list.filter(function(it){ return it.day !== day; });
+  renderMathBatch();
+}
+function renderMathBatch() {
+  var b = batchState, el = document.getElementById('adminMathEditor');
+  var chips = b.list.map(function(it) {
+    return '<div class="batch-chip"><img src="' + it.thumb + '"><span>Day ' + it.day + '</span><button onclick="batchDeleteDay(' + it.day + ')">✕</button></div>';
+  }).join('');
+  var body;
+  if (b.pending) {
+    body = '<img class="batch-pending-thumb" src="' + b.pending.img + '" onclick="mathZoom(this.src)">' +
+      '<div class="batch-day-input"><span class="small">등록할 Day</span><input type="number" min="1" max="' + MATH_DAYS + '" value="' + b.day + '" onchange="batchSetDay(this.value)"></div>' +
+      (mathConf('day' + b.day).has ? '<div class="batch-warn">⚠️ Day ' + b.day + '에는 이미 문제가 있어요. 저장하면 사진과 정답이 바뀝니다.</div>' : '') +
+      '<div class="small" style="margin:10px 0 6px">정답을 고르세요</div>' +
+      '<div class="math-ans">' + [1,2,3,4].map(function(n){ return '<button class="' + (b.pending.ans===n?'selected':'') + '" onclick="batchSetAns(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:14px">' +
+        '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="batchCancelPending()">다시 자르기</button>' +
+        '<button class="btn btn-primary" style="flex:2" onclick="batchSaveItem()">저장하고 다음 문제 자르기</button>' +
+      '</div>';
+  } else if (b.img) {
+    body = '<img class="batch-sheet-thumb" src="' + b.img.src + '" onclick="mathZoom(this.src)">' +
+      '<div class="small" style="margin:10px 0">다음 등록될 Day: <b>' + b.day + '</b> · 사진에서 문제 하나를 드래그로 골라 주세요</div>' +
+      '<button class="btn btn-primary btn-full" onclick="batchStartCrop()">✂️ 문제 영역 자르기</button>' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+        '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="batchNewSheet()">다른 사진으로 바꾸기</button>' +
+        '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="closeMathBatch()">완료</button>' +
+      '</div>';
+  } else {
+    body = '<div class="small" style="margin-bottom:12px">사진 한 장에 문제가 여러 개 있어도 됩니다. 한 번 올린 뒤 문제 영역만 골라가며 계속 등록할 수 있어요.</div>' +
+      '<div class="batch-day-input"><span class="small">시작할 Day</span><input type="number" min="1" max="' + MATH_DAYS + '" value="' + b.day + '" onchange="batchSetDay(this.value)"></div>' +
+      '<button class="btn btn-primary btn-full" onclick="batchPick()">📷 사진 올리기</button>' +
+      '<div class="small" style="margin-top:8px;text-align:center">PC에서는 캡처한 이미지를 Ctrl+V로 바로 붙여넣을 수도 있어요</div>';
+  }
+  el.innerHTML = '<div class="flex" style="margin-bottom:12px"><div style="font-size:17px;font-weight:800">📥 일괄 등록</div>' +
+    '<button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="closeMathBatch()">목록으로</button></div>' +
+    '<div class="admin-section">' + body + (chips ? '<div class="batch-chip-row">' + chips + '</div>' : '') + '</div>';
+}
+
+/* ══ 관리자 : 탭을 열 때마다 최신 데이터로 새로고침 ══ */
+async function openMathTab() {
+  if (mathEdit || batchState) return;
+  await pullLatestData();
+  renderAdminMath();
+}
+async function openMathScoreTab() {
+  await pullLatestData();
+  renderAdminMathScore();
+}
+
+/* ══ 관리자 : Day 목록 ══ */
+function renderAdminMath() {
+  if (mathEdit || batchState) return;
+  var el = document.getElementById('adminMathList');
+  if (!el) return;
+  var html = '';
+  for (var i = 1; i <= MATH_DAYS; i++) {
+    var key = 'day' + i, conf = mathConf(key);
+    var done = DATA.students.filter(function(s){ return s.mathResults && s.mathResults[key] && s.mathResults[key].completed; });
+    var right = done.filter(function(s){ return s.mathResults[key].correct; }).length;
+    var stat = conf.has ? ('문제 등록됨 · ' + (conf.retryHas ? '유사문제 있음' : '유사문제 없음')) : '문제 미등록';
+    var wrong = done.filter(function(s){ return !s.mathResults[key].correct; });
+    var retried = wrong.filter(function(s){ return s.mathResults[key].retriedAt; });
+    var retryRight = retried.filter(function(s){ return s.mathResults[key].retryCorrect; }).length;
+    html += '<div class="admin-auction-card"><div class="aa-header"><div>' +
+      '<div class="aa-title">Day ' + i + ' 수학</div>' +
+      '<div class="small" style="margin-top:4px">' + stat + '</div>' +
+      '<div class="small">응시 ' + done.length + '명 / 전체 ' + DATA.students.length + '명 · 정답 ' + right + '명</div>' +
+      (conf.retryHas ? '<div class="small">유사문제 응시 ' + retried.length + '명 / 오답 ' + wrong.length + '명 · 정답 ' + retryRight + '명</div>' : '') +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">' +
+        (conf.open ? '<span class="badge badge-active">열림</span>' : '<span class="badge badge-ended">닫힘</span>') +
+        (conf.retryHas ? (conf.retryOpen ? '<span class="badge badge-active">유사 열림</span>' : '<span class="badge badge-ended">유사 닫힘</span>') : '') +
+      '</div></div>' +
+      '<div style="display:flex;gap:8px">' +
+        '<button class="btn btn-primary btn-sm" style="flex:1" onclick="openMathEditor(\'' + key + '\')">' + (conf.has ? '문제 편집' : '문제 등록') + '</button>' +
+        (conf.open
+          ? '<button class="btn btn-danger btn-sm" style="flex:1" onclick="toggleMathDay(\'' + key + '\')">닫기</button>'
+          : '<button class="btn btn-success btn-sm" style="flex:1" onclick="toggleMathDay(\'' + key + '\')">열기</button>') +
+      '</div>' +
+      (conf.retryHas ?
+        '<div style="display:flex;gap:8px;margin-top:8px">' +
+          '<div class="btn btn-sm" style="flex:1;background:none;border:none;color:var(--text3);font-size:12px;text-align:right;padding:8px 0">유사문제 응시 권한</div>' +
+          (conf.retryOpen
+            ? '<button class="btn btn-danger btn-sm" style="flex:1" onclick="toggleMathRetryDay(\'' + key + '\')">유사문제 닫기</button>'
+            : '<button class="btn btn-success btn-sm" style="flex:1" onclick="toggleMathRetryDay(\'' + key + '\')">유사문제 열기</button>') +
+        '</div>' : '') +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+async function toggleMathDay(key) {
+  await pullLatestData();
+  if (!DATA.mathTests) DATA.mathTests = {};
+  var conf = DATA.mathTests[key] || (DATA.mathTests[key] = {open:false});
+  if (!conf.open && !conf.has) { showToast('⚠️ 먼저 문제 사진을 등록해 주세요'); renderAdminMath(); return; }
+  conf.open = !conf.open;
+  await dbSave();
+  renderAdminMath(); renderAdminMathScore();
+  showToast(conf.open ? '✅ 수학 Day ' + key.replace('day','') + ' 열림' : '🔒 수학 Day ' + key.replace('day','') + ' 닫힘');
+}
+
+async function toggleMathRetryDay(key) {
+  await pullLatestData();
+  if (!DATA.mathTests) DATA.mathTests = {};
+  var conf = DATA.mathTests[key] || (DATA.mathTests[key] = {open:false});
+  if (!conf.retryOpen && !conf.retryHas) { showToast('⚠️ 먼저 유사 문제를 등록해 주세요'); renderAdminMath(); return; }
+  conf.retryOpen = !conf.retryOpen;
+  await dbSave();
+  renderAdminMath(); renderAdminMathScore();
+  showToast(conf.retryOpen ? '✅ 유사문제 Day ' + key.replace('day','') + ' 열림' : '🔒 유사문제 Day ' + key.replace('day','') + ' 닫힘');
+}
+
+/* ══ 관리자 : 문제 등록/편집 ══ */
+async function openMathEditor(key) {
+  var conf = mathConf(key);
+  mathEdit = {key:key, q:{img:null, ans:null, solImg:null}, r:{img:null, ans:null, solImg:null}};
+  if (conf.has) {
+    try {
+      var p = await mathFetch(key, true);
+      if (p && p.q) { mathEdit.q = {img:p.q.img||null, ans:p.q.ans||null, solImg:p.q.solImg||null}; }
+      if (p && p.r) { mathEdit.r = {img:p.r.img||null, ans:p.r.ans||null, solImg:p.r.solImg||null}; }
+    } catch(e) { alert('문제를 불러오지 못했습니다: ' + e.message); return; }
+  }
+  document.getElementById('adminMathList').style.display = 'none';
+  document.getElementById('adminMathIntro').style.display = 'none';
+  renderMathEditor();
+  window.scrollTo(0, 0);
+}
+function closeMathEditor() {
+  mathEdit = null;
+  document.getElementById('adminMathEditor').innerHTML = '';
+  document.getElementById('adminMathList').style.display = '';
+  document.getElementById('adminMathIntro').style.display = '';
+  renderAdminMath();
+}
+function mathSlotHtml(g, f, label, optional) {
+  var img = mathEdit[g][f];
+  return '<div class="field"><label>' + label + '</label><div class="math-slot">' +
+    (img ? '<img src="' + img + '" onclick="mathZoom(this.src)">' : '<div class="math-slot-empty">사진 없음</div>') +
+    '<div class="math-slot-btns"><button class="btn btn-sm btn-primary" onclick="mathPick(\'' + g + '\',\'' + f + '\')">' + (img ? '사진 바꾸기' : '사진 선택') + '</button>' +
+    (img && optional ? '<button class="btn btn-sm btn-danger" onclick="mathClear(\'' + g + '\',\'' + f + '\')">삭제</button>' : '') +
+    '</div></div></div>';
+}
+function mathAnsHtml(g) {
+  var cur = mathEdit[g].ans;
+  return '<div class="field"><label>정답</label><div class="math-ans">' +
+    [1,2,3,4].map(function(n){ return '<button class="btn' + (cur === n ? ' selected' : '') + '" onclick="mathSetAns(\'' + g + '\',' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') +
+    '</div></div>';
+}
+function mathSetAns(g, n) { mathEdit[g].ans = n; renderMathEditor(); }
+function mathClear(g, f) { mathEdit[g][f] = null; renderMathEditor(); }
+function renderMathEditor() {
+  var e = mathEdit, el = document.getElementById('adminMathEditor');
+  if (!e || !el) return;
+  var conf = mathConf(e.key);
+  el.innerHTML =
+    '<div class="flex" style="margin-bottom:12px"><div style="font-size:17px;font-weight:800">Day ' + e.key.replace('day','') + ' 문제 등록</div>' +
+    '<button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="closeMathEditor()">목록으로</button></div>' +
+    '<div class="admin-section"><div class="small" style="margin-bottom:12px;font-size:13px;font-weight:700;color:var(--text2)">① 원본 문제 (필수)</div>' +
+      mathSlotHtml('q','img','문제 사진 (보기 ①~④ 포함)',false) + mathAnsHtml('q') + mathSlotHtml('q','solImg','해설 사진 (선택)',true) + '</div>' +
+    '<div class="admin-section"><div class="small" style="margin-bottom:4px;font-size:13px;font-weight:700;color:var(--text2)">② 유사 문제 (선택)</div>' +
+      '<div class="small" style="margin-bottom:12px">원본을 틀린 학생에게만 보여 줍니다.</div>' +
+      mathSlotHtml('r','img','유사 문제 사진 (보기 ①~④ 포함)',true) + mathAnsHtml('r') + mathSlotHtml('r','solImg','유사 문제 해설 사진 (선택)',true) + '</div>' +
+    '<div class="small" style="text-align:center;margin:10px 0">저장하면 이 Day는 자동으로 닫힙니다. 학생에게 보이려면 목록에서 다시 "열기"를 눌러주세요.</div>' +
+    '<button class="btn btn-primary btn-full" onclick="saveMathEdit()">저장하기</button>' +
+    (conf.has ? '<button class="btn btn-danger btn-full" style="margin-top:10px" onclick="deleteMathProblem()">이 Day 문제 삭제</button>' : '');
+}
+async function saveMathEdit() {
+  var e = mathEdit;
+  if (!e.q.img) { alert('원본 문제 사진을 선택해 주세요.'); return; }
+  if (!e.q.ans) { alert('원본 문제의 정답을 골라 주세요.'); return; }
+  var hasR = !!e.r.img;
+  if (hasR && !e.r.ans) { alert('유사 문제의 정답을 골라 주세요.'); return; }
+  var done = DATA.students.filter(function(s){ return s.mathResults && s.mathResults[e.key] && s.mathResults[e.key].completed; }).length;
+  if (done && !confirm('이미 ' + done + '명이 응시했습니다. 문제나 정답을 바꿔도 기존 채점 결과는 그대로 남습니다. 저장할까요?')) return;
+  var obj = {q:{img:e.q.img, ans:e.q.ans, solImg:e.q.solImg || null}, r:hasR ? {img:e.r.img, ans:e.r.ans, solImg:e.r.solImg || null} : null};
+  try { await mathPut(e.key, obj); }
+  catch(err) { alert('사진 저장 실패: ' + err.message + '\n(Firebase 규칙에서 mathProblems 경로 읽기/쓰기가 허용되어 있는지 확인해 주세요)'); return; }
+  await pullLatestData();
+  if (!DATA.mathTests) DATA.mathTests = {};
+  var conf = DATA.mathTests[e.key] || (DATA.mathTests[e.key] = {open:false});
+  conf.has = true; conf.retryHas = hasR; conf.open = false; conf.retryOpen = false;
+  await dbSave();
+  showToast('💾 Day ' + e.key.replace('day','') + ' 문제 저장됨 (닫힘 상태 · 학생에게 보이려면 목록에서 "열기"를 눌러주세요)');
+  closeMathEditor();
+}
+async function deleteMathProblem() {
+  var key = mathEdit.key;
+  if (!confirm('Day ' + key.replace('day','') + ' 문제 사진을 삭제할까요? (학생 성적 기록은 남습니다)')) return;
+  try { await mathPut(key, null); } catch(err) { alert('삭제 실패: ' + err.message); return; }
+  await pullLatestData();
+  var conf = DATA.mathTests && DATA.mathTests[key];
+  if (conf) { conf.has = false; conf.retryHas = false; conf.open = false; }
+  await dbSave();
+  closeMathEditor();
+}
+
+/* ══ 관리자 : 성적 ══ */
+function populateMathScoreDaySelect() {
+  var sel = document.getElementById('mathScoreDay');
+  if (!sel || sel.options.length === MATH_DAYS) return;
+  var prev = sel.value, opts = '';
+  for (var i = 1; i <= MATH_DAYS; i++) opts += '<option value="day' + i + '">Day ' + i + '</option>';
+  sel.innerHTML = opts;
+  if (prev) sel.value = prev;
+}
+function renderAdminMathScore() {
+  populateMathScoreDaySelect();
+  var sel = document.getElementById('mathScoreDay'), el = document.getElementById('adminMathScoreList');
+  if (!sel || !el) return;
+  var key = sel.value || 'day1', conf = mathConf(key);
+  var rows = DATA.students.map(function(s) {
+    var r = s.mathResults && s.mathResults[key];
+    if (r && r.completed) {
+      var retryCell;
+      if (r.correct) {
+        retryCell = '<span class="small">-</span>';
+      } else if (!r.retriedAt) {
+        retryCell = '<span class="small">미응시</span>';
+      } else {
+        retryCell = '<span class="' + (r.retryCorrect ? 'green' : 'red') + '" style="font-weight:700">' + CIRCLED[r.retrySelected-1] + ' ' + (r.retryCorrect ? '정답' : '오답') + '</span>' +
+          '<div class="small">' + (r.retryTries || 1) + '회 시도</div>';
+      }
+      return '<tr><td>' + s.name + '</td><td>' + CIRCLED[r.selected-1] + ' <span class="small">(정답 ' + CIRCLED[r.answer-1] + ')</span></td>' +
+        '<td><span class="badge ' + (r.correct ? 'badge-winner' : 'badge-ended') + '">' + (r.correct ? '정답' : '오답') + '</span></td>' +
+        '<td class="' + (r.pointsAwarded ? 'green' : 'small') + '">' + (r.pointsAwarded ? '+' + r.pointsAwarded + 'P' : '-') + '</td>' +
+        '<td>' + retryCell + '</td><td class="small">' + r.date + '</td></tr>';
+    }
+    return '<tr><td>' + s.name + '</td><td class="small" colspan="5">미응시</td></tr>';
+  }).join('');
+  el.innerHTML = '<div class="small" style="margin:4px 0 10px">Day ' + key.replace('day','') + ' · 원본 상태: ' + (conf.open ? '열림' : '닫힘') +
+    (conf.retryHas ? ' · 유사문제 상태: ' + (conf.retryOpen ? '열림' : '닫힘') : '') + ' (닫혀 있어도 기록은 사라지지 않습니다)</div>' +
+    '<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>선택</th><th>결과</th><th>포인트</th><th>유사문제 결과</th><th>응시일</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  renderAdminMathScoreSummary();
+}
+function renderAdminMathScoreSummary() {
+  var el = document.getElementById('adminMathScoreSummary');
+  if (!el) return;
+  var rows = DATA.students.map(function(s) {
+    var res = s.mathResults || {}, n = 0, ok = 0, pts = 0, rc = 0;
+    Object.keys(res).forEach(function(k) {
+      if (res[k] && res[k].completed) { n++; if (res[k].correct) ok++; if (res[k].retryCorrect) rc++; pts += (res[k].pointsAwarded || 0) + (res[k].retryPoints || 0); }
+    });
+    return '<tr><td>' + s.name + '</td><td>' + n + '</td><td>' + ok + ' / ' + n + '</td><td>' + rc + '</td><td class="green">' + pts + 'P</td></tr>';
+  }).join('');
+  el.innerHTML = '<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>응시</th><th>정답</th><th>유사문제 정답</th><th>누적 포인트</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="5" class="empty">등록된 학생이 없습니다.</td></tr>') + '</tbody></table></div>';
+}
+
+/* ══ 학생 : 목록 ══ */
+function renderStudentMathList() {
+  var el = document.getElementById('studentMathList');
+  if (!el) return;
+  mathViewLocked = false;
+  var s = getMe();
+  if (!s.mathResults) s.mathResults = {};
+  var n = 0, ok = 0, pts = 0;
+  Object.keys(s.mathResults).forEach(function(k) {
+    var r = s.mathResults[k];
+    if (r && r.completed) { n++; if (r.correct) ok++; pts += (r.pointsAwarded || 0) + (r.retryPoints || 0); }
+  });
+  var html = '<div class="banner" style="text-align:left;padding:20px;margin-bottom:16px">' +
+    '<div class="small" style="margin-bottom:10px">📐 누적 결과 · 응시 ' + n + '일</div>' +
+    '<div class="flex" style="align-items:flex-end">' +
+      '<div><div class="small">푼 문제</div><div style="font-size:24px;font-weight:800">' + n + '</div></div>' +
+      '<div><div class="small">정답</div><div style="font-size:24px;font-weight:800;color:var(--accent2)">' + ok + '</div></div>' +
+      '<div><div class="small">누적 획득 포인트</div><div style="font-size:24px;font-weight:800;color:var(--green)">' + pts + 'P</div></div>' +
+    '</div></div>';
+  var shown = 0;
+  for (var i = 1; i <= MATH_DAYS; i++) {
+    var key = 'day' + i, conf = mathConf(key), r = s.mathResults[key];
+    if (r && r.completed) {
+      shown++;
+      var canRetry = !r.correct && conf.retryHas && conf.retryOpen;
+      var retryLocked = !r.correct && conf.retryHas && !conf.retryOpen;
+      var retryStatus = r.retryCorrect ? '<span class="green">✓ 유사문제 정답</span>' : (r.retriedAt ? '<span class="red">유사문제 오답</span>' : '');
+      html += '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + i + ' 수학 문제</div>' +
+        (r.correct ? '<span class="badge badge-winner">정답 (+' + r.pointsAwarded + 'P)</span>' : '<span class="badge badge-ended">오답</span>') + '</div>' +
+        '<div class="ac-meta"><span>📅 ' + r.date + '</span>' + retryStatus + '</div>' +
+        (retryLocked ? '<div class="small" style="margin-bottom:8px">🔒 선생님이 유사문제를 열면 다시 풀 수 있어요</div>' : '') +
+        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="showMathSolution(\'' + key + '\',\'q\')">해설 보기</button>' +
+        (canRetry ? '<button class="btn btn-success" style="flex:1" onclick="startMathRetry(\'' + key + '\')">유사 문제 풀기</button>' : '') +
+        '</div></div>';
+    } else if (conf.open && conf.has) {
+      shown++;
+      html += '<div class="auction-card"><div class="flex"><div class="ac-title">Day ' + i + ' 수학 문제</div><span class="badge badge-active">응시 가능</span></div>' +
+        '<div class="ac-meta"><span>📝 1문제 · 4지선다 · 정답 시 ' + MATH_POINTS + 'P</span></div>' +
+        '<div class="ac-bid-row"><button class="btn btn-primary" style="flex:1" onclick="startMathTest(\'' + key + '\')">문제 풀기</button></div></div>';
+    }
+  }
+  if (!shown) html += '<div class="empty">아직 열린 수학 문제가 없어요. 선생님이 열면 여기에 나타납니다.</div>';
+  el.innerHTML = html;
+}
+
+/* ══ 학생 : 풀이 ══ */
+async function startMathTest(key) {
+  var s = getMe();
+  if (s.mathResults && s.mathResults[key] && s.mathResults[key].completed) {
+    alert('이미 응시한 문제입니다. 재응시는 불가능합니다.'); renderStudentMathList(); return;
+  }
+  if (!confirm('Day ' + key.replace('day','') + ' 수학 문제를 시작하시겠습니까?\n제출하면 다시 응시할 수 없습니다.')) return;
+  await loadAndShowMath(key, 'q');
+}
+async function startMathRetry(key) {
+  await pullLatestData();
+  var r = getMe().mathResults && getMe().mathResults[key];
+  if (!r || !r.completed || r.correct) { alert('풀 수 있는 유사 문제가 없습니다.'); renderStudentMathList(); return; }
+  var conf = mathConf(key);
+  if (!conf.retryHas || !conf.retryOpen) { alert('아직 선생님이 유사 문제를 열지 않았어요.'); renderStudentMathList(); return; }
+  await loadAndShowMath(key, 'r');
+}
+async function loadAndShowMath(key, which) {
+  var el = document.getElementById('studentMathList');
+  currentMath = {key:key, which:which, selected:null};
+  el.innerHTML = '<div class="empty">문제를 불러오는 중…</div>';
+  var p;
+  try { p = await mathFetch(key, true); }
+  catch(e) { alert('문제를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.\n' + e.message); currentMath = null; renderStudentMathList(); return; }
+  if (!p || !p[which]) { alert(which === 'r' ? '유사 문제가 아직 등록되지 않았어요.' : '문제가 아직 준비되지 않았어요.'); currentMath = null; renderStudentMathList(); return; }
+  renderMathQuestion();
+}
+function mathFigHtml(id) { return '<div class="math-fig" onclick="mathZoom(this.querySelector(\'img\').src)"><img id="' + id + '" alt="문제 사진"><span class="zoom-hint">탭하면 확대</span></div>'; }
+function renderMathQuestion() {
+  var el = document.getElementById('studentMathList'), c = currentMath;
+  var p = mathCache[c.key][c.which], dayNum = c.key.replace('day','');
+  var retry = c.which === 'r';
+  el.innerHTML = '<div class="auction-card">' +
+    '<div class="flex"><div class="ac-title">Day ' + dayNum + (retry ? ' 유사 문제' : ' 수학 문제') + '</div>' +
+    '<span class="badge badge-active">' + (retry ? (MATH_RETRY_POINTS ? '정답 시 +' + MATH_RETRY_POINTS + 'P' : '연습') : '정답 시 +' + MATH_POINTS + 'P') + '</span></div>' +
+    mathFigHtml('mathQImg') +
+    '<div class="small" style="margin-bottom:8px">정답 번호를 고르세요</div>' +
+    '<div class="math-choices">' + [1,2,3,4].map(function(n){ return '<button class="btn math-choice" id="mathOpt' + n + '" onclick="selectMathOption(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px">' +
+      '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="cancelMath()">나가기</button>' +
+      '<button class="btn btn-primary" id="mathSubmitBtn" style="flex:2" disabled onclick="submitMath()">제출하기</button>' +
+    '</div></div>';
+  document.getElementById('mathQImg').src = p.img;
+}
+function selectMathOption(n) {
+  if (!currentMath) return;
+  currentMath.selected = n;
+  document.querySelectorAll('.math-choice').forEach(function(b){ b.classList.remove('selected'); });
+  document.getElementById('mathOpt' + n).classList.add('selected');
+  document.getElementById('mathSubmitBtn').disabled = false;
+}
+function cancelMath() {
+  if (currentMath && currentMath.which === 'q' && !confirm('지금 나가면 아직 제출하지 않은 것으로 처리되고, 나중에 다시 풀 수 있어요. 나갈까요?')) return;
+  currentMath = null; renderStudentMathList();
+}
+async function submitMath() {
+  if (!currentMath || currentMath.selected == null) return;
+  var key = currentMath.key, which = currentMath.which, sel = currentMath.selected;
+  if (which === 'q' && !confirm('제출하면 답을 바꿀 수 없습니다. 제출할까요?')) return;
+  var p = mathCache[key][which], ok = (sel === p.ans);
+  await pullLatestData();
+  var s = getMe();
+  if (!s.mathResults) s.mathResults = {};
+  var r = s.mathResults[key], pts = 0;
+  if (which === 'q') {
+    if (r && r.completed) { alert('이미 응시한 문제입니다.'); currentMath = null; renderStudentMathList(); return; }
+    pts = ok ? MATH_POINTS : 0;
+    s.mathResults[key] = {completed:true, selected:sel, answer:p.ans, correct:ok, date:today(), pointsAwarded:pts};
+    if (pts) { s.points += pts; if (!s.history) s.history = []; s.history.push({label:'Day ' + key.replace('day','') + ' 수학 문제 (정답)', points:pts, date:today()}); }
+  } else {
+    if (!r || !r.completed) { currentMath = null; renderStudentMathList(); return; }
+    r.retriedAt = today(); r.retryTries = (r.retryTries || 0) + 1; r.retrySelected = sel;
+    if (ok && !r.retryCorrect && MATH_RETRY_POINTS > 0) {
+      pts = MATH_RETRY_POINTS; r.retryPoints = pts; s.points += pts;
+      if (!s.history) s.history = [];
+      s.history.push({label:'Day ' + key.replace('day','') + ' 수학 유사문제 (정답)', points:pts, date:today()});
+    }
+    if (ok) r.retryCorrect = true;
+  }
+  await dbSave();
+  currentMath = null;
+  var ptsEl = document.getElementById('studentPoints'); if (ptsEl) ptsEl.innerText = s.points;
+  renderStudentHistory();
+  showToast(ok ? '📐 정답!' + (pts ? ' +' + pts + 'P' : '') : '📐 제출 완료 (오답)');
+  showMathResult(key, which, ok, pts);
+}
+function showMathResult(key, which, ok, pts) {
+  var el = document.getElementById('studentMathList'), r = getMe().mathResults[key], retry = which === 'r';
+  mathViewLocked = true;
+  var canRetry = !r.correct && mathConf(key).retryHas && mathConf(key).retryOpen;
+  el.innerHTML = '<div class="auction-card" style="text-align:center">' +
+    '<div class="ac-title" style="margin-bottom:10px">Day ' + key.replace('day','') + (retry ? ' 유사 문제 결과' : ' 수학 결과') + '</div>' +
+    '<div style="font-size:44px;font-weight:800;color:' + (ok ? 'var(--green)' : 'var(--red)') + ';margin:14px 0">' + (ok ? '정답!' : '오답') + '</div>' +
+    (pts ? '<div class="small" style="color:var(--green);font-weight:700;margin-bottom:6px">+' + pts + 'P 적립됨</div>' : '') +
+    (!retry && !ok && canRetry ? '<div class="small" style="margin-bottom:6px">비슷한 유형의 문제로 다시 도전해 보세요.</div>' : '') +
+    (!retry && !ok && !canRetry && mathConf(key).retryHas && !mathConf(key).retryOpen ? '<div class="small" style="margin-bottom:6px">🔒 선생님이 유사문제를 열면 다시 풀 수 있어요.</div>' : '') +
+    (retry ? '<div class="small" style="margin-bottom:6px">원래 결과는 그대로 유지됩니다.</div>' : '') +
+    (retry && !ok && !mathConf(key).retryOpen ? '<div class="small" style="margin-bottom:6px">🔒 선생님이 유사문제를 닫아서, 지금은 다시 풀 수 없어요.</div>' : '') +
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">' +
+      '<button class="btn btn-primary" onclick="showMathSolution(\'' + key + '\',\'' + which + '\')">해설 보기</button>' +
+      (!retry && !ok && canRetry ? '<button class="btn btn-success" onclick="startMathRetry(\'' + key + '\')">유사 문제 풀기</button>' : '') +
+      (retry && !ok && mathConf(key).retryOpen ? '<button class="btn btn-success" onclick="startMathRetry(\'' + key + '\')">유사 문제 다시 풀기</button>' : '') +
+      '<button class="btn" style="background:var(--surface2);color:var(--text)" onclick="renderStudentMathList()">목록으로</button>' +
+    '</div></div>';
+}
+async function showMathSolution(key, which) {
+  var s = getMe(), r = s.mathResults && s.mathResults[key];
+  if (!r || !r.completed || (which === 'r' && !r.retriedAt)) { renderStudentMathList(); return; }
+  var el = document.getElementById('studentMathList');
+  mathViewLocked = true;
+  el.innerHTML = '<div class="empty">불러오는 중…</div>';
+  var p;
+  try { p = await mathFetch(key); } catch(e) { alert('불러오지 못했습니다: ' + e.message); renderStudentMathList(); return; }
+  if (!p || !p[which]) { alert('등록된 문제가 없어요.'); renderStudentMathList(); return; }
+  var d = p[which], retry = which === 'r';
+  var mineSel = retry ? r.retrySelected : r.selected;
+  var mineOk = (mineSel === d.ans);
+  el.innerHTML = '<div class="auction-card">' +
+    '<div class="flex"><div class="ac-title">Day ' + key.replace('day','') + (retry ? ' 유사 문제 해설' : ' 해설') + '</div>' +
+    (mineOk ? '<span class="badge badge-winner">정답</span>' : '<span class="badge badge-ended">오답</span>') + '</div>' +
+    mathFigHtml('mathSolQ') +
+    '<div class="small" style="color:' + (mineOk ? 'var(--green)' : 'var(--red)') + '">내가 고른 답: ' + CIRCLED[mineSel-1] + '</div>' +
+    '<div class="small" style="color:var(--green);font-weight:700">정답: ' + CIRCLED[d.ans-1] + '</div>' +
+    '<div class="math-sol-title">해설</div>' +
+    (d.solImg ? mathFigHtml('mathSolImg') : '<div class="small">등록된 해설이 없습니다. 선생님께 물어보세요.</div>') +
+    '<div style="display:flex;gap:8px;margin-top:14px">' +
+      (!retry && !r.correct && mathConf(key).retryHas && mathConf(key).retryOpen ? '<button class="btn btn-success" style="flex:1" onclick="startMathRetry(\'' + key + '\')">유사 문제 풀기</button>' : '') +
+      (!retry && !r.correct && mathConf(key).retryHas && !mathConf(key).retryOpen ? '<div class="small" style="flex:1;align-self:center;text-align:center">🔒 유사문제 잠김</div>' : '') +
+      '<button class="btn btn-primary" style="flex:1" onclick="renderStudentMathList()">목록으로</button>' +
+    '</div></div>';
+  document.getElementById('mathSolQ').src = d.img;
+  if (d.solImg) document.getElementById('mathSolImg').src = d.solImg;
+}
+
 </script>
 
 
