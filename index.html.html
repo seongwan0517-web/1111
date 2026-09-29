@@ -121,6 +121,9 @@ button,input,select{font-family:inherit;}
 .math-fig .zoom-hint{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:3px 9px;border-radius:100px;}
 .math-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
 .math-choice{min-height:64px;font-size:24px;font-weight:800;text-align:center;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);}
+.math-choice-wide{grid-column:1 / -1;}
+.math-ans{flex-wrap:wrap;}
+.math-ans button{min-width:52px;}
 .math-choice.selected{border-color:var(--accent);background:rgba(108,95,255,.28);color:#fff;}
 .math-sol-title{font-size:13px;font-weight:700;color:var(--text2);margin:16px 0 6px;}
 .math-slot{display:flex;flex-direction:column;gap:8px;}
@@ -1233,9 +1236,9 @@ function showVocabWrong(key) {
 }
 /* ══════════ 수학시험 (사진 문제 · 하루 1문제 · 4지선다) ══════════ */
 const MATH_DAYS = 30;
-const MATH_POINTS = 30;       // 처음 응시에서 정답일 때 포인트
+const MATH_POINTS = 300;      // 처음 응시에서 정답일 때 포인트
 const MATH_RETRY_POINTS = 0;  // 유사문제를 처음 맞혔을 때 포인트 (0이면 없음)
-const CIRCLED = ['①','②','③','④'];
+const CIRCLED = ['①','②','③','④','⑤'];
 // 문제 사진은 용량이 커서 data.json과 분리해 저장합니다 (학생 화면이 4초마다 받는 데이터가 무거워지지 않게)
 const MATH_BASE = FIREBASE_URL.replace(/data\.json$/, '');
 const mathCache = {};
@@ -1445,7 +1448,7 @@ function renderMathBatch() {
       '<div class="batch-day-input"><span class="small">등록할 Day</span><input type="number" min="1" max="' + MATH_DAYS + '" value="' + b.day + '" onchange="batchSetDay(this.value)"></div>' +
       (mathConf('day' + b.day).has ? '<div class="batch-warn">⚠️ Day ' + b.day + '에는 이미 문제가 있어요. 저장하면 사진과 정답이 바뀝니다.</div>' : '') +
       '<div class="small" style="margin:10px 0 6px">정답을 고르세요</div>' +
-      '<div class="math-ans">' + [1,2,3,4].map(function(n){ return '<button class="' + (b.pending.ans===n?'selected':'') + '" onclick="batchSetAns(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
+      '<div class="math-ans">' + [1,2,3,4,5].map(function(n){ return '<button class="' + (b.pending.ans===n?'selected':'') + '" onclick="batchSetAns(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
       '<div style="display:flex;gap:8px;margin-top:14px">' +
         '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="batchCancelPending()">다시 자르기</button>' +
         '<button class="btn btn-primary" style="flex:2" onclick="batchSaveItem()">저장하고 다음 문제 자르기</button>' +
@@ -1578,7 +1581,7 @@ function mathSlotHtml(g, f, label, optional) {
 function mathAnsHtml(g) {
   var cur = mathEdit[g].ans;
   return '<div class="field"><label>정답</label><div class="math-ans">' +
-    [1,2,3,4].map(function(n){ return '<button class="btn' + (cur === n ? ' selected' : '') + '" onclick="mathSetAns(\'' + g + '\',' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') +
+    [1,2,3,4,5].map(function(n){ return '<button class="btn' + (cur === n ? ' selected' : '') + '" onclick="mathSetAns(\'' + g + '\',' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') +
     '</div></div>';
 }
 function mathSetAns(g, n) { mathEdit[g].ans = n; renderMathEditor(); }
@@ -1591,10 +1594,10 @@ function renderMathEditor() {
     '<div class="flex" style="margin-bottom:12px"><div style="font-size:17px;font-weight:800">Day ' + e.key.replace('day','') + ' 문제 등록</div>' +
     '<button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="closeMathEditor()">목록으로</button></div>' +
     '<div class="admin-section"><div class="small" style="margin-bottom:12px;font-size:13px;font-weight:700;color:var(--text2)">① 원본 문제 (필수)</div>' +
-      mathSlotHtml('q','img','문제 사진 (보기 ①~④ 포함)',false) + mathAnsHtml('q') + mathSlotHtml('q','solImg','해설 사진 (선택)',true) + '</div>' +
+      mathSlotHtml('q','img','문제 사진 (보기 ①~⑤ 포함)',false) + mathAnsHtml('q') + mathSlotHtml('q','solImg','해설 사진 (선택)',true) + '</div>' +
     '<div class="admin-section"><div class="small" style="margin-bottom:4px;font-size:13px;font-weight:700;color:var(--text2)">② 유사 문제 (선택)</div>' +
       '<div class="small" style="margin-bottom:12px">원본을 틀린 학생에게만 보여 줍니다.</div>' +
-      mathSlotHtml('r','img','유사 문제 사진 (보기 ①~④ 포함)',true) + mathAnsHtml('r') + mathSlotHtml('r','solImg','유사 문제 해설 사진 (선택)',true) + '</div>' +
+      mathSlotHtml('r','img','유사 문제 사진 (보기 ①~⑤ 포함)',true) + mathAnsHtml('r') + mathSlotHtml('r','solImg','유사 문제 해설 사진 (선택)',true) + '</div>' +
     '<div class="small" style="text-align:center;margin:10px 0">저장하면 이 Day는 자동으로 닫힙니다. 학생에게 보이려면 목록에서 다시 "열기"를 눌러주세요.</div>' +
     '<button class="btn btn-primary btn-full" onclick="saveMathEdit()">저장하기</button>' +
     (conf.has ? '<button class="btn btn-danger btn-full" style="margin-top:10px" onclick="deleteMathProblem()">이 Day 문제 삭제</button>' : '');
@@ -1763,7 +1766,7 @@ function renderMathQuestion() {
     '<span class="badge badge-active">' + (retry ? (MATH_RETRY_POINTS ? '정답 시 +' + MATH_RETRY_POINTS + 'P' : '연습') : '정답 시 +' + MATH_POINTS + 'P') + '</span></div>' +
     mathFigHtml('mathQImg') +
     '<div class="small" style="margin-bottom:8px">정답 번호를 고르세요</div>' +
-    '<div class="math-choices">' + [1,2,3,4].map(function(n){ return '<button class="btn math-choice" id="mathOpt' + n + '" onclick="selectMathOption(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
+    '<div class="math-choices">' + [1,2,3,4,5].map(function(n){ return '<button class="btn math-choice' + (n===5?' math-choice-wide':'') + '" id="mathOpt' + n + '" onclick="selectMathOption(' + n + ')">' + CIRCLED[n-1] + '</button>'; }).join('') + '</div>' +
     '<div style="display:flex;gap:8px;margin-top:16px">' +
       '<button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="cancelMath()">나가기</button>' +
       '<button class="btn btn-primary" id="mathSubmitBtn" style="flex:2" disabled onclick="submitMath()">제출하기</button>' +
