@@ -320,61 +320,14 @@ function renderSAuc(){const el=$('s-auction'),s=getMe(),l=Object.values(DATA.auc
     return`<div class="auction-card"><div class="flex"><div class="ac-title">${esc(a.itemName)}</div><span class="badge badge-ended">종료</span></div>
       <div class="ac-meta"><span>시작가 ${a.startPrice||0}P</span>${si?`<span class="orange">${si}</span>`:''}</div>
       ${a.winner?`<span class="badge badge-winner">🏆 낙찰자: ${esc(a.winner.studentName)} ${a.winner.amount}P</span>${won?'<div class="orange" style="margin-top:8px;font-weight:700">🎉 낙찰되었습니다!'+(a.seatId?' 자리가 배정됐어요.':'')+'</div>':''}`:'<span class="badge badge-ended">낙찰자 없음</span>'}</div>`}).join('')}
-// 기존 stepBid 함수를 아래 두 함수로 교체합니다.
-function addBidAmt(id,amt){
-  const a=DATA.auctions[id],el=$('step-'+id);if(!a||!el)return;
-  const mb=minBidOf(a);let n=(parseInt(el.textContent)||mb)+amt;
-  if(n<mb)n=mb;
-  stepVals[id]=n;el.textContent=n+'P'
-}
-
-function manualBidAmt(id){
-  const a=DATA.auctions[id];if(!a)return;
-  const mb=minBidOf(a);
-  const input=prompt('입찰할 금액을 직접 입력하세요 (최소 '+mb+'P, 10단위)');
-  if(!input)return;
-  const n=parseInt(input);
-  if(isNaN(n)||n%10!==0){alert('1단위는 입력할 수 없습니다. 10P 단위로 입력해주세요.');return;}
-  if(n<mb){alert('최소 입찰 금액은 '+mb+'P 입니다.');return;}
-  stepVals[id]=n;
-  const el=$('step-'+id);if(el)el.textContent=n+'P';
-}
-
-// 입찰 시 1단위 필터링 추가
-async function placeBid(id){await pull();const a=DATA.auctions[id];if(!a||!a.active)return;
-  const amt=parseInt($('step-'+id).textContent);
-  if(!amt||amt%10!==0)return alert('입찰 금액은 10P 단위로 입력해주세요 (1단위 불가).');
-  const s=getMe(),mb=minBidOf(a);
+function stepBid(id,d){const a=DATA.auctions[id],el=$('step-'+id);if(!a||!el)return;const mb=minBidOf(a);let n=(parseInt(el.textContent)||mb)+d*STEP;if(n<mb)n=mb;stepVals[id]=n;el.textContent=n+'P'}
+async function placeBid(id){await pull();const a=DATA.auctions[id];if(!a||!a.active)return;const amt=parseInt($('step-'+id).textContent);
+  if(!amt||amt%STEP)return alert('입찰 금액을 확인하세요.');const s=getMe(),mb=minBidOf(a);
   if(amt<mb)return alert('최소 입찰 금액은 '+mb+'P 입니다.');
   const sid=String(s.id),prev=a.bids&&a.bids[sid]?a.bids[sid].amount:0,diff=amt-prev;
   if(diff<=0)return alert('현재 내 입찰보다 높은 금액을 입력하세요.');if(s.points<diff)return alert('포인트가 부족합니다.');
   s.points-=diff;s.history.push({label:'경매 입찰 - '+a.itemName+' ('+amt+'P)',points:-diff,date:today()});
-  if(!a.bids)a.bids={};a.bids[sid]={studentName:s.name,amount:amt};delete stepVals[id];await dbSave();toast('🔨 입찰 완료! '+amt+'P');renderStudent()
-}
-
-// 학생 경매 UI 업데이트
-function renderSAuc(){const el=$('s-auction'),s=getMe(),l=Object.values(DATA.auctions);
-  if(!l.length){el.innerHTML='<div class="empty">진행 중인 경매가 없습니다.</div>';return}
-  el.innerHTML=l.map(a=>{const bids=Object.values(a.bids||{}).map(b=>b.amount),hi=bids.length?Math.max(...bids):0,mine=a.bids&&a.bids[String(s.id)],my=mine?mine.amount:0,si=seatInfo(a);
-    const map=a.seatId?`<details style="margin-top:8px"><summary class="small" style="cursor:pointer">자리 위치 보기</summary><div style="height:8px"></div>${seatMap({target:a.seatId,me:s.id})}</details>`:'';
-    if(a.active){const top=my>0&&my===hi,mb=minBidOf(a),v=Math.max(stepVals[a.id]||0,mb);
-      return`<div class="auction-card"><div class="flex"><div class="ac-title">${esc(a.itemName)}</div><span class="badge ${top?'badge-winner':'badge-active'}">${top?'🥇 최고 입찰자':'진행 중'}</span></div>
-      <div class="ac-meta"><span>시작가 ${a.startPrice||0}P</span><span>현재 최고 <b class="green">${hi}P</b></span>${my?`<span>내 입찰 <b>${my}P</b></span>`:''}${si?`<span class="orange">${si}</span>`:''}</div>
-      <div class="step-group" style="margin-top:10px; display:flex;">
-        <button onclick="addBidAmt('${a.id}',10)" style="flex:1; font-size:14px;">+10</button>
-        <button onclick="addBidAmt('${a.id}',100)" style="flex:1; font-size:14px;">+100</button>
-        <button onclick="addBidAmt('${a.id}',1000)" style="flex:1; font-size:14px;">+1000</button>
-        <div class="step-val" id="step-${a.id}" style="min-width:60px;">${v}P</div>
-        <button onclick="manualBidAmt('${a.id}')" style="flex:1.2; font-size:14px; background:#444;">직접입력</button>
-      </div>
-      <div style="margin-top:8px;">
-        <button class="btn btn-primary btn-full" onclick="placeBid('${a.id}')">입찰하기</button>
-      </div>${map}</div>`}
-    const won=a.winner&&String(a.winner.studentId)===String(s.id);
-    return`<div class="auction-card"><div class="flex"><div class="ac-title">${esc(a.itemName)}</div><span class="badge badge-ended">종료</span></div>
-      <div class="ac-meta"><span>시작가 ${a.startPrice||0}P</span>${si?`<span class="orange">${si}</span>`:''}</div>
-      ${a.winner?`<span class="badge badge-winner">🏆 낙찰자: ${esc(a.winner.studentName)} ${a.winner.amount}P</span>${won?'<div class="orange" style="margin-top:8px;font-weight:700">🎉 낙찰되었습니다!'+(a.seatId?' 자리가 배정됐어요.':'')+'</div>':''}`:'<span class="badge badge-ended">낙찰자 없음</span>'}</div>`}).join('')
-}
+  if(!a.bids)a.bids={};a.bids[sid]={studentName:s.name,amount:amt};delete stepVals[id];await dbSave();toast('🔨 입찰 완료! '+amt+'P');renderStudent()}
 
 /* 자리 */
 function seatMap(o={}){return`<div class="seatmap${o.edit?' edit':''}" ${o.edit?'id="seatEdit"':''}>`+DATA.seats.map(s=>{const nm=nameOf(s.sid);
@@ -528,17 +481,11 @@ async function startAuction(){const item=$('auctionItem').value.trim(),st=parseI
 async function endAuction(id){await pull();const a=DATA.auctions[id];if(!a)return;
   const bids=Object.entries(a.bids||{}).map(([k,v])=>({studentId:k,studentName:v.studentName,amount:v.amount})).sort((x,y)=>y.amount-x.amount);a.active=false;const w=bids[0]||null;a.winner=w;
   bids.forEach((b,i)=>{const st=DATA.students.find(x=>String(x.id)===String(b.studentId));if(!st)return;
-    if(i===0){
-      st.history.push({label:'경매 낙찰 - '+a.itemName+' ('+b.amount+'P 사용)',points:0,date:today()});
-    }else{
-      // 낙찰 실패 시 환급 로직 제거 (포인트 차감 유지, 소멸 내역만 기록)
-      st.history.push({label:'경매 유찰 (포인트 소멸) - '+a.itemName,points:0,date:today()});
-    }
-  });
+    if(i===0)st.history.push({label:'경매 낙찰 - '+a.itemName+' ('+b.amount+'P 사용)',points:0,date:today()});
+    else{st.points+=b.amount;st.history.push({label:'경매 환불 - '+a.itemName,points:b.amount,date:today()})}});
   if(w&&a.seatId){const T=DATA.seats.find(x=>x.id===a.seatId),wid=String(w.studentId);
     if(T){const prev=T.sid||'',O=DATA.seats.find(x=>x.sid===wid);DATA.seats.forEach(x=>{if(x.sid===wid)x.sid=''});if(O&&O!==T)O.sid=prev;T.sid=wid}}
-  await dbSave();renderAAuc();renderASeat();toast('🏁 경매 종료: '+a.itemName)
-}
+  await dbSave();renderAAuc();renderASeat();toast('🏁 경매 종료: '+a.itemName)}
 async function deleteAuction(id){if(!confirm('이 경매를 삭제하시겠습니까?'))return;await pull();delete DATA.auctions[id];await dbSave();renderAAuc()}
 
 /* 자리 (관리자) */
