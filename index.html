@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vitamin v2.0 - 포인트 상점 &amp; 경매 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+
+<!-- 로그인 -->
+<div class="card" id="loginCard">
+  <div class="hero"><div class="pill">용유중학교 포인트 시스템</div><div class="wordmark">VITAMIN2.0</div><p>학생 포인트 적립 · 상점 · 경매 · 자리</p></div>
+  <div class="login-body">
+    <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디를 입력하세요"></div>
+    <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" onkeydown="if(event.key==='Enter')login()"></div>
+    <div class="err" id="loginErr">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+    <button class="btn btn-primary btn-full" onclick="login()">로그인</button>
+  </div>
+</div>
+
+<!-- 학생 -->
+<div class="card main" id="studentMain">
+  <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm" id="studentName"></div></div>
+    <div class="top-r"><div class="pts"><span id="studentPoints">0</span>P</div><button class="btn btn-ghost btn-sm" onclick="logout()">로그아웃</button></div></div>
+  <div id="noticeBar" class="nb" onclick="openNotice()"></div>
+  <div class="tabs">
+    <div class="tab active" onclick="stab('home',this)">홈</div><div class="tab" onclick="stab('shop',this)">상점</div>
+    <div class="tab" onclick="stab('auction',this)">경매</div><div class="tab" onclick="stab('seat',this)">자리</div>
+    <div class="tab" onclick="stab('vocab',this)">단어시험</div><div class="tab" onclick="stab('math',this)">수학시험</div>
+    <div class="tab" onclick="stab('history',this)">내역</div>
+  </div>
+  <div class="panel active" id="s-home"></div><div class="panel" id="s-shop"></div><div class="panel" id="s-auction"></div>
+  <div class="panel" id="s-seat"></div><div class="panel" id="s-vocab"></div><div class="panel" id="s-math"></div><div class="panel" id="s-history"></div>
+</div>
+
+<!-- 관리자 -->
+<div class="card main" id="adminMain">
+  <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm">관리자 모드</div></div><button class="btn btn-ghost btn-sm" onclick="logout()">로그아웃</button></div>
+  <div class="tabs">
+    <div class="tab active" onclick="atab('students',this)">학생</div><div class="tab" onclick="atab('shop',this)">상점</div>
+    <div class="tab" onclick="atab('auction',this)">경매</div><div class="tab" onclick="atab('seat',this)">자리</div>
+    <div class="tab" onclick="atab('vocab',this)">단어시험</div><div class="tab" onclick="atab('vocabscore',this)">단어성적</div>
+    <div class="tab" onclick="atab('math',this)">수학시험</div><div class="tab" onclick="atab('mathscore',this)">수학성적</div>
+    <div class="tab" onclick="atab('orders',this)">주문</div><div class="tab" onclick="atab('notice',this)">공지</div>
+  </div>
+  <div class="panel active" id="a-students">
+    <div class="admin-section"><b>학생 추가</b><div style="height:10px"></div>
+      <div class="field"><label>이름</label><input id="newName" placeholder="홍길동"></div>
+      <div class="field"><label>아이디</label><input id="newId" placeholder="로그인 아이디"></div>
+      <div class="field"><label>비밀번호</label><input id="newPw" placeholder="초기 비밀번호"></div>
+      <button class="btn btn-primary btn-full" onclick="addStudent()">학생 추가</button></div>
+    <div class="admin-section"><b>포인트 지급</b><div style="height:10px"></div>
+      <div class="field"><select id="giveStudent"></select></div>
+      <div class="field"><input type="number" id="giveAmt" placeholder="포인트 (음수 입력시 차감)"></div>
+      <div class="field"><input id="giveReason" placeholder="사유"></div>
+      <button class="btn btn-primary btn-full" onclick="givePoint()">지급하기</button></div>
+    <div id="studentList"></div>
+    <div class="admin-section"><b>학생 포인트 내역</b><div style="height:10px"></div>
+      <select id="historyStudent" class="inp" onchange="renderPH()" style="margin-bottom:10px"></select><div id="pointHistory"></div></div>
+  </div>
+  <div class="panel" id="a-shop">
+    <div class="admin-section"><div class="field"><input id="itemName" placeholder="상품명"></div><div class="field"><input type="number" id="itemPrice" placeholder="가격"></div>
+      <button class="btn btn-primary btn-full" onclick="addItem()">상품 추가</button></div><div id="adminShopList"></div></div>
+  <div class="panel" id="a-auction">
+    <div class="admin-section"><b>새 경매 시작</b><div style="height:10px"></div>
+      <div class="field"><label>경매 상품명</label><input id="auctionItem" placeholder="예) 편의점 상품권 5000원"></div>
+      <div class="field"><label>최소 시작가 (P)</label><input type="number" id="auctionStart" placeholder="예) 100" min="10" step="10"></div>
+      <div class="field"><label>연동할 자리 (낙찰되면 이 자리로 이동)</label><select id="auctionSeat"></select></div>
+      <div class="field"><label>묶음 이름 (선택 · 같은 이름끼리 한 번에 종료할 수 있어요)</label><input id="auctionGroup" placeholder="예) 11월 간식 경매"></div>
+      <button class="btn btn-primary btn-full" onclick="startAuction()">경매 시작</button></div>
+    <div class="admin-section"><b>🪑 자리 경매 일괄 만들기</b><div class="small" style="margin:6px 0">자리를 여러 개 고르면 자리마다 경매가 만들어지고, 한 묶음으로 한 번에 종료할 수 있어요.</div>
+      <div class="field"><label>묶음 이름</label><input id="bulkName" value="자리 경매"></div>
+      <div class="field"><label>최소 시작가 (P)</label><input type="number" id="bulkStart" value="100" min="10" step="10"></div>
+      <div id="bulkSeats"></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="bulkAll(true)">전체 선택</button><button class="btn btn-ghost btn-sm" onclick="bulkAll(false)">선택 해제</button><button class="btn btn-primary btn-sm" style="flex:1" onclick="bulkCreate()">선택한 자리 경매 시작</button></div></div>
+    <div id="adminAuctionList"></div></div>
+  <div class="panel" id="a-seat"></div>
+  <div class="panel" id="a-vocab"><div class="admin-section"><b>단어시험 관리 (Day 1~30)</b><div class="small" style="margin-top:6px">열기를 누르면 학생들이 해당 Day 시험에 응시할 수 있습니다. 학생은 Day당 1회만 응시합니다.</div></div><div id="adminVocabList"></div></div>
+  <div class="panel" id="a-vocabscore">
+    <div class="admin-section"><b>Day별 성적</b><div style="height:8px"></div><select id="vocabScoreDay" class="inp" onchange="renderAVScore()"></select></div>
+    <div id="adminVocabScoreList"></div><div id="adminVocabScoreDetail"></div>
+    <div class="admin-section" style="margin-top:16px"><b>학생별 누적 성적</b><div id="adminVocabScoreSummary"></div></div></div>
+  <div class="panel" id="a-math">
+    <div class="admin-section" id="adminMathIntro"><b>수학시험 관리 (Day 1~30)</b><div class="small" style="margin-top:6px">Day마다 문제 수(1~5개)와 유사문제 수를 고르고, 사진과 정답을 등록한 뒤 '열기'를 누르세요. 유사문제는 같은 번호 문제를 틀린 학생에게만 보여집니다.</div></div>
+    <div id="adminMathEditor"></div><div id="adminMathList"></div></div>
+  <div class="panel" id="a-mathscore">
+    <div class="admin-section"><b>수학 Day별 성적</b><div style="height:8px"></div><select id="mathScoreDay" class="inp" onchange="renderAMScore()"></select></div>
+    <div id="adminMathScoreList"></div>
+    <div class="admin-section" style="margin-top:16px"><b>학생별 누적 성적</b><div id="adminMathScoreSummary"></div></div></div>
+  <div class="panel" id="a-orders"><div id="orderList"></div></div>
+  <div class="panel" id="a-notice">
+    <div class="admin-section"><b>공지 올리기</b><div style="height:10px"></div><div class="field"><input id="noticeText" placeholder="학생 홈 화면에 보여질 공지"></div>
+      <button class="btn btn-primary btn-full" onclick="addNotice()">공지 등록</button></div><div id="noticeList"></div></div>
+</div>
+</div>
+
+<input type="file" id="mathFile" accept="image/*" style="display:none">
+<div class="crop-modal" id="cropModal"><div class="crop-box">
+  <div class="small" style="text-align:center">드래그해서 문제 부분만 골라 주세요. 고르지 않으면 사진 전체를 씁니다.</div>
+  <canvas id="cropCanvas"></canvas>
+  <div class="crop-btns"><button class="btn" onclick="closeCropper()">취소</button><button class="btn" onclick="finishCrop(false)">전체 사용</button><button class="btn btn-primary" id="cropUseBtn" disabled onclick="finishCrop(true)">선택 영역 사용</button></div>
+</div></div>
+<div class="zoom-modal" id="zoomModal"><button class="zoom-close" onclick="closeZoom()">닫기</button><img id="zoomImg" alt="확대 이미지"></div>
+<div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh">📢 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="js/config.js?v=21"></script>
+<script src="js/vocab-data.js?v=21"></script>
+<script src="js/core.js?v=21"></script>
+<script src="js/auth.js?v=21"></script>
+<script src="js/student-home.js?v=21"></script>
+<script src="js/auction.js?v=21"></script>
+<script src="js/seat.js?v=21"></script>
+<script src="js/vocab.js?v=21"></script>
+<script src="js/math.js?v=21"></script>
+<script src="js/poll.js?v=21"></script>
+<script src="js/admin.js?v=21"></script>
+</body></html>
