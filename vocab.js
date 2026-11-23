@@ -15,12 +15,15 @@ function vocabKeys(group){
       return a.localeCompare(b,'ko',{numeric:true});
     });
 }
-/* '예비고1 01 | 시작이 반이다 (...)' → 제목 '예비고1 01', 부제 '시작이 반이다 (...)' */
+/* 'day3' → 'Day 3' / '예비고1 Day 03' → '예비고1 Day 3' (부제는 VOCAB_TITLES의 주제) */
+const preDay=k=>{const m=/^예비고1 Day (\d+)$/.exec(k);return m?Number(m[1]):null};
 function vocabShortTitle(key){
-  const m=/^day(\d+)$/i.exec(key);
-  return m?`Day ${Number(m[1])}`:String(key).split('|')[0].trim();
+  const m=/^day(\d+)$/i.exec(key);if(m)return `Day ${Number(m[1])}`;
+  const p=preDay(key);return p?`예비고1 Day ${p}`:String(key).split('|')[0].trim();
 }
-function vocabSub(key){const i=String(key).indexOf('|');return i<0?'':String(key).slice(i+1).trim()}
+/* 예비 고1 탭 안에서는 'Day 1'처럼 짧게 */
+const vocabCardTitle=k=>preDay(k)?`Day ${preDay(k)}`:vocabShortTitle(k);
+function vocabSub(key){const t=typeof VOCAB_TITLES!=='undefined'&&VOCAB_TITLES[key];if(t)return t;const i=String(key).indexOf('|');return i<0?'':String(key).slice(i+1).trim()}
 function vocabTitle(key){
   const m=/^day(\d+)$/i.exec(key);
   return m?`Day ${Number(m[1])} 단어 시험`:vocabShortTitle(key)+' 단어 시험';
@@ -31,7 +34,7 @@ function buildQs(key,only){
   return shuf(w.filter(x=>!only||only.includes(x[0])).map(x=>({word:x[0],correct:x[1],options:shuf([x[1]].concat(shuf(all.filter(m=>m!==x[1])).slice(0,3)))})));
 }
 function vCardHead(k,badge){const sub=vocabSub(k);
-  return `<div class="flex" style="align-items:flex-start"><div><div class="ac-title">${esc(vocabShortTitle(k))}</div>${sub?`<div class="vsub">${esc(sub)}</div>`:''}</div>${badge}</div>`}
+  return `<div class="flex" style="align-items:flex-start"><div><div class="ac-title">${esc(vocabCardTitle(k))}</div>${sub?`<div class="vsub">${esc(sub)}</div>`:''}</div>${badge}</div>`}
 function renderSVocab(group){
   group=group||'main';const el=$(group==='pre'?'s-pre':'s-vocab');vocabLock=false;const s=getMe(),R=s.vocabResults||{},keys=vocabKeys(group);
   const completed=keys.filter(k=>R[k]&&R[k].completed);let sc=0,tq=0,tp=0;
@@ -50,9 +53,8 @@ function renderSVocab(group){
     }
     return `<div class="auction-card vcard locked">${vCardHead(k,'<span class="badge badge-ended">'+ic('lock')+' 잠김</span>')}<div class="ac-meta">단어 ${n}개</div></div>`;
   });
-  /* 응시 가능 → 완료 → 잠김 순으로 보여주기 */
-  const order=k=>{const r=R[k];return (DATA.vocabTests[k]||{}).open&&!(r&&r.completed)?0:(r&&r.completed?1:2)};
-  const idx=keys.map((k,i)=>i).sort((a,b)=>order(keys[a])-order(keys[b])||a-b);
+  /* Day 순서대로 보여주기 */
+  const idx=keys.map((k,i)=>i);
   el.innerHTML=h+`<div class="cgrid">${idx.map(i=>cards[i]).join('')}</div>`;
 }
 const renderVList=k=>renderSVocab(vGroup(k));
@@ -99,7 +101,7 @@ function renderAVocab(){renderAVocabList('main','adminVocabList');renderAVocabLi
 function renderAVocabList(group,elId){
   const el=$(elId);if(!el)return;const keys=vocabKeys(group);
   const h=keys.map(k=>{const c=DATA.vocabTests[k]||{open:false},n=DATA.students.filter(s=>s.vocabResults&&s.vocabResults[k]&&s.vocabResults[k].completed).length,sub=vocabSub(k);
-    return `<div class="admin-card flex"><div><b>${esc(vocabShortTitle(k))}</b>${sub?`<div class="vsub">${esc(sub)}</div>`:''}<div class="small" style="margin-top:4px">단어 ${wordsOf(k).length}개 · 응시 ${n}/${DATA.students.length}명</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge ${c.open?'badge-active':'badge-ended'}">${c.open?'열림':'닫힘'}</span><button class="btn btn-sm ${c.open?'btn-danger':'btn-primary'}" onclick="toggleVocab('${jsq(k)}')">${c.open?'닫기':'열기'}</button></div></div>`;
+    return `<div class="admin-card flex"><div><b>${esc(vocabCardTitle(k))}</b>${sub?`<div class="vsub">${esc(sub)}</div>`:''}<div class="small" style="margin-top:4px">단어 ${wordsOf(k).length}개 · 응시 ${n}/${DATA.students.length}명</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge ${c.open?'badge-active':'badge-ended'}">${c.open?'열림':'닫힘'}</span><button class="btn btn-sm ${c.open?'btn-danger':'btn-primary'}" onclick="toggleVocab('${jsq(k)}')">${c.open?'닫기':'열기'}</button></div></div>`;
   }).join('');
   el.innerHTML=h?`<div class="cgrid">${h}</div>`:'<div class="empty">표시할 단어 챕터가 없습니다.</div>';
 }
