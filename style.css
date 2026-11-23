@@ -199,7 +199,7 @@ body{line-height:1.45}
   .top-r{gap:6px}.top-r .btn-sm{padding:7px 10px;font-size:15px}
   .main>.tabs{position:sticky;top:56px;z-index:39;border-top:1px solid var(--b);border-bottom:1px solid var(--b);background:rgba(16,16,16,.98);box-shadow:0 4px 12px rgba(0,0,0,.4)}
   .main>.nb{position:relative;z-index:1}
-  .tab{flex:1 0 46px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px 8px;color:var(--t2);border-bottom:3px solid transparent}
+  .tab{flex:1 0 40px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px 8px;color:var(--t2);border-bottom:3px solid transparent}
   .tab i{margin:0;font-size:21px;line-height:1}
   .tab span{font-size:11.5px;white-space:nowrap}
   .tab span[data-s]{font-size:0}.tab span[data-s]::after{content:attr(data-s);font-size:11.5px}
@@ -351,3 +351,19 @@ body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
 }
 @media (min-width:1100px){.tab .ic{width:19px;height:19px}}
 @media (prefers-reduced-motion:reduce){.ui-bg,.ui-dlg{transition:none}}
+
+/* ── 예비고1 수학 ── */
+.pm-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:-4px 0 14px;font-size:12px;color:var(--t2)}
+.pm-legend b{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--s2);color:var(--t);font-size:11px;align-items:center;justify-content:center;margin-right:5px}
+.pm-chips{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0 12px}
+.pm-chips span{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--s2);color:var(--t2);border:1px solid var(--b)}
+.pm-tag{margin:12px 0 4px;font-size:14px;color:var(--t2)}.pm-tag b{color:var(--t)}
+.pm-fig{padding:10px}
+.pm-num{display:flex;align-items:center;gap:10px}
+.pm-num input{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:var(--r-sm);color:var(--t);font-size:24px;font-weight:800;padding:14px 16px;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.pm-num input:focus{outline:none;border-color:var(--red2);box-shadow:0 0 0 3px var(--redbg)}
+.pm-num input::-webkit-outer-spin-button,.pm-num input::-webkit-inner-spin-button{-webkit-appearance:none}
+.pm-num span{font-size:12px;color:var(--t3);white-space:nowrap}
+.pm-score{font-size:46px;font-weight:900;text-align:center;margin:10px 0 14px;color:var(--red2)}.pm-score small{font-size:20px;color:var(--t2)}.pm-score.green{color:var(--green)}
+.pm-res{background:var(--s)}.pm-res.ok{border-color:rgba(52,211,153,.35)}.pm-res.no{border-color:rgba(229,50,62,.35)}
+@media (min-width:1100px){.quiz .pm-fig img{max-width:640px;margin:0 auto}}

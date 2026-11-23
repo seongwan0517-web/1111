@@ -39,10 +39,10 @@ const byId=(a,b)=>(+a.id||0)-(+b.id||0);
 function norm(){DATA=DATA||{};
   ['students','items','orders','notices'].forEach(k=>{DATA[k]=arr(DATA[k])});
   ['items','orders','notices'].forEach(k=>DATA[k].sort(byId));
-  ['auctions','vocabTests','mathTests'].forEach(k=>{if(!DATA[k])DATA[k]={}});
+  ['auctions','vocabTests','mathTests','preMathTests'].forEach(k=>{if(!DATA[k])DATA[k]={}});
   const sd=arr(DATA.seats);DATA.seats=sd.length?sd:defaultSeats();
   DATA.seats.forEach(s=>{if(s.sid==null)s.sid=''});
-  DATA.students.forEach(s=>{s.history=arr(s.history);if(!s.vocabResults)s.vocabResults={};if(!s.mathResults)s.mathResults={};if(typeof s.points!=='number')s.points=+s.points||0})}
+  DATA.students.forEach(s=>{s.history=arr(s.history);if(!s.vocabResults)s.vocabResults={};if(!s.mathResults)s.mathResults={};if(!s.preMathResults)s.preMathResults={};if(typeof s.points!=='number')s.points=+s.points||0})}
 async function fetchAll(){const isA=cu&&cu.role==='admin';
   const [pub,orders,uids]=await Promise.all([api('pub'),isA?api('orders'):null,isA?api('uids'):null]);
   const d=pub||{};d.orders=orders||{};d.uids=uids||{};return d}

@@ -1,8 +1,8 @@
 /* 관리자: 학생·포인트·상점·주문·공지 */
-function renderAdmin(){renderMigrate();renderStudents();renderAShop();renderAAuc();renderASeat();renderAVocab();renderAVScore();renderAMath();renderAMScore();renderOrders();renderNotices()}
+function renderAdmin(){renderMigrate();renderStudents();renderAShop();renderAAuc();renderASeat();renderAVocab();renderAVScore();renderAMath();renderAMScore();renderAPreMath();renderOrders();renderNotices()}
 function atab(id,el){document.querySelectorAll('#adminMain .tab,#adminMain .panel').forEach(e=>e.classList.remove('active'));el.classList.add('active');$('a-'+id).classList.add('active');
   if(id==='vocabscore')renderAVScore();if(id==='seat')renderASeat();
-  if(id==='math'&&!mathEdit)pull().then(renderAMath);if(id==='mathscore')pull().then(renderAMScore);window.scrollTo(0,0)}
+  if(id==='math'&&!mathEdit)pull().then(renderAMath);if(id==='mathscore')pull().then(renderAMScore);if(id==='premath')pull().then(renderAPreMath);window.scrollTo(0,0)}
 const BAD_KEY=/[.#$\[\]\/]/;
 const uidOf=sid=>Object.keys(DATA.uids||{}).find(u=>DATA.uids[u]===sid);
 async function addStudent(){const name=$('newName').value.trim(),id=$('newId').value.trim(),pw=$('newPw').value.trim();if(!name||!id||!pw)return uiAlert('이름, 아이디, 비밀번호를 모두 입력하세요.');

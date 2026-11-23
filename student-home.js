@@ -1,7 +1,7 @@
 /* 학생 홈(대시보드·공지), 상점, 내역 */
-function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab('main');renderSVocab('pre');renderSMath();renderSSeat();maybeNoticeModal()}
+function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab('main');renderSVocab('pre');renderSPreMath();renderSMath();renderSSeat();maybeNoticeModal()}
 function stab(id,el){document.querySelectorAll('#studentMain .tab,#studentMain .panel').forEach(e=>e.classList.remove('active'));el.classList.add('active');$('s-'+id).classList.add('active');
-  if(id==='vocab'){currentQuiz=null;renderSVocab('main')}if(id==='pre'){currentQuiz=null;renderSVocab('pre')}if(id==='math'){currentMath=null;renderSMath()}
+  if(id==='vocab'){currentQuiz=null;renderSVocab('main')}if(id==='pre'){currentQuiz=null;renderSVocab('pre')}if(id==='math'){currentMath=null;renderSMath()}if(id==='premath'){currentPM=null;renderSPreMath()}
   window.scrollTo(0,0);
   if(id==='home')renderHome();if(id==='seat')renderSSeat();if(id==='history')renderHist();if(id==='auction')renderSAuc()}
 const renderHist=()=>{$('s-history').innerHTML=historyRows(getMe().history)};
