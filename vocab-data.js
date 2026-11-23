@@ -53,26 +53,26 @@ day30:[["attitude","태도, 자세"],["address","주소, 연설하다"],["block"
 "예비고1 Day 19":[["abnormal","비정상적인 (ab- 벗어나다)"],["anti-social","반사회적인 (anti- 반대)"],["antibiotic","항생제"],["autobiography","자서전 (auto- 스스로)"],["autonomy","자율성"],["bilingual","이중 언어를 구사하는 (bi- 둘)"],["biannual","연 2회의"],["coexist","공존하다 (co- 함께)"],["cooperate","협력하다"],["correspond","일치하다, 편지를 주고받다"],["contradict","모순되다, 반박하다 (contra- 반대)"],["counteract","대응하다, 중화하다 (counter- 맞서)"],["counterpart","상대방, 대응물"],["decode","해독하다 (de- 제거, 반대)"],["decrease","감소하다"],["degrade","저하시키다, 비하하다"],["depart","출발하다"],["disapprove","찬성하지 않다 (dis- 부정)"],["disconnect","단절하다, 연결을 끊다"],["discomfort","불편, 불쾌"],["enrich","풍요롭게 하다 (en- ~하게 하다)"],["enlarge","확대하다, 넓히다"],["enlighten","깨우치다, 계몽하다"],["exhale","숨을 내쉬다 (ex- 밖으로)"],["export","수출하다"],["extract","추출하다, 뽑아내다"],["extraordinary","비범한 (extra- 넘어선)"],["foresee","예견하다 (fore- 미리)"],["forehead","이마"],["illogical","비논리적인 (il- 부정)"],["immature","미숙한 (im- 부정)"],["immortal","불멸의, 영원한"],["inaccurate","부정확한 (in- 부정)"],["inadequate","불충분한, 부적절한"],["independent","독립적인"],["inequality","불평등"],["invaluable","매우 귀중한 (값으로 매길 수 없는)"],["invisible","보이지 않는"],["interact","상호 작용하다 (inter- 사이에)"],["interpersonal","대인 관계의"],["interpret","해석하다"],["irreplaceable","대체 불가능한 (ir- 부정)"],["irresponsible","무책임한"],["malnutrition","영양실조 (mal- 나쁜)"],["microorganism","미생물 (micro- 작은)"],["misbehave","버릇없이 굴다 (mis- 잘못)"],["mislead","오도하다, 잘못 이끌다"],["monologue","독백 (mono- 하나)"],["monotonous","단조로운"],["mortal","죽을 운명의, 치명적인"],["multicultural","다문화의 (multi- 많은)"],["multimedia","멀티미디어"],["multitask","다중 작업을 하다"],["nonverbal","비언어적인 (non- 아닌)"],["nonprofit","비영리의"],["outbreak","발발, 폭발 (out- 밖으로)"],["outdo","능가하다, ~보다 낫다"],["outweigh","~보다 더 크다, 능가하다"],["overestimate","과대평가하다 (over- 지나치게)"],["overlook","간과하다, 내려다보다"],["overwhelm","압도하다"],["postpone","연기하다 (post- 뒤에)"],["postwar","전후의"],["precaution","예방 조치 (pre- 미리)"],["prejudice","편견, 선입견"],["preview","미리 보기, 시사회"],["proactive","주도적인 (pro- 앞으로)"],["progress","진보, 발전"],["prospect","전망, 예상"],["reconstruct","재건하다 (re- 다시)"],["reproduce","복제하다, 번식하다"],["restore","복구하다, 되돌리다"],["semicircle","반원 (semi- 절반)"],["subconscious","잠재의식의 (sub- 아래에)"],["subordinate","하위의, 부수적인"],["substitute","대체하다; 대체물"],["superficial","표면적인 (super- 위에)"],["supervise","감독하다, 관리하다"],["surpass","능가하다, 뛰어넘다 (sur- 넘어)"],["sympathy","공감, 동정 (sym- 함께)"],["synchronize","동시에 발생시키다"],["telepathy","텔레파시, 정신 감응 (tele- 멀리)"],["transaction","거래 (trans- 가로질러)"],["transform","변형시키다, 바꾸다"],["transition","전환, 변천"],["transmit","전송하다, 전염시키다"],["transparent","투명한, 명백한"],["underestimate","과소평가하다 (under- 아래에)"],["undergo","겪다, 경험하다"],["underline","밑줄을 긋다, 강조하다"],["uniform","균일한, 한결같은; 제복 (uni- 하나)"],["unify","통일하다, 통합하다"],["unique","유일무이한, 독특한"],["unpredictable","예측할 수 없는 (un- 부정)"],["unprecedented","전례 없는"],["unwilling","마지못해 하는, 꺼리는"],["uphold","유지하다, 옹호하다 (up- 위로)"],["upright","똑바른, 정직한"],["withdraw","철수하다, 인출하다 (with- 뒤로)"],["withstand","견뎌내다, 버티다"]],
 "예비고1 Day 20":[["adapt","적응하다, 개조하다"],["adopt","채택하다, 입양하다"],["adept","능숙한, 숙련된"],["affect","영향을 미치다"],["effect","효과, 영향; 초래하다"],["altitude","고도, 높이"],["attitude","태도, 자세"],["aptitude","적성, 소질"],["attribute","속성; ~의 탓으로 돌리다"],["contribute","기여하다, 공헌하다"],["distribute","분배하다, 유통하다"],["commit","저지르다, 헌신하다"],["emit","방출하다, 내뿜다"],["omit","생략하다, 빠뜨리다"],["permit","허락하다; 허가증"],["submit","제출하다, 복종하다"],["transmit","전송하다, 전달하다"],["comparable","비교할 만한, 비슷한"],["comparative","비교의, 상대적인"],["complement","보완하다; 보완물"],["compliment","칭찬하다; 칭찬"],["confident","자신감 있는"],["confidential","기밀의, 비밀의"],["conscience","양심"],["conscious","의식하는, 자각하는"],["considerable","상당한, 많은"],["considerate","사려 깊은, 배려하는"],["credible","믿을 수 있는"],["credulous","쉽게 믿는, 잘 속는"],["dairy","낙농업, 유제품"],["diary","일기, 일기장"],["desert","사막; 버리다"],["dessert","후식, 디저트"],["economic","경제의, 경제학의"],["economical","경제적인, 절약하는"],["evolution","진화, 발전"],["revolution","혁명, 회전"],["expand","확장하다, 팽창하다"],["expend","(시간·돈을) 쓰다, 소비하다"],["extend","연장하다, 뻗다"],["formally","공식적으로, 정식으로"],["formerly","이전에, 옛날에"],["imaginable","상상할 수 있는"],["imaginary","상상의, 가상의"],["imaginative","상상력이 풍부한"],["industrial","산업의, 공업의"],["industrious","근면한, 부지런한"],["literary","문학의, 문학적인"],["literal","문자 그대로의"],["literate","읽고 쓸 줄 아는"],["principal","주요한; 교장"],["principle","원칙, 원리"],["quiet","조용한"],["quite","꽤, 상당히"],["respectable","존경할 만한, 훌륭한"],["respectful","공손한, 경의를 표하는"],["respective","각각의, 저마다의"],["sensible","분별 있는, 합리적인"],["sensitive","민감한, 세심한"],["sensory","감각의"],["stationary","정지된, 움직이지 않는"],["stationery","문구류"],["successive","연속적인, 잇따른"],["successful","성공적인"],["vocation","천직, 직업"],["vacation","휴가, 방학"],["wander","배회하다, 헤매다"],["wonder","궁금해하다; 경이로움"],["account (다의어)","① 계좌 ② 설명 ③ 비중을 차지하다"],["address (다의어)","① 주소 ② 연설하다 ③ 문제를 다루다"],["appreciate (다의어)","① 감사하다 ② 감상하다 ③ 진가를 인정하다"],["article (다의어)","① 기사 ② 물품 ③ 조항 ④ 관사"],["bill (다의어)","① 청구서 ② 지폐 ③ 법안 ④ 부리"],["capital (다의어)","① 수도 ② 자본 ③ 대문자"],["charge (다의어)","① 요금 ② 책임 ③ 충전하다 ④ 기소하다"],["conduct (다의어)","① 수행하다 ② 지휘하다 ③ 행동, 품행"],["content (다의어)","① 내용물 ② 만족하는 ③ 만족시키다"],["contract (다의어)","① 계약서 ② 계약하다 ③ 수축하다 ④ 병에 걸리다"],["cover (다의어)","① 덮다 ② 다루다 ③ 취재하다 ④ 비용을 감당하다"],["critical (다의어)","① 비판적인 ② 중대한, 결정적인 ③ 위독한"],["custom (다의어)","① 관습, 풍습 ② (복수형) 세관, 관세"],["degree (다의어)","① 정도 ② (온도·각도) 도 ③ 학위"],["deliberate (다의어)","① 의도적인 ② 신중한 ③ 심사숙고하다"],["discipline (다의어)","① 규율, 훈육 ② 학문 분야 ③ 단련하다"],["due (다의어)","① ~하기로 예정된 ② 만기가 된 ③ ~ 때문에 (due to)"],["engage (다의어)","① 관여하다 ② 사로잡다 ③ 고용하다 ④ 약혼하다"],["execute (다의어)","① 실행하다, 수행하다 ② 처형하다"],["facility (다의어)","① 시설, 설비 ② 재능, 손쉬움"],["faculty (다의어)","① 교수진 ② 학부 ③ 타고난 능력"],["fair (다의어)","① 공정한 ② 상당한 ③ 박람회 ④ 맑은"],["feature (다의어)","① 특징 ② 특집 기사 ③ 특별히 포함하다"],["figure (다의어)","① 수치, 숫자 ② 인물 ③ 모습 ④ 파악하다"],["fine (다의어)","① 좋은, 미세한 ② 벌금 ③ 벌금을 부과하다"],["interest (다의어)","① 관심, 흥미 ② 이익 ③ 이자"],["issue (다의어)","① 쟁점, 문제 ② (잡지 등의) 호 ③ 발행하다"],["matter (다의어)","① 문제, 일 ② 물질 ③ 중요하다"],["measure (다의어)","① 측정하다 ② 조치, 대책 ③ 척도"],["observe (다의어)","① 관찰하다 ② (법·규칙을) 준수하다 ③ 말하다"],["subject (다의어)","① 주제 ② 과목 ③ 실험 대상 ④ ~의 영향을 받기 쉬운"],["term (다의어)","① 용어 ② 기간, 학기 ③ 조건, 관계"]]
 };
-/* 예비고1 각 Day의 주제 (카드 부제로 표시) */
+/* 예비고1 각 Day 카드 아래에 보이는 명언 */
 const VOCAB_TITLES={
- "예비고1 Day 01": "고1 3월 모의고사 기출 핵심 어휘 ① (듣기·독해 필수)",
- "예비고1 Day 02": "고1 3월 모의고사 기출 핵심 어휘 ② (인문·사회·과학 지문)",
- "예비고1 Day 03": "중3→고1 가교 필수 동사 ① (행동·변화·이동·유지)",
- "예비고1 Day 04": "중3→고1 가교 필수 동사 ② (사고·판단·표현·관계)",
- "예비고1 Day 05": "중3→고1 가교 필수 동사 ③ (사회·학술·자연 현상)",
- "예비고1 Day 06": "핵심 추상·학술 명사 ① (개념·구조·원리)",
- "예비고1 Day 07": "핵심 추상·학술 명사 ② (심리·태도·사회 현상)",
- "예비고1 Day 08": "필수 서술 형용사 ① (성질·상태·평가)",
- "예비고1 Day 09": "필수 서술 형용사 ② (논리·강도·빈도·범위)",
- "예비고1 Day 10": "문맥 연결 부사 및 필수 전치사·접속사 표현",
- "예비고1 Day 11": "주제별 어휘 ① — 심리·인간관계·감정",
- "예비고1 Day 12": "주제별 어휘 ② — 환경·생태·기후변화",
- "예비고1 Day 13": "주제별 어휘 ③ — 과학·기술·정보통신",
- "예비고1 Day 14": "주제별 어휘 ④ — 경제·경영·소비·노동",
- "예비고1 Day 15": "주제별 어휘 ⑤ — 문화·예술·역사·언어",
- "예비고1 Day 16": "주제별 어휘 ⑥ — 교육·학문·철학·사고력",
- "예비고1 Day 17": "주제별 어휘 ⑦ — 정치·법률·윤리·규범",
- "예비고1 Day 18": "주제별 어휘 ⑧ — 건강·의학·신체·영양",
- "예비고1 Day 19": "접두사·접미사 어원 확장 필수 어휘",
- "예비고1 Day 20": "고1 내신·모의고사 빈출 혼동 어휘 및 핵심 다의어"
+ "예비고1 Day 01": "시작이 반이다 (Well begun is half done)",
+ "예비고1 Day 02": "고통 없이는 얻는 것도 없다 (No pain, no gain)",
+ "예비고1 Day 03": "연습이 완벽을 만든다 (Practice makes perfect)",
+ "예비고1 Day 04": "아는 것이 힘이다 (Knowledge is power)",
+ "예비고1 Day 05": "뜻이 있는 곳에 길이 있다 (Where there is a will, there is a way)",
+ "예비고1 Day 06": "작은 습관이 큰 차이를 만든다 (Small habits make a big difference)",
+ "예비고1 Day 07": "실패는 성공의 어머니 (Failure is the mother of success)",
+ "예비고1 Day 08": "오늘 할 일을 내일로 미루지 마라 (Never put off till tomorrow)",
+ "예비고1 Day 09": "노력은 배신하지 않는다 (Hard work never betrays you)",
+ "예비고1 Day 10": "꾸준함이 재능을 이긴다 (Consistency beats talent)",
+ "예비고1 Day 11": "배움에는 끝이 없다 (There is no end to learning)",
+ "예비고1 Day 12": "자신을 믿어라 (Believe in yourself)",
+ "예비고1 Day 13": "천 리 길도 한 걸음부터 (A journey of a thousand miles begins with a single step)",
+ "예비고1 Day 14": "기회는 준비된 자에게 온다 (Chance favors the prepared mind)",
+ "예비고1 Day 15": "멈추지 않는 한 속도는 중요하지 않다 (It does not matter how slowly you go)",
+ "예비고1 Day 16": "독서는 마음의 양식이다 (Reading is to the mind what exercise is to the body)",
+ "예비고1 Day 17": "미래는 현재 우리가 무엇을 하는가에 달려 있다 (The future depends on what we do today)",
+ "예비고1 Day 18": "어려움 속에 기회가 있다 (In the middle of difficulty lies opportunity)",
+ "예비고1 Day 19": "위대한 일은 작은 일들이 모여 이루어진다 (Great things are done by a series of small things)",
+ "예비고1 Day 20": "끝까지 해내는 자가 결국 이긴다 (He conquers who endures)"
 };
