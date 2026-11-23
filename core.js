@@ -46,10 +46,10 @@ function norm(){DATA=DATA||{};
 async function fetchAll(){const isA=cu&&cu.role==='admin';
   const [pub,orders,uids]=await Promise.all([api('pub'),isA?api('orders'):null,isA?api('uids'):null]);
   const d=pub||{};d.orders=orders||{};d.uids=uids||{};return d}
-async function dbLoad(){try{DATA=await fetchAll()}catch(e){alert('데이터베이스 연결 실패: '+e.message);return false}norm();return true}
+async function dbLoad(){try{DATA=await fetchAll()}catch(e){uiAlert('데이터베이스 연결 실패: '+e.message);return false}norm();return true}
 async function pull(){try{DATA=await fetchAll()}catch(e){}norm()}
 /* 바뀐 부분만 저장 (여러 경로를 한 번에). 예: {'pub/students/kim/points':120} */
-async function dbUpdate(map){try{await api('','PATCH',map);return true}catch(e){alert('저장 실패: '+e.message);await pull();return false}}
+async function dbUpdate(map){try{await api('','PATCH',map);return true}catch(e){uiAlert('저장 실패: '+e.message);await pull();return false}}
 let hseq=0;
 const hkey=()=>'h'+Date.now()+'_'+(hseq++%1000).toString().padStart(3,'0')+Math.random().toString(36).slice(2,5);
 const SP=id=>'pub/students/'+id;

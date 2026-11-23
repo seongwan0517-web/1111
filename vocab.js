@@ -48,7 +48,7 @@ function renderSVocab(group){
     }else if(c.open){
       return `<div class="auction-card vcard open">${vCardHead(k,'<span class="badge badge-active">응시 가능</span>')}<div class="ac-meta">단어 ${n}개 · 1회만 응시</div><button class="btn btn-primary btn-full" onclick="startVocab('${q}')">시험 시작</button></div>`;
     }
-    return `<div class="auction-card vcard locked">${vCardHead(k,'<span class="badge badge-ended">🔒 잠김</span>')}<div class="ac-meta">단어 ${n}개</div></div>`;
+    return `<div class="auction-card vcard locked">${vCardHead(k,'<span class="badge badge-ended">'+ic('lock')+' 잠김</span>')}<div class="ac-meta">단어 ${n}개</div></div>`;
   });
   /* 응시 가능 → 완료 → 잠김 순으로 보여주기 */
   const order=k=>{const r=R[k];return (DATA.vocabTests[k]||{}).open&&!(r&&r.completed)?0:(r&&r.completed?1:2)};
@@ -56,10 +56,10 @@ function renderSVocab(group){
   el.innerHTML=h+`<div class="cgrid">${idx.map(i=>cards[i]).join('')}</div>`;
 }
 const renderVList=k=>renderSVocab(vGroup(k));
-function startVocab(k){
-  const s=getMe();if(s.vocabResults[k]&&s.vocabResults[k].completed){alert('이미 응시한 시험입니다.');return renderVList(k)}
-  const q=buildQs(k);if(!q.length)return alert('단어 데이터가 없습니다.');
-  if(!confirm(vocabTitle(k)+'을(를) 시작하시겠습니까?\n한 번 시작하면 재응시가 불가능합니다.'))return;
+async function startVocab(k){
+  const s=getMe();if(s.vocabResults[k]&&s.vocabResults[k].completed){uiAlert('이미 응시한 시험입니다.');return renderVList(k)}
+  const q=buildQs(k);if(!q.length)return uiAlert('단어 데이터가 없습니다.');
+  if(!await uiConfirm(vocabTitle(k)+'을(를) 시작하시겠습니까?\n한 번 시작하면 재응시가 불가능합니다.'))return;
   currentQuiz={key:k,questions:q,index:0,wrong:[]};renderVQ();
 }
 function renderVQ(){
@@ -74,15 +74,15 @@ async function finishVocab(){
   await pull();const s=getMe(),c=currentQuiz,k=c.key,total=c.questions.length,score=total-c.wrong.length;
   const VP=SP(s.id)+'/vocabResults/'+k;
   if(c.isRetry){const p=s.vocabResults[k]||{};p.wrongList=c.wrong;p.retriedAt=today();s.vocabResults[k]=p;await dbUpdate({[VP+'/wrongList']:c.wrong,[VP+'/retriedAt']:p.retriedAt});currentQuiz=null;toast('🔁 재도전 완료! '+score+'/'+total);return showVResult(k,score,total,null,true)}
-  if(s.vocabResults[k]&&s.vocabResults[k].completed){currentQuiz=null;alert('이미 응시한 시험입니다.');return renderVList(k)}
+  if(s.vocabResults[k]&&s.vocabResults[k].completed){currentQuiz=null;uiAlert('이미 응시한 시험입니다.');return renderVList(k)}
   const pts=score*10;s.vocabResults[k]={completed:true,score,total,wrongList:c.wrong,date:today(),pointsAwarded:pts};s.points+=pts;
   const upd={[VP]:s.vocabResults[k],[SP(s.id)+'/points']:s.points};addHist(s,{label:vocabTitle(k)+' ('+score+'/'+total+')',points:pts,date:today()},upd);
   if(!await dbUpdate(upd)){currentQuiz=null;return renderVList(k)}currentQuiz=null;
   $('studentPoints').textContent=s.points;toast('📝 시험 완료! '+score+'/'+total+' (+'+pts+'P)');showVResult(k,score,total,pts,false);
 }
-function startVRetry(k){
-  const r=getMe().vocabResults[k],w=r?arr(r.wrongList):[];if(!w.length)return alert('다시 풀 오답이 없습니다.');
-  if(!confirm(vocabShortTitle(k)+'에서 틀렸던 '+w.length+'문제만 다시 풀어볼까요?'))return;
+async function startVRetry(k){
+  const r=getMe().vocabResults[k],w=r?arr(r.wrongList):[];if(!w.length)return uiAlert('다시 풀 오답이 없습니다.');
+  if(!await uiConfirm(vocabShortTitle(k)+'에서 틀렸던 '+w.length+'문제만 다시 풀어볼까요?'))return;
   currentQuiz={key:k,questions:buildQs(k,w.map(x=>x.word)),index:0,wrong:[],isRetry:true};renderVQ();
 }
 function showVResult(k,score,total,pts,retry){
@@ -106,7 +106,7 @@ function renderAVocabList(group,elId){
 async function toggleVocab(k){
   await pull();const c=DATA.vocabTests[k]||(DATA.vocabTests[k]={open:false});c.open=!c.open;if(!await dbUpdate({['pub/vocabTests/'+k+'/open']:c.open}))return renderAVocab();renderAVocab();toast(c.open?'✅ '+vocabShortTitle(k)+' 열림':'🔒 '+vocabShortTitle(k)+' 닫힘');
 }
-async function setVocabGroup(group,open){const keys=vocabKeys(group);if(!confirm((group==='pre'?'예비 고1':'Day')+' 단어시험 '+keys.length+'개를 모두 '+(open?'열까요?':'닫을까요?')))return;
+async function setVocabGroup(group,open){const keys=vocabKeys(group);if(!await uiConfirm((group==='pre'?'예비 고1':'Day')+' 단어시험 '+keys.length+'개를 모두 '+(open?'열까요?':'닫을까요?')))return;
   const upd={};keys.forEach(k=>upd['pub/vocabTests/'+k+'/open']=open);if(!await dbUpdate(upd))return;await pull();renderAVocab();toast(open?'✅ 모두 열림':'🔒 모두 닫힘')}
 function dayOptions(id){
   const sel=$(id),keys=vocabKeys(),pv=sel.value;

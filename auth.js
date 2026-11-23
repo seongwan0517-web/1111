@@ -19,12 +19,15 @@ async function afterSignIn(){let isAdmin=false,sid=null;
   $('loginCard').style.display='none';$('studentMain').classList.add('on');renderStudent();startPoll()}
 async function createAdmin(){const pw=$('loginPw').value;
   if(pw.length<8)return loginMsg('관리자 비밀번호는 8자 이상으로 정해 주세요.');
-  if(!confirm('입력한 비밀번호로 관리자 계정을 만들까요?\n이 비밀번호는 꼭 기억해 두세요.'))return;
+  if(!await uiConfirm('입력한 비밀번호로 관리자 계정을 만들까요?\n이 비밀번호는 꼭 기억해 두세요.'))return;
   try{setAuth(await authSignUp(ADMIN_LOGIN_ID,pw))}catch(e){return loginMsg(e.code==='EMAIL_EXISTS'?'관리자 계정이 이미 있습니다. 비밀번호를 확인하세요.':authErr(e.code))}
   await afterSignIn()}
 /* 학생: 내 비밀번호 바꾸기 */
-async function changeMyPw(){const cur=prompt('현재 비밀번호를 입력하세요');if(cur==null)return;const nw=prompt('새 비밀번호를 입력하세요 (4자 이상)');if(nw==null)return;
-  if(nw.length<4)return alert('비밀번호는 4자 이상이어야 합니다.');
-  try{setAuth(await authSignIn(cu.id,cur))}catch(e){return alert('현재 비밀번호가 올바르지 않습니다.')}
-  try{setAuth(await idCall('update',{idToken:AUTH.idToken,password:wrapPw(nw)}));toast('🔑 비밀번호를 바꿨어요')}catch(e){alert('변경 실패: '+authErr(e.code))}}
-function logout(){stopPoll();AUTH=null;location.reload()}
+async function changeMyPw(){
+  const v=await uiForm({title:'비밀번호 변경',msg:'새 비밀번호는 4자 이상으로 정해 주세요.',ok:'변경하기',
+    fields:[{id:'cur',label:'현재 비밀번호',type:'password'},{id:'nw',label:'새 비밀번호',type:'password'},{id:'nw2',label:'새 비밀번호 확인',type:'password'}],
+    validate:x=>!x.cur?'현재 비밀번호를 입력하세요.':x.nw.length<4?'새 비밀번호는 4자 이상이어야 합니다.':x.nw!==x.nw2?'새 비밀번호가 서로 다릅니다.':''});
+  if(!v)return;
+  try{setAuth(await authSignIn(cu.id,v.cur))}catch(e){return uiAlert('현재 비밀번호가 올바르지 않습니다.')}
+  try{setAuth(await idCall('update',{idToken:AUTH.idToken,password:wrapPw(v.nw)}));toast('비밀번호를 바꿨어요')}catch(e){uiAlert('변경 실패: '+authErr(e.code))}}
+async function logout(){if(!await uiConfirm('로그아웃할까요?',{ok:'로그아웃',icon:'log-out'}))return;stopPoll();AUTH=null;location.reload()}

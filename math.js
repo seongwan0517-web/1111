@@ -21,24 +21,24 @@ function renderSMath(){const el=$('s-math');mathLock=false;const s=getMe();let n
     else if(c.open&&c.has){shown++;h+=`<div class="auction-card"><div class="flex"><div class="ac-title">Day ${i} 수학</div><span class="badge badge-active">응시 가능</span></div><div class="ac-meta"><span>${nqOf(c)}문제 · 5지선다 · 문제당 ${MATH_POINTS}P</span></div><div class="ac-row"><button class="btn btn-primary" style="flex:1" onclick="startMathTest('${k}')">문제 풀기</button></div></div>`}}
   const cut=h.indexOf('<div class="auction-card">');
   el.innerHTML=(cut<0?h:h.slice(0,cut)+'<div class="cgrid">'+h.slice(cut)+'</div>')+(shown?'':'<div class="empty">아직 열린 수학 문제가 없어요. 선생님이 열면 여기에 나타납니다.</div>')}
-async function startMathTest(k){const s=getMe();if(s.mathResults[k]&&s.mathResults[k].completed){alert('이미 응시한 문제입니다.');return renderSMath()}
-  if(!confirm('Day '+k.slice(3)+' 수학 문제를 시작하시겠습니까?\n제출하면 다시 응시할 수 없습니다.'))return;await loadMath(k,'q')}
-async function startMathRetry(k){await pull();const r=getMe().mathResults[k],c=mconf(k);if(!r||!r.completed||!c.retryHas||!c.retryOpen){alert('아직 선생님이 유사 문제를 열지 않았어요.');return renderSMath()}
-  const w=wrongIdx(r,c);if(!w.length){alert('풀 수 있는 유사 문제가 없습니다.');return renderSMath()}await loadMath(k,'r',w)}
+async function startMathTest(k){const s=getMe();if(s.mathResults[k]&&s.mathResults[k].completed){uiAlert('이미 응시한 문제입니다.');return renderSMath()}
+  if(!await uiConfirm('Day '+k.slice(3)+' 수학 문제를 시작하시겠습니까?\n제출하면 다시 응시할 수 없습니다.'))return;await loadMath(k,'q')}
+async function startMathRetry(k){await pull();const r=getMe().mathResults[k],c=mconf(k);if(!r||!r.completed||!c.retryHas||!c.retryOpen){uiAlert('아직 선생님이 유사 문제를 열지 않았어요.');return renderSMath()}
+  const w=wrongIdx(r,c);if(!w.length){uiAlert('풀 수 있는 유사 문제가 없습니다.');return renderSMath()}await loadMath(k,'r',w)}
 async function loadMath(k,which,idxs){$('s-math').innerHTML='<div class="empty">문제를 불러오는 중…</div>';let p;
-  try{p=await mathFetch(k,true)}catch(e){alert('문제를 불러오지 못했습니다.\n'+e.message);return renderSMath()}
-  const set=which==='q'?p.qs:p.rs;if(!set.length){alert('문제가 아직 준비되지 않았어요.');return renderSMath()}
+  try{p=await mathFetch(k,true)}catch(e){uiAlert('문제를 불러오지 못했습니다.\n'+e.message);return renderSMath()}
+  const set=which==='q'?p.qs:p.rs;if(!set.length){uiAlert('문제가 아직 준비되지 않았어요.');return renderSMath()}
   currentMath={key:k,which,idxs:idxs||set.map((_,i)=>i),pos:0,sel:[]};renderMathQ()}
 function renderMathQ(){const c=currentMath,set=mathCache[c.key][c.which==='q'?'qs':'rs'],it=set[c.idxs[c.pos]],last=c.pos===c.idxs.length-1,retry=c.which==='r';
   $('s-math').innerHTML=`<div class="auction-card"><div class="flex"><div class="ac-title">Day ${c.key.slice(3)} ${retry?'유사 문제':'수학 문제'}</div><span class="badge badge-active">${c.pos+1} / ${c.idxs.length}</span></div>${fig(it.img)}
   <div class="small" style="margin-bottom:8px">정답 번호를 고르세요</div><div class="math-choices">${[1,2,3,4,5].map(n=>`<button class="btn math-choice${n===5?' wide':''}${c.sel[c.pos]===n?' selected':''}" onclick="selMath(${n})">${CIRCLED[n-1]}</button>`).join('')}</div>
   <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" style="flex:1" onclick="cancelMath()">나가기</button><button class="btn btn-primary" style="flex:2" id="mNext" ${c.sel[c.pos]==null?'disabled':''} onclick="submitMath()">${last?'제출하기':'다음 문제'}</button></div></div>`}
 function selMath(n){currentMath.sel[currentMath.pos]=n;document.querySelectorAll('.math-choice').forEach((b,i)=>b.classList.toggle('selected',i+1===n));$('mNext').disabled=false}
-function cancelMath(){if(currentMath.which==='q'&&!confirm('지금 나가면 제출하지 않은 것으로 처리되고, 나중에 다시 풀 수 있어요. 나갈까요?'))return;currentMath=null;renderSMath()}
+async function cancelMath(){if(currentMath.which==='q'&&!await uiConfirm('지금 나가면 제출하지 않은 것으로 처리되고, 나중에 다시 풀 수 있어요. 나갈까요?'))return;currentMath=null;renderSMath()}
 async function submitMath(){const c=currentMath;if(c.sel[c.pos]==null)return;if(c.pos<c.idxs.length-1){c.pos++;return renderMathQ()}
-  if(c.which==='q'&&!confirm('제출하면 답을 바꿀 수 없습니다. 제출할까요?'))return;
+  if(c.which==='q'&&!await uiConfirm('제출하면 답을 바꿀 수 없습니다. 제출할까요?'))return;
   const set=mathCache[c.key][c.which==='q'?'qs':'rs'];await pull();const s=getMe(),upd={};let r=s.mathResults[c.key],pts=0,oks=0;
-  if(c.which==='q'){if(r&&r.completed){alert('이미 응시한 문제입니다.');currentMath=null;return renderSMath()}
+  if(c.which==='q'){if(r&&r.completed){uiAlert('이미 응시한 문제입니다.');currentMath=null;return renderSMath()}
     const items=c.idxs.map((ix,k)=>{const ok=c.sel[k]===set[ix].ans;if(ok)oks++;return{selected:c.sel[k],answer:set[ix].ans,correct:ok}});
     pts=oks*MATH_POINTS;s.mathResults[c.key]={completed:true,items,date:today(),pointsAwarded:pts};
     if(pts){s.points+=pts;addHist(s,{label:'Day '+c.key.slice(3)+' 수학 ('+oks+'/'+items.length+')',points:pts,date:today()},upd)}
@@ -53,7 +53,7 @@ async function submitMath(){const c=currentMath;if(c.sel[c.pos]==null)return;if(
   ${w==='q'&&oks<tot?`<div class="small" style="margin-top:6px">${can?'비슷한 유형의 문제로 다시 도전해 보세요.':'🔒 선생님이 유사문제를 열면 다시 풀 수 있어요.'}</div>`:''}
   <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px"><button class="btn btn-primary" onclick="showMathSol('${k}','${w}')">해설 보기</button>${can?`<button class="btn btn-success" onclick="startMathRetry('${k}')">유사 문제 ${w==='r'?'다시 ':''}풀기</button>`:''}<button class="btn" onclick="renderSMath()">목록으로</button></div></div>`}
 async function showMathSol(k,which){const r=getMe().mathResults[k];if(!r||!r.completed)return renderSMath();mathLock=true;$('s-math').innerHTML='<div class="empty">불러오는 중…</div>';let p;
-  try{p=await mathFetch(k)}catch(e){alert('불러오지 못했습니다: '+e.message);return renderSMath()}
+  try{p=await mathFetch(k)}catch(e){uiAlert('불러오지 못했습니다: '+e.message);return renderSMath()}
   const set=which==='q'?p.qs:p.rs,it=mItems(r);let h='';
   set.forEach((d,i)=>{const mine=which==='q'?(it[i]||{}).selected:(mRetry(r,i)||{}).selected;if(which==='r'&&mine==null)return;const ok=mine===d.ans;
     h+=`<div class="q-block"><div class="flex"><b>${i+1}번</b><span class="badge ${ok?'badge-winner':'badge-ended'}">${ok?'정답':'오답'}</span></div>${fig(d.img)}
@@ -73,7 +73,7 @@ async function toggleMath(k,retry){await pull();const c=DATA.mathTests[k]||(DATA
   if(!await dbUpdate({['pub/mathTests/'+k]:c}))return renderAMath();renderAMath();renderAMScore();toast('수학 Day '+k.slice(3)+(retry?' 유사 ':' ')+((retry?c.retryOpen:c.open)?'열림':'닫힘'))}
 const blank=()=>({img:null,ans:null,solImg:null});
 async function openMathEditor(k){const c=mconf(k);mathEdit={key:k,qs:[blank()],rs:[]};
-  if(c.has){try{const p=await mathFetch(k,true);if(p.qs.length)mathEdit.qs=p.qs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}));mathEdit.rs=p.rs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}))}catch(e){mathEdit=null;return alert('문제를 불러오지 못했습니다: '+e.message)}}
+  if(c.has){try{const p=await mathFetch(k,true);if(p.qs.length)mathEdit.qs=p.qs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}));mathEdit.rs=p.rs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}))}catch(e){mathEdit=null;return uiAlert('문제를 불러오지 못했습니다: '+e.message)}}
   $('adminMathList').style.display='none';$('adminMathIntro').style.display='none';renderMathEditor();window.scrollTo(0,0)}
 function closeMathEditor(){mathEdit=null;$('adminMathEditor').innerHTML='';$('adminMathList').style.display='';$('adminMathIntro').style.display='';renderAMath()}
 function setN(g,n){const a=mathEdit[g];while(a.length<n)a.push(blank());a.length=n;if(g==='qs'&&mathEdit.rs.length>n)mathEdit.rs.length=n;renderMathEditor()}
@@ -91,18 +91,18 @@ function renderMathEditor(){const e=mathEdit,el=$('adminMathEditor');if(!e)retur
   <div class="small" style="text-align:center;margin:10px 0">저장하면 이 Day는 자동으로 닫힙니다. 학생에게 보이려면 목록에서 "열기"를 눌러주세요.</div>
   <button class="btn btn-primary btn-full" onclick="saveMathEdit()">저장하기</button>${c.has?'<button class="btn btn-danger btn-full" style="margin-top:10px" onclick="deleteMathProblem()">이 Day 문제 삭제</button>':''}`}
 async function saveMathEdit(){const e=mathEdit;
-  for(let i=0;i<e.qs.length;i++){if(!e.qs[i].img)return alert((i+1)+'번 문제 사진을 선택해 주세요.');if(!e.qs[i].ans)return alert((i+1)+'번 문제의 정답을 골라 주세요.')}
-  for(let i=0;i<e.rs.length;i++){if(!e.rs[i].img)return alert((i+1)+'번 유사문제 사진을 선택해 주세요.');if(!e.rs[i].ans)return alert((i+1)+'번 유사문제의 정답을 골라 주세요.')}
-  const done=DATA.students.filter(s=>s.mathResults[e.key]&&s.mathResults[e.key].completed).length;if(done&&!confirm('이미 '+done+'명이 응시했습니다. 문제를 바꿔도 기존 채점 결과는 그대로 남습니다. 저장할까요?'))return;
+  for(let i=0;i<e.qs.length;i++){if(!e.qs[i].img)return uiAlert((i+1)+'번 문제 사진을 선택해 주세요.');if(!e.qs[i].ans)return uiAlert((i+1)+'번 문제의 정답을 골라 주세요.')}
+  for(let i=0;i<e.rs.length;i++){if(!e.rs[i].img)return uiAlert((i+1)+'번 유사문제 사진을 선택해 주세요.');if(!e.rs[i].ans)return uiAlert((i+1)+'번 유사문제의 정답을 골라 주세요.')}
+  const done=DATA.students.filter(s=>s.mathResults[e.key]&&s.mathResults[e.key].completed).length;if(done&&!await uiConfirm('이미 '+done+'명이 응시했습니다. 문제를 바꿔도 기존 채점 결과는 그대로 남습니다. 저장할까요?'))return;
   const cl=a=>a.map(x=>({img:x.img,ans:x.ans,solImg:x.solImg||null}));
-  try{await mathPut(e.key,{qs:cl(e.qs),rs:cl(e.rs)})}catch(err){return alert('사진 저장 실패: '+err.message+'\n(Firebase 규칙에서 mathProblems 경로 읽기/쓰기가 허용되어 있는지 확인해 주세요)')}
+  try{await mathPut(e.key,{qs:cl(e.qs),rs:cl(e.rs)})}catch(err){return uiAlert('사진 저장 실패: '+err.message+'\n(Firebase 규칙에서 mathProblems 경로 읽기/쓰기가 허용되어 있는지 확인해 주세요)')}
   await pull();const c=DATA.mathTests[e.key]||(DATA.mathTests[e.key]={open:false});Object.assign(c,{has:true,nq:e.qs.length,nr:e.rs.length,retryHas:e.rs.length>0,open:false,retryOpen:false});
   if(!await dbUpdate({['pub/mathTests/'+e.key]:c}))return;toast('💾 Day '+e.key.slice(3)+' 저장됨 (닫힘 상태)');closeMathEditor()}
-async function deleteMathProblem(){const k=mathEdit.key;if(!confirm('Day '+k.slice(3)+' 문제 사진을 삭제할까요? (학생 성적 기록은 남습니다)'))return;
-  try{await mathPut(k,null)}catch(err){return alert('삭제 실패: '+err.message)}await pull();const c=DATA.mathTests[k];if(c){Object.assign(c,{has:false,retryHas:false,open:false,retryOpen:false});await dbUpdate({['pub/mathTests/'+k]:c})}closeMathEditor()}
+async function deleteMathProblem(){const k=mathEdit.key;if(!await uiConfirm('Day '+k.slice(3)+' 문제 사진을 삭제할까요? (학생 성적 기록은 남습니다)'))return;
+  try{await mathPut(k,null)}catch(err){return uiAlert('삭제 실패: '+err.message)}await pull();const c=DATA.mathTests[k];if(c){Object.assign(c,{has:false,retryHas:false,open:false,retryOpen:false});await dbUpdate({['pub/mathTests/'+k]:c})}closeMathEditor()}
 function mathPick(g,i,f,again){crop.t={g,i,f};if(again&&crop.last)return showCropper(crop.last);const inp=$('mathFile');inp.value='';
   inp.onchange=()=>{if(inp.files&&inp.files[0])openCropper(inp.files[0])};inp.click()}
-function openCropper(file){const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(url);crop.last=im;showCropper(im)};im.onerror=()=>alert('이미지를 열 수 없습니다. 다른 사진으로 시도해 주세요.');im.src=url}
+function openCropper(file){const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(url);crop.last=im;showCropper(im)};im.onerror=()=>uiAlert('이미지를 열 수 없습니다. 다른 사진으로 시도해 주세요.');im.src=url}
 function showCropper(im){crop.img=im;crop.sel=null;crop.start=null;const mw=Math.min(innerWidth-64,720),mh=innerHeight*.58;crop.scale=Math.min(mw/im.naturalWidth,mh/im.naturalHeight,1);
   const c=$('cropCanvas');c.width=Math.round(im.naturalWidth*crop.scale);c.height=Math.round(im.naturalHeight*crop.scale);drawCrop();$('cropModal').style.display='flex'}
 function closeCropper(){$('cropModal').style.display='none';crop.img=null}

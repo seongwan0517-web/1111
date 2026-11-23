@@ -11,9 +11,9 @@ const isNew=n=>Date.now()-n.id<3*864e5;
 const latestNotices=()=>arr(DATA.notices).slice().reverse();
 const ncard=n=>`<div class="ncard">${isNew(n)?'<span class="new">NEW</span>':''}<div class="nt">${esc(n.text)}</div><div class="small">${esc(n.date)}</div></div>`;
 function renderNoticeBar(){const b=$('noticeBar'),l=latestNotices();if(!l.length){b.style.display='none';return}const n=l[0];b.style.display='flex';
-  b.innerHTML=`<span>📢</span><span class="t">${esc(n.text)}</span>${isNew(n)?'<span class="new">NEW</span>':''}<span class="more">전체보기</span>`}
+  b.innerHTML=`<span class="nbi">${ic('megaphone')}</span><span class="t">${esc(n.text)}</span>${isNew(n)?'<span class="new">NEW</span>':''}<span class="more">전체보기</span>`}
 function noticeSection(){const l=latestNotices();if(!l.length)return'';
-  return`<div class="nsec"><div class="nhead">📢 공지사항</div>${l.slice(0,3).map(ncard).join('')}${l.length>3?`<details><summary>지난 공지 ${l.length-3}개 더 보기</summary>${l.slice(3,15).map(ncard).join('')}</details>`:''}</div>`}
+  return`<div class="nsec"><div class="nhead">${ic('megaphone')} 공지사항</div>${l.slice(0,3).map(ncard).join('')}${l.length>3?`<details><summary>지난 공지 ${l.length-3}개 더 보기</summary>${l.slice(3,15).map(ncard).join('')}</details>`:''}</div>`}
 function openNotice(){$('noticeList2').innerHTML=latestNotices().slice(0,10).map(ncard).join('')||'<div class="empty">공지가 없어요</div>';$('noticeModal').style.display='flex'}
 function closeNotice(){$('noticeModal').style.display='none';const l=latestNotices();if(l.length)try{localStorage.setItem('vit_seen_'+cu.id,l[0].id)}catch(e){}}
 let noticeShown=false;
@@ -101,7 +101,7 @@ function renderShop(){const s=getMe(),el=$('s-shop');
     <div class="sc-bar"><i style="width:${pct}%"></i></div><div class="small">${ok?'지금 살 수 있어요':(i.price-s.points).toLocaleString()+'P 더 모으면 살 수 있어요'}</div>
     <button class="btn btn-primary btn-full" ${ok?'':'disabled'} onclick="buyItem(${+i.id})">구매하기</button></div>`}).join('')+'</div>'}
 async function buyItem(id){await pull();const item=DATA.items.find(x=>+x.id===+id),s=getMe();if(!s||!item||s.points<item.price)return;
-  if(!confirm(item.name+'을(를) '+item.price+'P에 구매할까요?'))return;
+  if(!await uiConfirm(item.name+'을(를) '+item.price+'P에 구매할까요?'))return;
   s.points-=item.price;const oid=Date.now(),upd={[SP(s.id)+'/points']:s.points,['orders/o'+oid]:{id:oid,sid:s.id,studentName:s.name,itemName:item.name}};
   addHist(s,{label:'상품 구매 - '+item.name,points:-item.price,date:today()},upd);
   if(!await dbUpdate(upd))return renderStudent();toast('🛍️ '+item.name+' 구매 완료!');renderStudent()}

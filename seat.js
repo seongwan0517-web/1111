@@ -19,9 +19,9 @@ function bindSeatDrag(){const m=$('seatEdit');if(!m)return;
   m.onpointerup=m.onpointercancel=()=>{if(!drag)return;const d=drag;drag=null;if(d.moved)seatDirty=true;else seatSel=d.s.id;renderASeat()}}
 async function saveSeats(){const mine=DATA.seats;if(!await dbUpdate({'pub/seats':mine}))return renderASeat();await pull();seatDirty=false;toast('💾 자리 배치 저장 완료');renderASeat();renderAAuc()}
 function assignSeat(){const s=DATA.seats.find(x=>x.id===seatSel),v=$('seatStu').value;if(!s)return;if(v)DATA.seats.forEach(x=>{if(x.sid===v)x.sid=''});s.sid=v;seatDirty=true;renderASeat()}
-function delSeat(){if(!confirm('이 자리를 삭제할까요?'))return;DATA.seats=DATA.seats.filter(x=>x.id!==seatSel);seatSel=null;seatDirty=true;renderASeat()}
+async function delSeat(){if(!await uiConfirm('이 자리를 삭제할까요?'))return;DATA.seats=DATA.seats.filter(x=>x.id!==seatSel);seatSel=null;seatDirty=true;renderASeat()}
 function addSeat(){const n=Math.max(0,...DATA.seats.map(s=>s.n))+1,id='s'+Date.now();DATA.seats.push({id,n,x:40,y:40,sid:''});seatSel=id;seatDirty=true;renderASeat()}
 function renumSeats(){DATA.seats.slice().sort((a,b)=>Math.round(a.y/8)-Math.round(b.y/8)||a.x-b.x).forEach((s,i)=>s.n=i+1);seatDirty=true;renderASeat()}
-function clearSeats(){if(!confirm('모든 자리의 이름을 비울까요?'))return;DATA.seats.forEach(s=>s.sid='');seatDirty=true;renderASeat()}
-function randomSeats(){if(!confirm('학생들을 무작위로 자리에 배정할까요?'))return;const ss=DATA.seats.slice().sort((a,b)=>a.n-b.n),st=shuf(DATA.students.map(x=>x.id));ss.forEach((s,i)=>s.sid=st[i]||'');seatDirty=true;renderASeat()}
-function resetSeats(){if(!confirm('위치와 번호를 기본 배치(3학년 1반 사진)로 되돌릴까요? 학생 배정은 번호 기준으로 유지돼요.'))return;const old=DATA.seats.slice().sort((a,b)=>a.n-b.n),d=defaultSeats();d.forEach((s,i)=>{if(old[i])s.sid=old[i].sid});DATA.seats=d;seatSel=null;seatDirty=true;renderASeat()}
+async function clearSeats(){if(!await uiConfirm('모든 자리의 이름을 비울까요?'))return;DATA.seats.forEach(s=>s.sid='');seatDirty=true;renderASeat()}
+async function randomSeats(){if(!await uiConfirm('학생들을 무작위로 자리에 배정할까요?'))return;const ss=DATA.seats.slice().sort((a,b)=>a.n-b.n),st=shuf(DATA.students.map(x=>x.id));ss.forEach((s,i)=>s.sid=st[i]||'');seatDirty=true;renderASeat()}
+async function resetSeats(){if(!await uiConfirm('위치와 번호를 기본 배치(3학년 1반 사진)로 되돌릴까요? 학생 배정은 번호 기준으로 유지돼요.'))return;const old=DATA.seats.slice().sort((a,b)=>a.n-b.n),d=defaultSeats();d.forEach((s,i)=>{if(old[i])s.sid=old[i].sid});DATA.seats=d;seatSel=null;seatDirty=true;renderASeat()}

@@ -256,3 +256,98 @@ body{line-height:1.45}
   .admin-section{padding:20px}
   h3.sec{font-size:19px;margin:28px 0 12px}
 }
+
+/* ── v2.3 디자인 기준: 색·모서리·여백을 한 곳에서 통일 ──
+   모서리: --r-sm 8px(버튼·입력) / --r 12px(카드) / --r-lg 16px(큰 영역·창)
+   여백: 4의 배수(4·8·12·16·24·32)   빨강(--red)은 주요 버튼·선택 상태·강조에만 사용 */
+:root{
+  --bg:#0e0e10;--s:#17171a;--s2:#222226;--s3:#2c2c31;
+  --b:rgba(255,255,255,.08);--b2:rgba(255,255,255,.14);
+  --t:#f4f4f5;--t2:#a8a8b0;--t3:#8b8b94;
+  --red:#e5323e;--red2:#ff5c66;--redbg:rgba(229,50,62,.13);
+  --green:#34d399;--greenbg:rgba(52,211,153,.13);--orange:#fbbf24;--orangebg:rgba(251,191,36,.13);
+  --r-sm:8px;--r:12px;--r-lg:16px;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.35);
+}
+body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
+.app{background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(229,50,62,.16),transparent 70%),var(--bg)}
+.card{background:rgba(18,18,21,.92);border:1px solid var(--b);border-radius:var(--r-lg)}
+.pts,.point,.stat .v,.sc-price,.bstats b,.bid-main input,.table td{font-variant-numeric:tabular-nums}
+
+/* 아이콘 */
+.ic{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:none}
+.tab i{display:inline-flex}.tab .ic{width:18px;height:18px}
+
+/* 버튼 */
+.btn{border-radius:var(--r-sm);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--s2);border:1px solid transparent}
+.btn:hover{background:var(--s3)}
+.btn-primary{background:var(--red)}.btn-primary:hover{background:#ef4450}
+.btn-ghost{background:var(--s2);border-color:var(--b)}.btn-ghost:hover{background:var(--s3)}
+.btn-danger{background:var(--redbg);color:var(--red2)}.btn-danger:hover{background:rgba(229,50,62,.22)}
+.btn-success{background:var(--greenbg);color:var(--green)}.btn-success:hover{background:rgba(52,211,153,.22)}
+.btn-dangerSolid{background:#dc2626;color:#fff}.btn-dangerSolid:hover{background:#ef4444}
+.btn.selected,.btn.selected:hover{background:var(--red)}
+.btn-primary[disabled]:hover{background:var(--red)}
+.btn:focus-visible,.tab:focus-visible,.chip:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* 입력칸 */
+.field input,.field select,.inp{background:var(--s2);border:1px solid var(--b);border-radius:var(--r-sm)}
+.field input:focus,.field select:focus,.inp:focus{border-color:var(--red2);box-shadow:0 0 0 3px var(--redbg)}
+.err{border-radius:var(--r-sm)}
+
+/* 카드 */
+.shop-item,.student-card,.order-card,.admin-section,.admin-card,.notice,.auction-card,.stat,.dcard,.shop-card,.shop-head{background:var(--s);border:1px solid var(--b);border-radius:var(--r)}
+.auction-card{padding:18px}
+.notice{border-left:3px solid var(--red)}
+.banner{border-radius:var(--r-lg);background:linear-gradient(135deg,#7a1b23 0%,#3a0e13 55%,#1b0b0d 100%);border:1px solid rgba(255,92,102,.22)}
+.stat .v{color:var(--t)}.stat .sl{color:var(--t2);font-weight:600}
+.dcard h4{text-align:left;font-size:14px;font-weight:700;color:var(--t2);margin-bottom:12px}
+.legend{justify-content:flex-start}
+.history{border-bottom-color:var(--b)}
+.vcard.open{border-color:rgba(52,211,153,.45);box-shadow:none}
+.shop-card.ok{border-color:rgba(52,211,153,.4)}
+.sc-bar i{background:var(--green)}
+
+/* 배지 */
+.badge{border-radius:999px;padding:3px 10px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.badge .ic{width:1em;height:1em}
+.badge-active{background:var(--greenbg);color:var(--green)}
+.badge-ended{background:rgba(255,255,255,.07);color:var(--t2)}
+.badge-winner{background:var(--orangebg);color:var(--orange)}
+.new{background:var(--red);color:#fff;border-radius:999px;padding:2px 7px}
+
+/* 탭 · 공지 */
+.tabs{background:rgba(14,14,16,.97)}
+.tab.active{color:var(--t)}
+.nb{background:linear-gradient(90deg,rgba(229,50,62,.24),rgba(229,50,62,.06));border-bottom:1px solid var(--b);font-weight:600}
+.nbi{color:var(--red2);display:inline-flex}
+.nsec{background:var(--s);border:1px solid var(--b);border-radius:var(--r)}
+.nhead{background:transparent;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px}
+.nhead .ic{color:var(--red2)}
+.ncard{border-bottom-color:var(--b)}
+.nmodal{border:1px solid var(--b2);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.nmodal .nh{background:transparent;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px}.nmodal .nh .ic{color:var(--red2)}
+.toast{border-radius:999px;box-shadow:var(--shadow);background:#fafafa;color:#111}
+
+/* 알림 · 확인 · 입력 창 */
+.ui-bg{position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .16s}
+.ui-bg.show{opacity:1}
+.ui-dlg{width:100%;max-width:400px;background:var(--s);border:1px solid var(--b2);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow);transform:translateY(8px) scale(.98);transition:transform .16s}
+.ui-bg.show .ui-dlg{transform:none}
+.ui-ic{width:44px;height:44px;border-radius:var(--r);background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.ui-ic .ic{width:22px;height:22px}
+.ui-dlg.danger .ui-ic{background:var(--redbg);color:var(--red2)}
+.ui-dlg h3{font-size:18px;font-weight:700;line-height:1.4}
+.ui-body{margin-top:8px;color:var(--t2);font-size:14px;line-height:1.6;white-space:pre-line}
+.ui-fields{margin-top:16px}.ui-fields .field{display:block}.ui-fields .field span{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px}
+.ui-err{color:var(--red2);font-size:13px;min-height:18px}
+.ui-btns{display:flex;gap:8px;margin-top:20px}.ui-btns .btn{flex:1;padding:13px}
+@media (max-width:767px){
+  .ui-bg{align-items:flex-end;padding:0}
+  .ui-dlg{max-width:none;border-radius:20px 20px 0 0;border-bottom:none;padding:24px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(100%)}
+  .ui-bg.show .ui-dlg{transform:none}
+  .tab .ic{width:21px;height:21px}
+  .card{border-radius:0}
+}
+@media (min-width:1100px){.tab .ic{width:19px;height:19px}}
+@media (prefers-reduced-motion:reduce){.ui-bg,.ui-dlg{transition:none}}

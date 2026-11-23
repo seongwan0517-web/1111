@@ -32,10 +32,10 @@ function updBid(id){const a=DATA.auctions[id],s=getMe();if(!a||!$('bid-'+id))ret
   $('sum-'+id).innerHTML=`<div><small>현재 최고가</small><b>${fmt(hi)}P</b></div><div><small>이번에 쓰는 포인트</small><b class="orange">${fmt(diff)}P</b></div><div><small>입찰 후 남는 포인트</small><b>${fmt(s.points-diff)}P</b></div>`;
   const m=$('msg-'+id);m.textContent=msg;m.className='bid-msg '+(ok?'green':'red');$('btn-'+id).disabled=!ok}
 async function placeBid(id){await pull();const a=DATA.auctions[id];if(!a||!a.active)return;const amt=parseInt($('bid-'+id).value);
-  if(!amt||amt%STEP)return alert('입찰 금액을 '+STEP+'P 단위로 입력하세요.');const s=getMe(),mb=minBidOf(a);
-  if(amt<mb)return alert('최소 입찰 금액은 '+fmt(mb)+'P 입니다.');
+  if(!amt||amt%STEP)return uiAlert('입찰 금액을 '+STEP+'P 단위로 입력하세요.');const s=getMe(),mb=minBidOf(a);
+  if(amt<mb)return uiAlert('최소 입찰 금액은 '+fmt(mb)+'P 입니다.');
   const sid=String(s.id),prev=a.bids&&a.bids[sid]?a.bids[sid].amount:0,diff=amt-prev;
-  if(diff<=0)return alert('현재 내 입찰보다 높은 금액을 입력하세요.');if(s.points<diff)return alert('포인트가 부족합니다.');
+  if(diff<=0)return uiAlert('현재 내 입찰보다 높은 금액을 입력하세요.');if(s.points<diff)return uiAlert('포인트가 부족합니다.');
   s.points-=diff;const upd={[SP(sid)+'/points']:s.points,['pub/auctions/'+id+'/bids/'+sid]:{studentName:s.name,amount:amt}};
   addHist(s,{label:'경매 입찰 - '+a.itemName+' ('+amt+'P)',points:-diff,date:today()},upd);
   if(!a.bids)a.bids={};a.bids[sid]={studentName:s.name,amount:amt};delete stepVals[id];if(!await dbUpdate(upd))return renderStudent();toast('🔨 입찰 완료! '+fmt(amt)+'P');renderStudent()}
@@ -44,7 +44,7 @@ function renderBulkSeats(){const el=$('bulkSeats');if(!el)return;el.innerHTML=DA
 function toggleBulk(id){bulkPick.has(id)?bulkPick.delete(id):bulkPick.add(id);renderBulkSeats()}
 function bulkAll(on){bulkPick.clear();if(on)DATA.seats.forEach(s=>bulkPick.add(s.id));renderBulkSeats()}
 async function bulkCreate(){const name=$('bulkName').value.trim()||'자리 경매',st=parseInt($('bulkStart').value);
-  if(!bulkPick.size)return alert('자리를 하나 이상 선택하세요.');if(isNaN(st)||st<STEP||st%STEP)return alert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
+  if(!bulkPick.size)return uiAlert('자리를 하나 이상 선택하세요.');if(isNaN(st)||st<STEP||st%STEP)return uiAlert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
   await pull();const t=Date.now(),gid='g_'+t,upd={};let c=0;
   [...bulkPick].forEach((sid,i)=>{const seat=DATA.seats.find(x=>x.id===sid);if(!seat)return;const id='auc_'+t+'_'+i;
     upd['pub/auctions/'+id]={id,itemName:seat.n+'번 자리',startPrice:st,active:true,createdAt:today(),seatId:sid,groupId:gid,groupName:name};c++});
@@ -66,7 +66,7 @@ function renderAAuc(){const sel=$('auctionSeat'),pv=sel.value;sel.innerHTML='<op
   h+=single.map(aucCardA).join('');
   $('adminAuctionList').innerHTML=h||'<div class="empty">진행 중인 경매가 없습니다.</div>'}
 async function startAuction(){const item=$('auctionItem').value.trim(),st=parseInt($('auctionStart').value),seatId=$('auctionSeat').value,gn=$('auctionGroup').value.trim();
-  if(!item)return alert('경매 상품명을 입력하세요.');if(isNaN(st)||st<STEP||st%STEP)return alert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
+  if(!item)return uiAlert('경매 상품명을 입력하세요.');if(isNaN(st)||st<STEP||st%STEP)return uiAlert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
   const id='auc_'+Date.now();if(!await dbUpdate({['pub/auctions/'+id]:{id,itemName:item,startPrice:st,active:true,createdAt:today(),seatId:seatId||null,groupId:gn?'g_'+gn:null,groupName:gn||null}}))return;
   await pull();['auctionItem','auctionStart','auctionGroup'].forEach(i=>$(i).value='');renderAAuc();toast('🔨 경매 시작: '+item)}
 /* 경매 종료 (한 개 · 묶음 · 전체 모두 이 함수 하나로 처리) — 낙찰 실패한 입찰 포인트는 환불 없이 소멸 */
@@ -83,6 +83,6 @@ async function finishAuctions(ids){await pull();const list=ids.map(i=>DATA.aucti
   if(!await dbUpdate(upd))return;await pull();renderAAuc();renderASeat();toast('🏁 경매 '+list.length+'개 종료 완료')}
 function endAuction(id){return finishAuctions([id])}
 async function endGroup(gid){await pull();const ids=Object.values(DATA.auctions).filter(a=>a.active&&(gid==='__all'||a.groupId===gid)).map(a=>a.id);if(!ids.length)return;
-  if(!confirm(ids.length+'개 경매를 한 번에 종료할까요?\n낙찰되지 못한 입찰 포인트는 환불되지 않고 소멸됩니다.'))return;await finishAuctions(ids)}
-async function deleteGroup(gid){if(!confirm('이 묶음의 경매를 모두 삭제할까요?'))return;await pull();const upd={};Object.values(DATA.auctions).forEach(a=>{if(a.groupId===gid)upd['pub/auctions/'+a.id]=null});if(!await dbUpdate(upd))return;await pull();renderAAuc()}
-async function deleteAuction(id){if(!confirm('이 경매를 삭제하시겠습니까?'))return;if(!await dbUpdate({['pub/auctions/'+id]:null}))return;await pull();renderAAuc()}
+  if(!await uiConfirm(ids.length+'개 경매를 한 번에 종료할까요?\n낙찰되지 못한 입찰 포인트는 환불되지 않고 소멸됩니다.'))return;await finishAuctions(ids)}
+async function deleteGroup(gid){if(!await uiConfirm('이 묶음의 경매를 모두 삭제할까요?'))return;await pull();const upd={};Object.values(DATA.auctions).forEach(a=>{if(a.groupId===gid)upd['pub/auctions/'+a.id]=null});if(!await dbUpdate(upd))return;await pull();renderAAuc()}
+async function deleteAuction(id){if(!await uiConfirm('이 경매를 삭제하시겠습니까?'))return;if(!await dbUpdate({['pub/auctions/'+id]:null}))return;await pull();renderAAuc()}
