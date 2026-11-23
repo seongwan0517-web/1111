@@ -2,15 +2,18 @@
 <html lang="ko"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e0e10">
+<script>/* 다크/화이트 모드: 이 기기에 저장된 선택 → 없으면 기기 설정을 따름 */
+(function(){var t=null;try{t=localStorage.getItem('vit_theme')}catch(e){}if(t!=='light'&&t!=='dark')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#f4f5f7':'#0e0e10'})();</script>
 <title>Vitamin v2.0 - 포인트 상점 &amp; 경매 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="style.css?v=31">
+<link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
 <div class="app">
 
 <!-- 로그인 -->
-<div class="card" id="loginCard">
+<div class="card" id="loginCard"><div class="login-theme"><button class="btn btn-ghost btn-sm theme-btn" onclick="toggleTheme()" title="화면 모드 바꾸기" aria-label="화면 모드 바꾸기"><span class="bi tb-ic"></span><span class="bt tb-tx"></span></button></div>
   <div class="hero"><div class="pill">용유중학교 포인트 시스템</div><div class="wordmark">VITAMIN2.0</div><p>학생 포인트 적립 · 상점 · 경매 · 자리</p></div>
   <div class="login-body">
     <div class="field"><label>아이디</label><input type="text" id="loginId" placeholder="아이디를 입력하세요"></div>
@@ -23,7 +26,7 @@
 <!-- 학생 -->
 <div class="card main" id="studentMain">
   <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm" id="studentName"></div></div>
-    <div class="top-r"><div class="pts"><span id="studentPoints">0</span>P</div><button class="btn btn-ghost btn-sm" onclick="changeMyPw()" title="비밀번호 변경"><span class="bi"><svg class="ic"><use href="#i-key-round"/></svg></span><span class="bt">비밀번호 변경</span></button><button class="btn btn-ghost btn-sm" onclick="logout()" title="로그아웃"><span class="bi"><svg class="ic"><use href="#i-log-out"/></svg></span><span class="bt">로그아웃</span></button></div></div>
+    <div class="top-r"><div class="pts"><span id="studentPoints">0</span>P</div><button class="btn btn-ghost btn-sm theme-btn" onclick="toggleTheme()" title="화면 모드 바꾸기" aria-label="화면 모드 바꾸기"><span class="bi tb-ic"></span><span class="bt tb-tx"></span></button><button class="btn btn-ghost btn-sm" onclick="changeMyPw()" title="비밀번호 변경"><span class="bi"><svg class="ic"><use href="#i-key-round"/></svg></span><span class="bt">비밀번호 변경</span></button><button class="btn btn-ghost btn-sm" onclick="logout()" title="로그아웃"><span class="bi"><svg class="ic"><use href="#i-log-out"/></svg></span><span class="bt">로그아웃</span></button></div></div>
   <div id="noticeBar" class="nb" onclick="openNotice()"></div>
   <nav class="tabs">
     <div class="tab active" onclick="stab('home',this)"><i><svg class="ic"><use href="#i-house"/></svg></i><span>홈</span></div><div class="tab" onclick="stab('shop',this)"><i><svg class="ic"><use href="#i-shopping-bag"/></svg></i><span>상점</span></div>
@@ -37,7 +40,7 @@
 
 <!-- 관리자 -->
 <div class="card main" id="adminMain">
-  <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm">관리자 모드</div></div><div class="top-r"><button class="btn btn-ghost btn-sm" onclick="logout()" title="로그아웃"><span class="bi"><svg class="ic"><use href="#i-log-out"/></svg></span><span class="bt">로그아웃</span></button></div></div>
+  <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm">관리자 모드</div></div><div class="top-r"><button class="btn btn-ghost btn-sm theme-btn" onclick="toggleTheme()" title="화면 모드 바꾸기" aria-label="화면 모드 바꾸기"><span class="bi tb-ic"></span><span class="bt tb-tx"></span></button><button class="btn btn-ghost btn-sm" onclick="logout()" title="로그아웃"><span class="bi"><svg class="ic"><use href="#i-log-out"/></svg></span><span class="bt">로그아웃</span></button></div></div>
   <nav class="tabs">
     <div class="tab active" onclick="atab('students',this)"><i><svg class="ic"><use href="#i-users"/></svg></i><span>학생</span></div><div class="tab" onclick="atab('shop',this)"><i><svg class="ic"><use href="#i-shopping-bag"/></svg></i><span>상점</span></div>
     <div class="tab" onclick="atab('auction',this)"><i><svg class="ic"><use href="#i-gavel"/></svg></i><span>경매</span></div><div class="tab" onclick="atab('seat',this)"><i><svg class="ic"><use href="#i-armchair"/></svg></i><span>자리</span></div>
@@ -117,19 +120,19 @@
 <div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh"><svg class="ic"><use href="#i-megaphone"/></svg> 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=31"></script>
-<script src="vocab-data.js?v=31"></script>
-<script src="core.js?v=31"></script>
-<script src="icons.js?v=31"></script>
-<script src="ui.js?v=31"></script>
-<script src="auth.js?v=31"></script>
-<script src="student-home.js?v=31"></script>
-<script src="auction.js?v=31"></script>
-<script src="seat.js?v=31"></script>
-<script src="vocab.js?v=31"></script>
-<script src="math.js?v=31"></script>
-<script src="premath-data.js?v=31"></script>
-<script src="premath.js?v=31"></script>
-<script src="poll.js?v=31"></script>
-<script src="admin.js?v=31"></script>
+<script src="config.js?v=33"></script>
+<script src="vocab-data.js?v=33"></script>
+<script src="core.js?v=33"></script>
+<script src="icons.js?v=33"></script>
+<script src="ui.js?v=33"></script>
+<script src="auth.js?v=33"></script>
+<script src="student-home.js?v=33"></script>
+<script src="auction.js?v=33"></script>
+<script src="seat.js?v=33"></script>
+<script src="vocab.js?v=33"></script>
+<script src="math.js?v=33"></script>
+<script src="premath-data.js?v=33"></script>
+<script src="premath.js?v=33"></script>
+<script src="poll.js?v=33"></script>
+<script src="admin.js?v=33"></script>
 </body></html>

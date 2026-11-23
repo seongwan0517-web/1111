@@ -386,3 +386,58 @@ body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
 .pm-dot{position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--orange)}
 .pm-hint{display:flex;align-items:center;gap:8px;background:var(--orangebg);color:var(--orange);border:1px solid rgba(251,191,36,.3);border-radius:var(--r);padding:11px 14px;margin-bottom:14px;font-size:14px;font-weight:600;cursor:pointer}
 .pm-hint b{color:#fff}.pm-hint .ic:last-child{margin-left:auto}
+
+/* ── 다크 / 화이트 모드 ──
+   <html data-theme="dark|light">. 색은 대부분 위의 변수(--bg, --s, --t …)를 쓰고,
+   예전부터 직접 적어 둔 어두운 색만 아래에서 화이트 모드용으로 바꿔 줌 */
+:root{color-scheme:dark}
+.theme-btn .bi{display:inline-flex}
+#loginCard{position:relative}
+.login-theme{position:absolute;top:14px;right:14px;z-index:2}
+[data-theme="light"]{color-scheme:light;
+  --bg:#f4f5f7;--s:#ffffff;--s2:#f1f2f5;--s3:#e5e7eb;
+  --b:rgba(15,23,42,.10);--b2:rgba(15,23,42,.18);
+  --t:#18181b;--t2:#4b5563;--t3:#6b7280;
+  --red:#e5323e;--red2:#cf1f2d;--redbg:rgba(229,50,62,.10);
+  --green:#047857;--greenbg:rgba(16,185,129,.12);--orange:#b45309;--orangebg:rgba(245,158,11,.14);
+  --shadow:0 1px 2px rgba(15,23,42,.06),0 10px 28px rgba(15,23,42,.10)}
+[data-theme="light"] .app{background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(229,50,62,.08),transparent 70%),var(--bg)}
+[data-theme="light"] .card{background:var(--s);box-shadow:var(--shadow)}
+[data-theme="light"] .tabs,[data-theme="light"] .main>.top{background:rgba(255,255,255,.97)}
+[data-theme="light"] .btn{color:var(--t)}
+[data-theme="light"] .btn-primary,[data-theme="light"] .btn-dangerSolid,[data-theme="light"] .btn.selected{color:#fff}
+[data-theme="light"] .btn-danger{color:var(--red2)}[data-theme="light"] .btn-success{color:var(--green)}
+[data-theme="light"] .tab.active,[data-theme="light"] .tab:hover{color:var(--t)}
+[data-theme="light"] .err{color:#b91c1c}
+[data-theme="light"] .toast{background:#18181b;color:#fff}
+/* 빨간 배너는 두 모드 모두 어두운 빨강 그대로 → 글자는 밝게 */
+[data-theme="light"] .banner{color:#fff}[data-theme="light"] .banner .small{color:#fcd5d8}
+[data-theme="light"] .banner .green{color:#6ee7b7}[data-theme="light"] .banner .orange{color:#fcd34d}
+/* 막대·점·진행바 바탕 */
+[data-theme="light"] .hb,[data-theme="light"] .qbar,[data-theme="light"] .sc-bar,[data-theme="light"] .step-group{background:var(--s3)}
+[data-theme="light"] .bars i.n{background:#d4d4d8}[data-theme="light"] .dots i{background:#e4e4e7}
+[data-theme="light"] .dcard .bars,[data-theme="light"] .dcard .dots,[data-theme="light"] .bd{background:var(--s2)}
+[data-theme="light"] .opt-btn:hover{background:var(--s3)}
+/* 자리표 */
+[data-theme="light"] .seatmap{background:#f8fafc}
+[data-theme="light"] .seat{border-color:var(--b2)}[data-theme="light"] .desk{border-color:#9ca3af}
+[data-theme="light"] .seat.me{color:#fff}
+/* 경매 입찰 상자 */
+[data-theme="light"] .bid-box{background:var(--s)}
+[data-theme="light"] .bid-main input{color:var(--t)}
+[data-theme="light"] .bid-sum div{background:var(--s2)}
+[data-theme="light"] .chip{background:var(--s);color:var(--t)}
+[data-theme="light"] .chip.c10{color:var(--green);border-color:var(--green)}[data-theme="light"] .chip.c100{color:var(--orange);border-color:#f59e0b}[data-theme="light"] .chip.c1000{color:var(--red2);border-color:var(--red)}
+[data-theme="light"] .chipb{background:var(--s2);color:var(--t)}
+[data-theme="light"] .pm-hint b{color:var(--t)}
+/* 대시보드 차트(SVG에 직접 적힌 색) */
+[data-theme="light"] .chart [stroke="#2c2c2c"],[data-theme="light"] .chart [stroke="#333"]{stroke:#e5e7eb}
+[data-theme="light"] .chart [fill="#737373"],[data-theme="light"] .chart [fill="#b3b3b3"],[data-theme="light"] .donut [fill="#b3b3b3"]{fill:#6b7280}
+[data-theme="light"] .chart [fill="#6b6b6b"]{fill:#a1a1aa}
+[data-theme="light"] .chart [stroke="#9a9a9a"]{stroke:#71717a}[data-theme="light"] .chart [fill="rgba(255,255,255,.06)"]{fill:rgba(15,23,42,.05)}
+[data-theme="light"] .donut [fill="#fff"]{fill:var(--t)}
+[data-theme="light"] .chart circle[fill="#fff"]{fill:var(--red);stroke:#fff;stroke-width:1.5}
+[data-theme="light"] .legend i[style*="#6b6b6b"]{background:#a1a1aa!important}
+[data-theme="light"] .ui-bg{background:rgba(15,23,42,.35)}
+.pm-num input{min-width:0;width:100%}
+[data-theme="light"] .wordmark{text-shadow:0 4px 24px rgba(229,50,62,.25)}

@@ -32,3 +32,9 @@ function uiNext(){
 const uiAlert=(msg,o)=>uiOpen(Object.assign({},o,{msg,kind:'alert',error:o&&o.error!=null?o.error:/실패|오류|없습니다|올바르지|부족|이미|먼저|못했/.test(msg)}));
 const uiConfirm=(msg,o)=>uiOpen(Object.assign({},o,{msg,kind:'confirm'}));
 const uiForm=o=>uiOpen(Object.assign({},o,{kind:'form'}));
+/* 다크/화이트 모드 전환 (이 기기에 저장) */
+function applyThemeUI(){const light=document.documentElement.getAttribute('data-theme')==='light';
+  document.querySelectorAll('.theme-btn').forEach(b=>{b.querySelector('.tb-ic').innerHTML=ic(light?'moon':'sun');b.querySelector('.tb-tx').textContent=light?'다크 모드':'화이트 모드';b.title=light?'다크 모드로 바꾸기':'화이트 모드로 바꾸기'});
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=light?'#f4f5f7':'#0e0e10'}
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('vit_theme',t)}catch(e){}applyThemeUI();toast(t==='light'?'화이트 모드':'다크 모드')}
+applyThemeUI();
