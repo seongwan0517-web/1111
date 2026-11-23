@@ -4,7 +4,8 @@ function minBidOf(a){const h=Math.max(0,...Object.values(a.bids||{}).map(b=>b.am
 const fmt=n=>(+n||0).toLocaleString();
 function renderSAuc(){const el=$('s-auction'),s=getMe(),l=Object.values(DATA.auctions);
   if(!l.length){el.innerHTML='<div class="empty">진행 중인 경매가 없습니다.</div>';return}
-  el.innerHTML=l.map(a=>{const bids=Object.values(a.bids||{}).map(b=>b.amount),hi=bids.length?Math.max(...bids):0,mine=a.bids&&a.bids[String(s.id)],my=mine?mine.amount:0,si=seatInfo(a);
+  l.sort((x,y)=>(y.active?1:0)-(x.active?1:0));
+  el.innerHTML='<div class="cgrid wide">'+l.map(a=>{const bids=Object.values(a.bids||{}).map(b=>b.amount),hi=bids.length?Math.max(...bids):0,mine=a.bids&&a.bids[String(s.id)],my=mine?mine.amount:0,si=seatInfo(a);
     const grp=a.groupName?`<span class="badge badge-winner">🗂 ${esc(a.groupName)}</span>`:'';
     const map=a.seatId?`<details style="margin-top:8px"><summary class="small" style="cursor:pointer">자리 위치 보기</summary><div style="height:8px"></div>${seatMap({target:a.seatId,me:s.id})}</details>`:'';
     if(a.active){const top=my>0&&my===hi,mb=minBidOf(a),v=Math.max(stepVals[a.id]||0,mb);stepVals[a.id]=v;
@@ -20,7 +21,7 @@ function renderSAuc(){const el=$('s-auction'),s=getMe(),l=Object.values(DATA.auc
     return`<div class="auction-card"><div class="flex"><div class="ac-title">${esc(a.itemName)}</div><span class="badge badge-ended">종료</span></div>
       <div class="ac-meta">${grp}<span>시작가 ${fmt(a.startPrice)}P</span>${si?`<span class="orange">${si}</span>`:''}</div>
       ${a.winner?`<span class="badge badge-winner">🏆 낙찰자: ${esc(a.winner.studentName)} ${fmt(a.winner.amount)}P</span>${won?'<div class="orange" style="margin-top:8px;font-weight:700">🎉 낙찰되었습니다!'+(a.seatId?' 자리가 배정됐어요.':'')+'</div>':''}`:'<span class="badge badge-ended">낙찰자 없음</span>'}
-      ${lost?`<div class="small red" style="margin-top:8px">낙찰 실패 · 입찰한 ${fmt(my)}P는 소멸됐어요</div>`:''}</div>`}).join('');
+      ${lost?`<div class="small red" style="margin-top:8px">낙찰 실패 · 입찰한 ${fmt(my)}P는 소멸됐어요</div>`:''}</div>`}).join('')+'</div>';
   l.filter(a=>a.active).forEach(a=>updBid(a.id))}
 function bidAdd(id,d){const a=DATA.auctions[id];if(!a)return;const mb=minBidOf(a);let v=d?(stepVals[id]||mb)+d:mb;if(v<mb)v=mb;stepVals[id]=v;$('bid-'+id).value=v;updBid(id)}
 function bidInput(id){stepVals[id]=parseInt($('bid-'+id).value)||0;updBid(id)}

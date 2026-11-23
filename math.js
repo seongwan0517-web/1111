@@ -19,7 +19,8 @@ function renderSMath(){const el=$('s-math');mathLock=false;const s=getMe();let n
       <div class="ac-meta"><span>${esc(r.date)}</span></div>${locked?'<div class="small" style="margin-bottom:8px">🔒 선생님이 유사문제를 열면 다시 풀 수 있어요</div>':''}
       <div class="ac-row"><button class="btn btn-primary" style="flex:1" onclick="showMathSol('${k}','q')">해설 보기</button>${w.length&&c.retryOpen?`<button class="btn btn-success" style="flex:1" onclick="startMathRetry('${k}')">유사 문제 풀기 (${w.length})</button>`:''}</div></div>`}
     else if(c.open&&c.has){shown++;h+=`<div class="auction-card"><div class="flex"><div class="ac-title">Day ${i} 수학</div><span class="badge badge-active">응시 가능</span></div><div class="ac-meta"><span>${nqOf(c)}문제 · 5지선다 · 문제당 ${MATH_POINTS}P</span></div><div class="ac-row"><button class="btn btn-primary" style="flex:1" onclick="startMathTest('${k}')">문제 풀기</button></div></div>`}}
-  el.innerHTML=h+(shown?'':'<div class="empty">아직 열린 수학 문제가 없어요. 선생님이 열면 여기에 나타납니다.</div>')}
+  const cut=h.indexOf('<div class="auction-card">');
+  el.innerHTML=(cut<0?h:h.slice(0,cut)+'<div class="cgrid">'+h.slice(cut)+'</div>')+(shown?'':'<div class="empty">아직 열린 수학 문제가 없어요. 선생님이 열면 여기에 나타납니다.</div>')}
 async function startMathTest(k){const s=getMe();if(s.mathResults[k]&&s.mathResults[k].completed){alert('이미 응시한 문제입니다.');return renderSMath()}
   if(!confirm('Day '+k.slice(3)+' 수학 문제를 시작하시겠습니까?\n제출하면 다시 응시할 수 없습니다.'))return;await loadMath(k,'q')}
 async function startMathRetry(k){await pull();const r=getMe().mathResults[k],c=mconf(k);if(!r||!r.completed||!c.retryHas||!c.retryOpen){alert('아직 선생님이 유사 문제를 열지 않았어요.');return renderSMath()}

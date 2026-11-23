@@ -10,13 +10,13 @@ async function login(){const id=$('loginId').value.trim(),pw=$('loginPw').value;
 async function afterSignIn(){let isAdmin=false,sid=null;
   try{isAdmin=(await api('admins/'+AUTH.uid))===true;if(!isAdmin)sid=await api('uids/'+AUTH.uid)}
   catch(e){AUTH=null;return loginMsg('데이터베이스 연결 실패: '+e.message)}
-  if(isAdmin){cu={role:'admin'};if(!await dbLoad())return;$('loginCard').style.display='none';$('adminMain').style.display='block';renderAdmin();return}
+  if(isAdmin){cu={role:'admin'};if(!await dbLoad())return;$('loginCard').style.display='none';$('adminMain').classList.add('on');renderAdmin();return}
   if(!sid){const uid=AUTH.uid;AUTH=null;
     if($('loginId').value.trim()===ADMIN_LOGIN_ID)return loginMsg('관리자 계정은 만들어졌지만 아직 관리자 권한이 없습니다.<br>계정 UID: <code style="user-select:all">'+esc(uid)+'</code><br>Firebase 콘솔의 Realtime Database에서 <b>admins/'+esc(uid)+'</b> 값을 <b>true</b>로 설정해 주세요.',true);
     return loginMsg('등록되지 않았거나 삭제된 계정입니다. 선생님께 문의하세요.')}
   cu={role:'student',id:sid};if(!await dbLoad())return;
   if(!getMe()){cu=null;AUTH=null;return loginMsg('학생 정보를 찾을 수 없습니다. 선생님께 문의하세요.')}
-  $('loginCard').style.display='none';$('studentMain').style.display='block';renderStudent();startPoll()}
+  $('loginCard').style.display='none';$('studentMain').classList.add('on');renderStudent();startPoll()}
 async function createAdmin(){const pw=$('loginPw').value;
   if(pw.length<8)return loginMsg('관리자 비밀번호는 8자 이상으로 정해 주세요.');
   if(!confirm('입력한 비밀번호로 관리자 계정을 만들까요?\n이 비밀번호는 꼭 기억해 두세요.'))return;

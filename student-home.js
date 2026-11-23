@@ -1,7 +1,8 @@
 /* 학생 홈(대시보드·공지), 상점, 내역 */
-function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab();renderSMath();renderSSeat();maybeNoticeModal()}
+function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab('main');renderSVocab('pre');renderSMath();renderSSeat();maybeNoticeModal()}
 function stab(id,el){document.querySelectorAll('#studentMain .tab,#studentMain .panel').forEach(e=>e.classList.remove('active'));el.classList.add('active');$('s-'+id).classList.add('active');
-  if(id==='vocab'){currentQuiz=null;renderSVocab()}if(id==='math'){currentMath=null;renderSMath()}
+  if(id==='vocab'){currentQuiz=null;renderSVocab('main')}if(id==='pre'){currentQuiz=null;renderSVocab('pre')}if(id==='math'){currentMath=null;renderSMath()}
+  window.scrollTo(0,0);
   if(id==='home')renderHome();if(id==='seat')renderSSeat();if(id==='history')renderHist();if(id==='auction')renderSAuc()}
 const renderHist=()=>{$('s-history').innerHTML=historyRows(getMe().history)};
 
@@ -29,7 +30,8 @@ function metrics(s){let vs=0,vt=0,vn=0,mq=0,mc=0,mn=0;
 function axisVals(s,c){const m=metrics(s);return[m.vp,m.mp,c.tot?Math.min(100,(m.vn+m.mn)/c.tot*100):0,Math.min(100,m.checks/20*100),c.maxP>0?Math.max(0,s.points)/c.maxP*100:0]}
 function dayCompare(s,kind){const key=kind==='v'?'vocabResults':'mathResults';
   const pc=r=>{if(kind==='v')return r.total?r.score/r.total*100:0;const it=mItems(r);return it.length?it.filter(x=>x.correct).length/it.length*100:0};
-  const days=Object.keys(s[key]).filter(k=>s[key][k]&&s[key][k].completed).map(k=>+k.slice(3)).sort((x,y)=>x-y).slice(-8);
+  /* Day 시험(day1~day30)만 비교 차트에 사용 — '예비고1 01' 같은 다른 챕터는 제외 */
+  const days=Object.keys(s[key]).filter(k=>/^day\d+$/.test(k)&&s[key][k]&&s[key][k].completed).map(k=>+k.slice(3)).sort((x,y)=>x-y).slice(-8);
   const my=days.map(d=>pc(s[key]['day'+d])),av=days.map(d=>{const v=DATA.students.filter(x=>x[key]['day'+d]&&x[key]['day'+d].completed).map(x=>pc(x[key]['day'+d]));return v.reduce((p,q)=>p+q,0)/(v.length||1)});
   return{days,my,av}}
 function barsSvg(days,my,av){if(!days.length)return'<div class="empty">아직 응시한 시험이 없어요</div>';
@@ -93,8 +95,13 @@ async function checkIn(){await pull();const s=getMe();if(s.lastCheck===dayStr())
   s.lastCheck=dayStr();s.points+=CHECKIN_POINTS;const upd={[SP(s.id)+'/lastCheck']:s.lastCheck,[SP(s.id)+'/points']:s.points};addHist(s,{label:'출석 체크',points:CHECKIN_POINTS,date:today()},upd);
   if(!await dbUpdate(upd))return renderStudent();toast('✅ 출석 완료 +'+CHECKIN_POINTS+'P');renderStudent()}
 function renderShop(){const s=getMe(),el=$('s-shop');
-  el.innerHTML=DATA.items.length?DATA.items.map(i=>`<div class="shop-item flex"><div><div>${esc(i.name)}</div><div class="small">${i.price}P</div></div><button class="btn btn-primary btn-sm" ${s.points<i.price?'disabled':''} onclick="buyItem(${i.id})">구매</button></div>`).join(''):'<div class="empty">등록된 상품이 없습니다.</div>'}
-async function buyItem(id){await pull();const item=DATA.items.find(x=>x.id===id),s=getMe();if(!s||!item||s.points<item.price)return;
+  if(!DATA.items.length){el.innerHTML='<div class="empty">등록된 상품이 없습니다.</div>';return}
+  el.innerHTML=`<div class="shop-head"><span>내 포인트</span><b>${s.points.toLocaleString()}P</b></div><div class="cgrid">`+DATA.items.map(i=>{const ok=s.points>=i.price,pct=Math.min(100,Math.max(0,s.points)/i.price*100);
+    return`<div class="shop-card${ok?' ok':''}"><div class="sc-name">${esc(i.name)}</div><div class="sc-price">${(+i.price).toLocaleString()}<small>P</small></div>
+    <div class="sc-bar"><i style="width:${pct}%"></i></div><div class="small">${ok?'지금 살 수 있어요':(i.price-s.points).toLocaleString()+'P 더 모으면 살 수 있어요'}</div>
+    <button class="btn btn-primary btn-full" ${ok?'':'disabled'} onclick="buyItem(${+i.id})">구매하기</button></div>`}).join('')+'</div>'}
+async function buyItem(id){await pull();const item=DATA.items.find(x=>+x.id===+id),s=getMe();if(!s||!item||s.points<item.price)return;
+  if(!confirm(item.name+'을(를) '+item.price+'P에 구매할까요?'))return;
   s.points-=item.price;const oid=Date.now(),upd={[SP(s.id)+'/points']:s.points,['orders/o'+oid]:{id:oid,sid:s.id,studentName:s.name,itemName:item.name}};
   addHist(s,{label:'상품 구매 - '+item.name,points:-item.price,date:today()},upd);
   if(!await dbUpdate(upd))return renderStudent();toast('🛍️ '+item.name+' 구매 완료!');renderStudent()}
