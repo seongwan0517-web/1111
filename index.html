@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Vitamin v2.0 - 포인트 상점 &amp; 경매 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="style.css?v=30">
+<link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
 <div class="app">
@@ -87,9 +87,8 @@
     <div class="admin-section"><b>Day별 성적</b><div style="height:8px"></div><select id="vocabScoreDay" class="inp" onchange="renderAVScore()"></select></div>
     <div id="adminVocabScoreList"></div><div id="adminVocabScoreDetail"></div>
     <div class="admin-section" style="margin-top:16px"><b>학생별 누적 성적</b><div id="adminVocabScoreSummary"></div></div></div>
-  <div class="panel" id="a-premath"><div class="admin-section"><b>예비고1 수학 (Day 1~12 · 하루 새 문제 5개 + 정복노트)</b><div class="small" style="margin-top:6px">2025·2026학년도 3월 고1 학력평가 수학 60문항을 중학교 5개 단원으로 나눠, Day 1~12 동안 하루 5문제(단원별 1문제, 하루 난이도 고르게)로 한 번씩 풀어요.
-틀린 문제는 학생마다 '정복노트'에 쌓이고, 다음 날부터 새 문제와 함께 다시 나와요. 맞히면 노트에서 빠지고, 노트 문제는 하루 한 번만 도전할 수 있어요(3번 틀리면 정답 공개).
-새 문제 정답 <span id="pmPts">100</span>P · 노트 문제 정복 <span id="pmRvPts">50</span>P.</div>
+  <div class="panel" id="a-premath"><div class="admin-section"><b>예비고1 수학 (Day 1~12 · 하루 5문제 + 오답 풀기)</b><div class="small" style="margin-top:6px">2025·2026학년도 3월 고1 학력평가 수학 60문항을 중학교 5개 단원으로 나눠, Day 1~12 동안 하루 5문제(단원별 1문제, 하루 난이도 고르게)로 한 번씩 풀어요. 정답 1개당 <span id="pmPts">100</span>P.
+틀린 문제는 학생마다 오답노트에 모이고, '오답 풀기'로 언제든 다시 풀 수 있어요(포인트 없음). 맞히면 오답노트에서 빠지고, 3번 틀리면 정답을 보여 줘요.</div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="setPMAll(true)">모두 열기</button><button class="btn btn-danger btn-sm" onclick="setPMAll(false)">모두 닫기</button></div></div>
     <div id="adminPreMathList"></div>
     <div class="admin-section" style="margin-top:16px"><b>학생별 수학 노트</b><div style="height:8px"></div><div id="adminPMNotes"></div></div>
@@ -118,19 +117,19 @@
 <div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh"><svg class="ic"><use href="#i-megaphone"/></svg> 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=30"></script>
-<script src="vocab-data.js?v=30"></script>
-<script src="core.js?v=30"></script>
-<script src="icons.js?v=30"></script>
-<script src="ui.js?v=30"></script>
-<script src="auth.js?v=30"></script>
-<script src="student-home.js?v=30"></script>
-<script src="auction.js?v=30"></script>
-<script src="seat.js?v=30"></script>
-<script src="vocab.js?v=30"></script>
-<script src="math.js?v=30"></script>
-<script src="premath-data.js?v=30"></script>
-<script src="premath.js?v=30"></script>
-<script src="poll.js?v=30"></script>
-<script src="admin.js?v=30"></script>
+<script src="config.js?v=31"></script>
+<script src="vocab-data.js?v=31"></script>
+<script src="core.js?v=31"></script>
+<script src="icons.js?v=31"></script>
+<script src="ui.js?v=31"></script>
+<script src="auth.js?v=31"></script>
+<script src="student-home.js?v=31"></script>
+<script src="auction.js?v=31"></script>
+<script src="seat.js?v=31"></script>
+<script src="vocab.js?v=31"></script>
+<script src="math.js?v=31"></script>
+<script src="premath-data.js?v=31"></script>
+<script src="premath.js?v=31"></script>
+<script src="poll.js?v=31"></script>
+<script src="admin.js?v=31"></script>
 </body></html>

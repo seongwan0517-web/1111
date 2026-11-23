@@ -9,6 +9,4 @@ const ADMIN_LOGIN_ID="admin";
 const STEP=10,MATH_DAYS=30,MATH_POINTS=300,MATH_RETRY_POINTS=0,CHECKIN_POINTS=10,MAX_Q=5;
 /* 예비고1 수학: 정답 1문제당 포인트 */
 const PRE_MATH_POINTS=100;
-/* 예비고1 수학: 내 노트(틀렸던 문제)를 맞혀서 정복할 때 포인트 */
-const PRE_MATH_REVIEW_POINTS=50;
 const CIRCLED=['①','②','③','④','⑤'];
