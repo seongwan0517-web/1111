@@ -1,0 +1,70 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "uids": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "data": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+
+    "pub": {
+      ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('uids').child(auth.uid).exists())",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+
+      "students": {
+        "$sid": {
+          ".write": "auth != null && root.child('uids').child(auth.uid).val() === $sid && data.exists() && newData.exists()",
+          ".validate": "newData.hasChildren(['id', 'name', 'points'])",
+          "id": {
+            ".validate": "newData.val() === $sid"
+          },
+          "name": {
+            ".validate": "newData.isString() && (root.child('admins').child(auth.uid).val() === true || newData.val() === data.val())"
+          },
+          "points": {
+            ".validate": "newData.isNumber() && (root.child('admins').child(auth.uid).val() === true || newData.val() <= data.val() + 1500)"
+          }
+        }
+      },
+
+      "auctions": {
+        "$aid": {
+          "bids": {
+            "$bsid": {
+              ".write": "auth != null && root.child('uids').child(auth.uid).val() === $bsid && root.child('pub').child('auctions').child($aid).child('active').val() === true && newData.exists()",
+              ".validate": "newData.child('amount').isNumber() && newData.child('amount').val() % 10 === 0 && newData.child('amount').val() > 0 && (!data.exists() || newData.child('amount').val() > data.child('amount').val())"
+            }
+          }
+        }
+      }
+    },
+
+    "orders": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$oid": {
+        ".write": "auth != null && !data.exists() && newData.child('sid').val() === root.child('uids').child(auth.uid).val()"
+      }
+    },
+
+    "mathProblems": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    }
+  }
+}

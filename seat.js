@@ -17,7 +17,7 @@ function bindSeatDrag(){const m=$('seatEdit');if(!m)return;
     const nx=Math.max(0,Math.min(82.5,Math.round((drag.ox+dx/drag.r.width*100)*2)/2)),ny=Math.max(0,Math.min(89,Math.round((drag.oy+dy/drag.r.height*100)*2)/2));
     drag.s.x=nx;drag.s.y=ny;drag.el.style.left=nx+'%';drag.el.style.top=ny+'%'};
   m.onpointerup=m.onpointercancel=()=>{if(!drag)return;const d=drag;drag=null;if(d.moved)seatDirty=true;else seatSel=d.s.id;renderASeat()}}
-async function saveSeats(){const mine=DATA.seats;await pull();DATA.seats=mine;await dbSave();seatDirty=false;toast('💾 자리 배치 저장 완료');renderASeat();renderAAuc()}
+async function saveSeats(){const mine=DATA.seats;if(!await dbUpdate({'pub/seats':mine}))return renderASeat();await pull();seatDirty=false;toast('💾 자리 배치 저장 완료');renderASeat();renderAAuc()}
 function assignSeat(){const s=DATA.seats.find(x=>x.id===seatSel),v=$('seatStu').value;if(!s)return;if(v)DATA.seats.forEach(x=>{if(x.sid===v)x.sid=''});s.sid=v;seatDirty=true;renderASeat()}
 function delSeat(){if(!confirm('이 자리를 삭제할까요?'))return;DATA.seats=DATA.seats.filter(x=>x.id!==seatSel);seatSel=null;seatDirty=true;renderASeat()}
 function addSeat(){const n=Math.max(0,...DATA.seats.map(s=>s.n))+1,id='s'+Date.now();DATA.seats.push({id,n,x:40,y:40,sid:''});seatSel=id;seatDirty=true;renderASeat()}

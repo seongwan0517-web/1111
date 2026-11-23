@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -23,7 +23,7 @@
 <!-- 학생 -->
 <div class="card main" id="studentMain">
   <div class="top"><div><div class="logo-sm">VITAMIN2.0</div><div class="nm" id="studentName"></div></div>
-    <div class="top-r"><div class="pts"><span id="studentPoints">0</span>P</div><button class="btn btn-ghost btn-sm" onclick="logout()">로그아웃</button></div></div>
+    <div class="top-r"><div class="pts"><span id="studentPoints">0</span>P</div><button class="btn btn-ghost btn-sm" onclick="changeMyPw()">비밀번호 변경</button><button class="btn btn-ghost btn-sm" onclick="logout()">로그아웃</button></div></div>
   <div id="noticeBar" class="nb" onclick="openNotice()"></div>
   <div class="tabs">
     <div class="tab active" onclick="stab('home',this)">홈</div><div class="tab" onclick="stab('shop',this)">상점</div>
@@ -46,10 +46,11 @@
     <div class="tab" onclick="atab('orders',this)">주문</div><div class="tab" onclick="atab('notice',this)">공지</div>
   </div>
   <div class="panel active" id="a-students">
-    <div class="admin-section"><b>학생 추가</b><div style="height:10px"></div>
+    <div id="migrateBox"></div>
+    <div class="admin-section"><b>학생 추가</b><div class="small" style="margin:6px 0">비밀번호는 안전하게 암호화되어 저장되므로 나중에 다시 볼 수 없어요. 학생에게 꼭 알려 주세요.</div>
       <div class="field"><label>이름</label><input id="newName" placeholder="홍길동"></div>
       <div class="field"><label>아이디</label><input id="newId" placeholder="로그인 아이디"></div>
-      <div class="field"><label>비밀번호</label><input id="newPw" placeholder="초기 비밀번호"></div>
+      <div class="field"><label>비밀번호</label><input id="newPw" placeholder="초기 비밀번호 (4자 이상)"></div>
       <button class="btn btn-primary btn-full" onclick="addStudent()">학생 추가</button></div>
     <div class="admin-section"><b>포인트 지급</b><div style="height:10px"></div>
       <div class="field"><select id="giveStudent"></select></div>
@@ -106,15 +107,15 @@
 <div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh">📢 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=21"></script>
-<script src="vocab-data.js?v=21"></script>
-<script src="core.js?v=21"></script>
-<script src="auth.js?v=21"></script>
-<script src="student-home.js?v=21"></script>
-<script src="auction.js?v=21"></script>
-<script src="seat.js?v=21"></script>
-<script src="vocab.js?v=21"></script>
-<script src="math.js?v=21"></script>
-<script src="poll.js?v=21"></script>
-<script src="admin.js?v=21"></script>
+<script src="config.js?v=22"></script>
+<script src="vocab-data.js?v=22"></script>
+<script src="core.js?v=22"></script>
+<script src="auth.js?v=22"></script>
+<script src="student-home.js?v=22"></script>
+<script src="auction.js?v=22"></script>
+<script src="seat.js?v=22"></script>
+<script src="vocab.js?v=22"></script>
+<script src="math.js?v=22"></script>
+<script src="poll.js?v=22"></script>
+<script src="admin.js?v=22"></script>
 </body></html>

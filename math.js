@@ -3,9 +3,9 @@ const mItems=r=>r.items?arr(r.items):[{selected:r.selected,answer:r.answer,corre
 const nqOf=c=>c.nq||1,nrOf=c=>c.retryHas?(c.nr||1):0;
 const mRetry=(r,i)=>(r.retries&&r.retries[i])||(i===0&&r.retriedAt?{selected:r.retrySelected,correct:!!r.retryCorrect,tries:r.retryTries||1}:null);
 const mconf=k=>DATA.mathTests[k]||{open:false};
-async function mathFetch(k,force){if(!force&&mathCache[k])return mathCache[k];const r=await fetch(BASE+'mathProblems/'+k+'.json');if(!r.ok)throw new Error('HTTP '+r.status);const p=await r.json()||{};
+async function mathFetch(k,force){if(!force&&mathCache[k])return mathCache[k];const p=await api('mathProblems/'+k)||{};
   return mathCache[k]={qs:arr(p.qs||(p.q?[p.q]:[])),rs:arr(p.rs||(p.r?[p.r]:[]))}}
-async function mathPut(k,o){const r=await fetch(BASE+'mathProblems/'+k+'.json',{method:o?'PUT':'DELETE',headers:{'Content-Type':'application/json'},body:o?JSON.stringify(o):undefined});if(!r.ok)throw new Error('HTTP '+r.status);delete mathCache[k]}
+async function mathPut(k,o){if(o)await api('mathProblems/'+k,'PUT',o);else await api('mathProblems/'+k,'DELETE');delete mathCache[k]}
 function mathZoom(src){$('zoomImg').src=src;$('zoomModal').style.display='block'}
 const closeZoom=()=>{$('zoomModal').style.display='none'};
 const fig=src=>`<div class="math-fig" onclick="mathZoom(this.querySelector('img').src)"><img src="${src}" alt="문제"></div>`;
@@ -36,15 +36,16 @@ function selMath(n){currentMath.sel[currentMath.pos]=n;document.querySelectorAll
 function cancelMath(){if(currentMath.which==='q'&&!confirm('지금 나가면 제출하지 않은 것으로 처리되고, 나중에 다시 풀 수 있어요. 나갈까요?'))return;currentMath=null;renderSMath()}
 async function submitMath(){const c=currentMath;if(c.sel[c.pos]==null)return;if(c.pos<c.idxs.length-1){c.pos++;return renderMathQ()}
   if(c.which==='q'&&!confirm('제출하면 답을 바꿀 수 없습니다. 제출할까요?'))return;
-  const set=mathCache[c.key][c.which==='q'?'qs':'rs'];await pull();const s=getMe();let r=s.mathResults[c.key],pts=0,oks=0;
+  const set=mathCache[c.key][c.which==='q'?'qs':'rs'];await pull();const s=getMe(),upd={};let r=s.mathResults[c.key],pts=0,oks=0;
   if(c.which==='q'){if(r&&r.completed){alert('이미 응시한 문제입니다.');currentMath=null;return renderSMath()}
     const items=c.idxs.map((ix,k)=>{const ok=c.sel[k]===set[ix].ans;if(ok)oks++;return{selected:c.sel[k],answer:set[ix].ans,correct:ok}});
     pts=oks*MATH_POINTS;s.mathResults[c.key]={completed:true,items,date:today(),pointsAwarded:pts};
-    if(pts){s.points+=pts;s.history.push({label:'Day '+c.key.slice(3)+' 수학 ('+oks+'/'+items.length+')',points:pts,date:today()})}
+    if(pts){s.points+=pts;addHist(s,{label:'Day '+c.key.slice(3)+' 수학 ('+oks+'/'+items.length+')',points:pts,date:today()},upd)}
   }else{if(!r||!r.completed){currentMath=null;return renderSMath()}r.retries=r.retries||{};
     c.idxs.forEach((ix,k)=>{const ok=c.sel[k]===set[ix].ans,p=r.retries[ix]||{tries:0};if(ok){oks++;if(!p.correct)pts+=MATH_RETRY_POINTS}r.retries[ix]={selected:c.sel[k],correct:ok||!!p.correct,tries:p.tries+1}});
-    if(pts){r.retryPoints=(r.retryPoints||0)+pts;s.points+=pts;s.history.push({label:'Day '+c.key.slice(3)+' 수학 유사문제',points:pts,date:today()})}}
-  await dbSave();const k=c.key,w=c.which,tot=c.idxs.length;currentMath=null;$('studentPoints').textContent=s.points;toast('📐 '+oks+'/'+tot+' 정답'+(pts?' +'+pts+'P':''));
+    if(pts){r.retryPoints=(r.retryPoints||0)+pts;s.points+=pts;addHist(s,{label:'Day '+c.key.slice(3)+' 수학 유사문제',points:pts,date:today()},upd)}}
+  upd[SP(s.id)+'/mathResults/'+c.key]=s.mathResults[c.key];upd[SP(s.id)+'/points']=s.points;
+  if(!await dbUpdate(upd)){currentMath=null;return renderSMath()}const k=c.key,w=c.which,tot=c.idxs.length;currentMath=null;$('studentPoints').textContent=s.points;toast('📐 '+oks+'/'+tot+' 정답'+(pts?' +'+pts+'P':''));
   mathLock=true;const r2=s.mathResults[k],can=wrongIdx(r2,mconf(k)).length&&mconf(k).retryOpen;
   $('s-math').innerHTML=`<div class="auction-card" style="text-align:center"><div class="ac-title">Day ${k.slice(3)} ${w==='r'?'유사 문제':'수학'} 결과</div>
   <div style="font-size:46px;font-weight:900;color:${oks===tot?'var(--green)':'var(--red2)'};margin:14px 0">${oks}/${tot}</div>${pts?`<div class="green" style="font-weight:700">+${pts}P 적립됨</div>`:''}
@@ -68,7 +69,7 @@ function renderAMath(){if(mathEdit)return;const el=$('adminMathList');if(!el)ret
   el.innerHTML=h}
 async function toggleMath(k,retry){await pull();const c=DATA.mathTests[k]||(DATA.mathTests[k]={open:false});
   if(retry){if(!c.retryHas){toast('⚠️ 먼저 유사 문제를 등록해 주세요');return renderAMath()}c.retryOpen=!c.retryOpen}else{if(!c.has){toast('⚠️ 먼저 문제 사진을 등록해 주세요');return renderAMath()}c.open=!c.open}
-  await dbSave();renderAMath();renderAMScore();toast('수학 Day '+k.slice(3)+(retry?' 유사 ':' ')+((retry?c.retryOpen:c.open)?'열림':'닫힘'))}
+  if(!await dbUpdate({['pub/mathTests/'+k]:c}))return renderAMath();renderAMath();renderAMScore();toast('수학 Day '+k.slice(3)+(retry?' 유사 ':' ')+((retry?c.retryOpen:c.open)?'열림':'닫힘'))}
 const blank=()=>({img:null,ans:null,solImg:null});
 async function openMathEditor(k){const c=mconf(k);mathEdit={key:k,qs:[blank()],rs:[]};
   if(c.has){try{const p=await mathFetch(k,true);if(p.qs.length)mathEdit.qs=p.qs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}));mathEdit.rs=p.rs.map(x=>({img:x.img||null,ans:x.ans||null,solImg:x.solImg||null}))}catch(e){mathEdit=null;return alert('문제를 불러오지 못했습니다: '+e.message)}}
@@ -95,9 +96,9 @@ async function saveMathEdit(){const e=mathEdit;
   const cl=a=>a.map(x=>({img:x.img,ans:x.ans,solImg:x.solImg||null}));
   try{await mathPut(e.key,{qs:cl(e.qs),rs:cl(e.rs)})}catch(err){return alert('사진 저장 실패: '+err.message+'\n(Firebase 규칙에서 mathProblems 경로 읽기/쓰기가 허용되어 있는지 확인해 주세요)')}
   await pull();const c=DATA.mathTests[e.key]||(DATA.mathTests[e.key]={open:false});Object.assign(c,{has:true,nq:e.qs.length,nr:e.rs.length,retryHas:e.rs.length>0,open:false,retryOpen:false});
-  await dbSave();toast('💾 Day '+e.key.slice(3)+' 저장됨 (닫힘 상태)');closeMathEditor()}
+  if(!await dbUpdate({['pub/mathTests/'+e.key]:c}))return;toast('💾 Day '+e.key.slice(3)+' 저장됨 (닫힘 상태)');closeMathEditor()}
 async function deleteMathProblem(){const k=mathEdit.key;if(!confirm('Day '+k.slice(3)+' 문제 사진을 삭제할까요? (학생 성적 기록은 남습니다)'))return;
-  try{await mathPut(k,null)}catch(err){return alert('삭제 실패: '+err.message)}await pull();const c=DATA.mathTests[k];if(c)Object.assign(c,{has:false,retryHas:false,open:false,retryOpen:false});await dbSave();closeMathEditor()}
+  try{await mathPut(k,null)}catch(err){return alert('삭제 실패: '+err.message)}await pull();const c=DATA.mathTests[k];if(c){Object.assign(c,{has:false,retryHas:false,open:false,retryOpen:false});await dbUpdate({['pub/mathTests/'+k]:c})}closeMathEditor()}
 function mathPick(g,i,f,again){crop.t={g,i,f};if(again&&crop.last)return showCropper(crop.last);const inp=$('mathFile');inp.value='';
   inp.onchange=()=>{if(inp.files&&inp.files[0])openCropper(inp.files[0])};inp.click()}
 function openCropper(file){const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(url);crop.last=im;showCropper(im)};im.onerror=()=>alert('이미지를 열 수 없습니다. 다른 사진으로 시도해 주세요.');im.src=url}

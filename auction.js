@@ -35,18 +35,19 @@ async function placeBid(id){await pull();const a=DATA.auctions[id];if(!a||!a.act
   if(amt<mb)return alert('최소 입찰 금액은 '+fmt(mb)+'P 입니다.');
   const sid=String(s.id),prev=a.bids&&a.bids[sid]?a.bids[sid].amount:0,diff=amt-prev;
   if(diff<=0)return alert('현재 내 입찰보다 높은 금액을 입력하세요.');if(s.points<diff)return alert('포인트가 부족합니다.');
-  s.points-=diff;s.history.push({label:'경매 입찰 - '+a.itemName+' ('+amt+'P)',points:-diff,date:today()});
-  if(!a.bids)a.bids={};a.bids[sid]={studentName:s.name,amount:amt};delete stepVals[id];await dbSave();toast('🔨 입찰 완료! '+fmt(amt)+'P');renderStudent()}
+  s.points-=diff;const upd={[SP(sid)+'/points']:s.points,['pub/auctions/'+id+'/bids/'+sid]:{studentName:s.name,amount:amt}};
+  addHist(s,{label:'경매 입찰 - '+a.itemName+' ('+amt+'P)',points:-diff,date:today()},upd);
+  if(!a.bids)a.bids={};a.bids[sid]={studentName:s.name,amount:amt};delete stepVals[id];if(!await dbUpdate(upd))return renderStudent();toast('🔨 입찰 완료! '+fmt(amt)+'P');renderStudent()}
 const bulkPick=new Set();
 function renderBulkSeats(){const el=$('bulkSeats');if(!el)return;el.innerHTML=DATA.seats.slice().sort((a,b)=>a.n-b.n).map(s=>`<button class="chipb${bulkPick.has(s.id)?' on':''}" onclick="toggleBulk('${s.id}')">${s.n}번<small>${esc(nameOf(s.sid))||'빈자리'}</small></button>`).join('')}
 function toggleBulk(id){bulkPick.has(id)?bulkPick.delete(id):bulkPick.add(id);renderBulkSeats()}
 function bulkAll(on){bulkPick.clear();if(on)DATA.seats.forEach(s=>bulkPick.add(s.id));renderBulkSeats()}
 async function bulkCreate(){const name=$('bulkName').value.trim()||'자리 경매',st=parseInt($('bulkStart').value);
   if(!bulkPick.size)return alert('자리를 하나 이상 선택하세요.');if(isNaN(st)||st<STEP||st%STEP)return alert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
-  await pull();const t=Date.now(),gid='g_'+t;let c=0;
+  await pull();const t=Date.now(),gid='g_'+t,upd={};let c=0;
   [...bulkPick].forEach((sid,i)=>{const seat=DATA.seats.find(x=>x.id===sid);if(!seat)return;const id='auc_'+t+'_'+i;
-    DATA.auctions[id]={id,itemName:seat.n+'번 자리',startPrice:st,active:true,bids:{},winner:null,createdAt:today(),seatId:sid,groupId:gid,groupName:name};c++});
-  await dbSave();bulkPick.clear();renderAAuc();toast('🪑 '+c+'개 자리 경매를 한 묶음으로 시작했어요')}
+    upd['pub/auctions/'+id]={id,itemName:seat.n+'번 자리',startPrice:st,active:true,createdAt:today(),seatId:sid,groupId:gid,groupName:name};c++});
+  if(!await dbUpdate(upd))return;await pull();bulkPick.clear();renderAAuc();toast('🪑 '+c+'개 자리 경매를 한 묶음으로 시작했어요')}
 function topBid(a){const b=Object.values(a.bids||{}).sort((x,y)=>y.amount-x.amount)[0];return b?{n:b.studentName,a:b.amount}:null}
 function aucCardA(a){const b=Object.values(a.bids||{}).map(v=>({n:v.studentName,a:v.amount})).sort((x,y)=>y.a-x.a),hi=b.length?b[0].a:0;
   return`<div class="admin-card"><div class="flex" style="align-items:flex-start"><div><b>${esc(a.itemName)}</b><div class="small" style="margin-top:4px">시작가 ${a.startPrice||0}P · 호가 ${STEP}P · 최고 <span class="green">${hi}P</span></div>${seatInfo(a)?`<div class="small orange">${seatInfo(a)}</div>`:''}</div>
@@ -65,20 +66,22 @@ function renderAAuc(){const sel=$('auctionSeat'),pv=sel.value;sel.innerHTML='<op
   $('adminAuctionList').innerHTML=h||'<div class="empty">진행 중인 경매가 없습니다.</div>'}
 async function startAuction(){const item=$('auctionItem').value.trim(),st=parseInt($('auctionStart').value),seatId=$('auctionSeat').value,gn=$('auctionGroup').value.trim();
   if(!item)return alert('경매 상품명을 입력하세요.');if(isNaN(st)||st<STEP||st%STEP)return alert('시작가는 '+STEP+'P 단위, '+STEP+'P 이상이어야 합니다.');
-  await pull();const id='auc_'+Date.now();DATA.auctions[id]={id,itemName:item,startPrice:st,active:true,bids:{},winner:null,createdAt:today(),seatId:seatId||null,groupId:gn?'g_'+gn:null,groupName:gn||null};
-  await dbSave();['auctionItem','auctionStart','auctionGroup'].forEach(i=>$(i).value='');renderAAuc();toast('🔨 경매 시작: '+item)}
+  const id='auc_'+Date.now();if(!await dbUpdate({['pub/auctions/'+id]:{id,itemName:item,startPrice:st,active:true,createdAt:today(),seatId:seatId||null,groupId:gn?'g_'+gn:null,groupName:gn||null}}))return;
+  await pull();['auctionItem','auctionStart','auctionGroup'].forEach(i=>$(i).value='');renderAAuc();toast('🔨 경매 시작: '+item)}
 /* 경매 종료 (한 개 · 묶음 · 전체 모두 이 함수 하나로 처리) — 낙찰 실패한 입찰 포인트는 환불 없이 소멸 */
 async function finishAuctions(ids){await pull();const list=ids.map(i=>DATA.auctions[i]).filter(a=>a&&a.active);if(!list.length)return;
   const ent=[];list.forEach(a=>Object.entries(a.bids||{}).forEach(([k,v])=>ent.push({a,sid:String(k),name:v.studentName,amt:v.amount})));
   ent.sort((x,y)=>y.amt-x.amt);const win={},got=new Set(),skip=new Set();
   ent.forEach(e=>{if(win[e.a.id])return;if(e.a.seatId&&got.has(e.sid)){skip.add(e);return}win[e.a.id]=e;if(e.a.seatId)got.add(e.sid)});
+  const upd={};let seatsChanged=false;
   ent.forEach(e=>{const st=DATA.students.find(x=>String(x.id)===e.sid);if(!st)return;const w=win[e.a.id]===e;
-    st.history.push({label:w?`경매 낙찰 - ${e.a.itemName} (${e.amt}P 사용)`:`경매 낙찰 실패 - ${e.a.itemName} (${e.amt}P 소멸${skip.has(e)?' · 다른 자리 낙찰':''})`,points:0,date:today()})});
-  list.forEach(a=>{a.active=false;const w=win[a.id];a.winner=w?{studentId:w.sid,studentName:w.name,amount:w.amt}:null;
-    if(w&&a.seatId){const T=DATA.seats.find(x=>x.id===a.seatId);if(T){const prev=T.sid||'',O=DATA.seats.find(x=>x.sid===w.sid);DATA.seats.forEach(x=>{if(x.sid===w.sid)x.sid=''});if(O&&O!==T)O.sid=prev;T.sid=w.sid}}});
-  await dbSave();renderAAuc();renderASeat();toast('🏁 경매 '+list.length+'개 종료 완료')}
+    addHist(st,{label:w?`경매 낙찰 - ${e.a.itemName} (${e.amt}P 사용)`:`경매 낙찰 실패 - ${e.a.itemName} (${e.amt}P 소멸${skip.has(e)?' · 다른 자리 낙찰':''})`,points:0,date:today()},upd)});
+  list.forEach(a=>{const w=win[a.id];const P='pub/auctions/'+a.id;upd[P+'/active']=false;upd[P+'/winner']=w?{studentId:w.sid,studentName:w.name,amount:w.amt}:null;
+    if(w&&a.seatId){const T=DATA.seats.find(x=>x.id===a.seatId);if(T){const prev=T.sid||'',O=DATA.seats.find(x=>x.sid===w.sid);DATA.seats.forEach(x=>{if(x.sid===w.sid)x.sid=''});if(O&&O!==T)O.sid=prev;T.sid=w.sid;seatsChanged=true}}});
+  if(seatsChanged)upd['pub/seats']=DATA.seats;
+  if(!await dbUpdate(upd))return;await pull();renderAAuc();renderASeat();toast('🏁 경매 '+list.length+'개 종료 완료')}
 function endAuction(id){return finishAuctions([id])}
 async function endGroup(gid){await pull();const ids=Object.values(DATA.auctions).filter(a=>a.active&&(gid==='__all'||a.groupId===gid)).map(a=>a.id);if(!ids.length)return;
   if(!confirm(ids.length+'개 경매를 한 번에 종료할까요?\n낙찰되지 못한 입찰 포인트는 환불되지 않고 소멸됩니다.'))return;await finishAuctions(ids)}
-async function deleteGroup(gid){if(!confirm('이 묶음의 경매를 모두 삭제할까요?'))return;await pull();Object.values(DATA.auctions).forEach(a=>{if(a.groupId===gid)delete DATA.auctions[a.id]});await dbSave();renderAAuc()}
-async function deleteAuction(id){if(!confirm('이 경매를 삭제하시겠습니까?'))return;await pull();delete DATA.auctions[id];await dbSave();renderAAuc()}
+async function deleteGroup(gid){if(!confirm('이 묶음의 경매를 모두 삭제할까요?'))return;await pull();const upd={};Object.values(DATA.auctions).forEach(a=>{if(a.groupId===gid)upd['pub/auctions/'+a.id]=null});if(!await dbUpdate(upd))return;await pull();renderAAuc()}
+async function deleteAuction(id){if(!confirm('이 경매를 삭제하시겠습니까?'))return;if(!await dbUpdate({['pub/auctions/'+id]:null}))return;await pull();renderAAuc()}

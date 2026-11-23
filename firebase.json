@@ -1,0 +1,13 @@
+{
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
+  },
+  "database": [
+    {
+      "instance": "point-7419d-default-rtdb",
+      "rules": "database.rules.json"
+    }
+  ]
+}

@@ -90,9 +90,11 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
   <h3 class="sec">경매 낙찰 목록</h3>${wins.length?wins.map(x=>`<div class="shop-item flex"><div>${esc(x.itemName)}${x.seatId?' 🪑':''}</div><span class="badge badge-winner">${x.winner.amount}P</span></div>`).join(''):'<div class="empty">아직 낙찰 기록이 없어요</div>'}
   <h3 class="sec">최근 활동</h3>${historyRows(s.history.slice(-6))}`}
 async function checkIn(){await pull();const s=getMe();if(s.lastCheck===dayStr()){toast('오늘은 이미 출석했어요');return}
-  s.lastCheck=dayStr();s.points+=CHECKIN_POINTS;s.history.push({label:'출석 체크',points:CHECKIN_POINTS,date:today()});await dbSave();toast('✅ 출석 완료 +'+CHECKIN_POINTS+'P');renderStudent()}
+  s.lastCheck=dayStr();s.points+=CHECKIN_POINTS;const upd={[SP(s.id)+'/lastCheck']:s.lastCheck,[SP(s.id)+'/points']:s.points};addHist(s,{label:'출석 체크',points:CHECKIN_POINTS,date:today()},upd);
+  if(!await dbUpdate(upd))return renderStudent();toast('✅ 출석 완료 +'+CHECKIN_POINTS+'P');renderStudent()}
 function renderShop(){const s=getMe(),el=$('s-shop');
   el.innerHTML=DATA.items.length?DATA.items.map(i=>`<div class="shop-item flex"><div><div>${esc(i.name)}</div><div class="small">${i.price}P</div></div><button class="btn btn-primary btn-sm" ${s.points<i.price?'disabled':''} onclick="buyItem(${i.id})">구매</button></div>`).join(''):'<div class="empty">등록된 상품이 없습니다.</div>'}
 async function buyItem(id){await pull();const item=DATA.items.find(x=>x.id===id),s=getMe();if(!s||!item||s.points<item.price)return;
-  s.points-=item.price;s.history.push({label:'상품 구매 - '+item.name,points:-item.price,date:today()});DATA.orders.unshift({id:Date.now(),studentName:s.name,itemName:item.name});
-  await dbSave();toast('🛍️ '+item.name+' 구매 완료!');renderStudent()}
+  s.points-=item.price;const oid=Date.now(),upd={[SP(s.id)+'/points']:s.points,['orders/o'+oid]:{id:oid,sid:s.id,studentName:s.name,itemName:item.name}};
+  addHist(s,{label:'상품 구매 - '+item.name,points:-item.price,date:today()},upd);
+  if(!await dbUpdate(upd))return renderStudent();toast('🛍️ '+item.name+' 구매 완료!');renderStudent()}

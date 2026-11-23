@@ -57,9 +57,12 @@ function ansV(i){
 }
 async function finishVocab(){
   await pull();const s=getMe(),c=currentQuiz,k=c.key,total=c.questions.length,score=total-c.wrong.length;
-  if(c.isRetry){const p=s.vocabResults[k]||{};p.wrongList=c.wrong;p.retriedAt=today();s.vocabResults[k]=p;await dbSave();currentQuiz=null;toast('🔁 재도전 완료! '+score+'/'+total);return showVResult(k,score,total,null,true)}
+  const VP=SP(s.id)+'/vocabResults/'+k;
+  if(c.isRetry){const p=s.vocabResults[k]||{};p.wrongList=c.wrong;p.retriedAt=today();s.vocabResults[k]=p;await dbUpdate({[VP+'/wrongList']:c.wrong,[VP+'/retriedAt']:p.retriedAt});currentQuiz=null;toast('🔁 재도전 완료! '+score+'/'+total);return showVResult(k,score,total,null,true)}
+  if(s.vocabResults[k]&&s.vocabResults[k].completed){currentQuiz=null;alert('이미 응시한 시험입니다.');return renderSVocab()}
   const pts=score*10;s.vocabResults[k]={completed:true,score,total,wrongList:c.wrong,date:today(),pointsAwarded:pts};s.points+=pts;
-  s.history.push({label:vocabTitle(k)+' ('+score+'/'+total+')',points:pts,date:today()});await dbSave();currentQuiz=null;
+  const upd={[VP]:s.vocabResults[k],[SP(s.id)+'/points']:s.points};addHist(s,{label:vocabTitle(k)+' ('+score+'/'+total+')',points:pts,date:today()},upd);
+  if(!await dbUpdate(upd)){currentQuiz=null;return renderSVocab()}currentQuiz=null;
   $('studentPoints').textContent=s.points;toast('📝 시험 완료! '+score+'/'+total+' (+'+pts+'P)');showVResult(k,score,total,pts,false);
 }
 function startVRetry(k){
@@ -84,7 +87,7 @@ function renderAVocab(){
   $('adminVocabList').innerHTML=h||'<div class="empty">표시할 단어 챕터가 없습니다.</div>';
 }
 async function toggleVocab(k){
-  await pull();const c=DATA.vocabTests[k]||(DATA.vocabTests[k]={open:false});c.open=!c.open;await dbSave();renderAVocab();toast(c.open?'✅ '+vocabShortTitle(k)+' 열림':'🔒 '+vocabShortTitle(k)+' 닫힘');
+  await pull();const c=DATA.vocabTests[k]||(DATA.vocabTests[k]={open:false});c.open=!c.open;if(!await dbUpdate({['pub/vocabTests/'+k+'/open']:c.open}))return renderAVocab();renderAVocab();toast(c.open?'✅ '+vocabShortTitle(k)+' 열림':'🔒 '+vocabShortTitle(k)+' 닫힘');
 }
 function dayOptions(id){
   const sel=$(id),keys=vocabKeys(),pv=sel.value;
