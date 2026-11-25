@@ -32,7 +32,7 @@ function cleanCard(s){
   if(st==='none'){const next=Object.keys(cleanDays()).filter(k=>k>key).sort()[0];
     return`<div class="clean-card dcard">${head}<span class="badge badge-ended">오늘은 없어요</span></div><div class="small" style="margin-top:8px">${next?`다음 청소 면제권: <b>${keyLabel(next)} ${hmOf(cleanDay(next).openAt)}</b>에 열려요.`:'아직 예정된 청소 면제권이 없어요.'}</div></div>`}
   const rank=cleanRank(day),n=+day.count||0,mine=rank.findIndex(x=>x.sid===s.id),my=mine>=0?rank[mine]:null,cut=rank.length>=n?rank[n-1].amount:null;
-  const info=`<div class="clean-meta"><span>${ic('sparkles')} 하루 <b>${n}장</b></span><span>시작가 <b>${(+day.startPrice).toLocaleString()}P</b></span><span>${hmOf(day.openAt)} ~ ${hmOf(day.closeAt)}</span><span>입찰 <b>${rank.length}명</b></span></div>`;
+  const info=`<div class="clean-meta"><span>${ic('sparkles')} 면제 <b>${n}명</b></span><span>시작가 <b>${(+day.startPrice).toLocaleString()}P</b></span><span>${hmOf(day.openAt)} ~ ${hmOf(day.closeAt)}</span><span>입찰 <b>${rank.length}명</b></span></div>`;
   if(st==='before')return`<div class="clean-card dcard">${head}<span class="badge badge-ended">${hmOf(day.openAt)} 오픈</span></div>${info}<div class="small" style="margin-top:8px">${fmtLeft(day.openAt-now)} 뒤에 열려요. 상위 ${n}명이 오늘 청소를 쉬어요!</div></div>`;
   if(st==='open'){const mb=cleanMinBid(day,s.id),v=Math.max(cleanBidVal||0,mb);cleanBidVal=v;const diff=v-(my?my.amount:0),ok=diff<=s.points;
     const inTop=my&&mine<n;
@@ -76,7 +76,7 @@ async function cleanAutoRefund(){if(cleanRefunding||!cu||cu.role!=='student')ret
 
 /* ───── 관리자: 청소 관리 ───── */
 async function ensureCleanDays(){const cfg=cleanCfg(),days=cleanDays(),upd={};if(!(DATA.clean&&DATA.clean.config))upd['pub/clean/config']=cfg;
-  for(let i=0;i<21;i++){const ms=Date.now()+i*864e5,key=kstKey(ms),w=kstParts(ms).w;if(!cfg.weekdays.includes(w)||days[key])continue;
+  for(let i=0;i<21;i++){const ms=Date.now()+i*864e5,key=kstKey(ms),w=kstParts(ms).w;if(!cfg.weekdays.includes(w)||days[key]||((DATA.clean||{}).skip||{})[key])continue;
     if(i===0&&Date.now()>=kstAt(key,cfg.open))continue; /* 이미 여는 시간이 지난 오늘은 새로 만들지 않음 (갑자기 열리지 않게) */
     upd['pub/clean/days/'+key]={count:cfg.count,startPrice:cfg.startPrice,openAt:kstAt(key,cfg.open),closeAt:kstAt(key,cfg.close)}}
   if(Object.keys(upd).length){await dbUpdate(upd);await pull()}}
@@ -88,18 +88,22 @@ function renderAClean(){const el=$('adminClean');if(!el)return;const cfg=cleanCf
   const up=Object.keys(cleanDays()).filter(k=>k>key).sort().slice(0,7);
   el.innerHTML=`<div class="admin-section clean-admin"><div class="flex"><b>🧹 청소 면제권 경매</b><span class="badge ${stt==='open'?'badge-active':'badge-ended'}">${label}</span></div>
   <div class="small" style="margin:6px 0 12px">${cfg.weekdays.map(w=>WEEK[w]).join('·')}요일 ${cfg.open}~${cfg.close}에 자동으로 열리고 닫혀요. 입찰하면 포인트가 바로 빠지고, 마감 때 상위 ${cfg.count}명이 그날 청소 면제예요. 떨어진 입찰은 ${cfg.refund?'환불돼요':'소멸돼요'}.</div>
-  ${day?`<div class="clean-today"><b>오늘 ${keyLabel(key)}</b> · ${n}장 · 시작가 ${(+day.startPrice).toLocaleString()}P · 입찰 ${rank.length}명
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><label class="small">오늘 수량 <input class="inp sm" type="number" id="cleanTodayCount" value="${n}" min="0"></label><label class="small">오늘 시작가 <input class="inp sm" type="number" id="cleanTodayPrice" value="${day.startPrice}" step="10" min="0"></label><button class="btn btn-sm btn-primary" onclick="saveCleanDay('${key}')">오늘만 변경</button></div>
+  ${day?`<div class="clean-today"><b>오늘 ${keyLabel(key)}</b> · 면제 ${n}명 · 시작가 ${(+day.startPrice).toLocaleString()}P · ${hmOf(day.openAt)}~${hmOf(day.closeAt)} · 입찰 ${rank.length}명
     <div style="overflow-x:auto;margin-top:10px"><table class="table"><thead><tr><th>순위</th><th>이름</th><th>입찰</th><th>시간</th><th>결과</th></tr></thead><tbody>${rank.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.name)}</td><td class="green">${x.amount.toLocaleString()}P</td><td class="small">${hmOf(x.at)}</td><td>${i<n?'<span class="badge badge-active">면제'+(stt==='closed'?'':' (현재)')+'</span>':'<span class="small">탈락'+(stt==='closed'?'':' (현재)')+'</span>'}</td></tr>`).join('')||'<tr><td colspan="5" class="small">아직 입찰이 없어요</td></tr>'}</tbody></table></div></div>`:''}
   <div class="clean-roster"><div><b>오늘 청소하는 학생 (${cleaners.length}명)</b><div>${cleaners.map(s=>`<span>${esc(s.name)}</span>`).join('')}</div></div>${stt==='closed'?`<div><b>오늘 면제 (${win.length}명)</b><div>${win.map(x=>`<span class="won">${esc(x.name)}</span>`).join('')||'<span class="small">없음</span>'}</div></div>`:`<div class="small">${stt==='open'||stt==='before'?'마감('+hmOf(day.closeAt)+') 후에 면제자가 확정돼요. 지금은 전원이 청소 명단에 있어요.':''}</div>`}</div>
   ${refundTodo?`<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="settleClean()">떨어진 입찰 ${refundTodo}건 지금 환불하기</button><span class="small" style="margin-left:8px">(학생이 접속하면 자동으로 환불되지만, 한꺼번에 처리할 수도 있어요)</span>`:''}
-  <details style="margin-top:14px"><summary class="small" style="cursor:pointer">기본 설정 바꾸기 (수량 · 시작가 · 시간 · 요일 · 환불)</summary>
-    <div class="clean-form"><label>하루 수량<input class="inp" type="number" id="cleanCount" value="${cfg.count}" min="0"></label><label>시작가 (P)<input class="inp" type="number" id="cleanPrice" value="${cfg.startPrice}" step="10" min="0"></label>
+  <div class="clean-set"><b>${ic('calendar-check')} 날짜별 설정 <span class="small">— 특정 날만 면제 인원·시작가·시간을 바꿔요</span></b>
+    <div class="clean-form"><label>날짜<select class="inp" id="cleanSetDay" onchange="fillCleanDay()">${Object.keys(cleanDays()).filter(k=>k>=key).sort().slice(0,15).map(k=>`<option value="${k}">${keyLabel(k)}${k===key?' (오늘)':''}</option>`).join('')}</select></label>
+    <label>면제 인원<input class="inp" type="number" id="cleanDayCount" min="0"></label><label>시작가 (P)<input class="inp" type="number" id="cleanDayPrice" step="10" min="0"></label>
+    <label>여는 시간<input class="inp" type="time" id="cleanDayOpen"></label><label>닫는 시간<input class="inp" type="time" id="cleanDayClose"></label></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" style="flex:1" onclick="saveCleanDay()">이 날짜 저장</button><button class="btn btn-danger btn-sm" onclick="removeCleanDay()">이 날은 안 열기</button></div></div>
+  <div class="clean-set"><b>${ic('clock')} 매일 기본 설정 <span class="small">— 앞으로의 날짜에 적용</span></b>
+    <div class="clean-form"><label>면제 인원<input class="inp" type="number" id="cleanCount" value="${cfg.count}" min="0"></label><label>시작가 (P)<input class="inp" type="number" id="cleanPrice" value="${cfg.startPrice}" step="10" min="0"></label>
     <label>여는 시간<input class="inp" type="time" id="cleanOpen" value="${cfg.open}"></label><label>닫는 시간<input class="inp" type="time" id="cleanClose" value="${cfg.close}"></label></div>
-    <div class="clean-days">${[1,2,3,4,5,6,0].map(w=>`<label><input type="checkbox" class="cleanW" value="${w}" ${cfg.weekdays.includes(w)?'checked':''}> ${WEEK[w]}</label>`).join('')}</div>
+    <div class="clean-days"><span class="small">여는 요일</span>${[1,2,3,4,5,6,0].map(w=>`<label><input type="checkbox" class="cleanW" value="${w}" ${cfg.weekdays.includes(w)?'checked':''}> ${WEEK[w]}</label>`).join('')}</div>
     <label class="small"><input type="checkbox" id="cleanRefund" ${cfg.refund?'checked':''}> 떨어진 입찰 환불하기 (끄면 포인트 소멸)</label>
-    <div class="small" style="margin:8px 0">저장하면 아직 입찰이 없는 앞으로의 날짜에 새 설정이 적용돼요.</div><button class="btn btn-primary btn-full" onclick="saveCleanCfg()">기본 설정 저장</button></details>
-  ${up.length?`<div class="small" style="margin-top:12px">예정: ${up.map(k=>{const d=cleanDay(k);return`${keyLabel(k)} ${d.count}장·${(+d.startPrice).toLocaleString()}P`}).join(' · ')}</div>`:''}</div>`}
+    <div class="small" style="margin:8px 0">저장하면 아직 입찰이 없는 앞으로의 날짜에도 새 기본 설정이 적용돼요. (입찰이 시작된 날은 '날짜별 설정'으로 바꿔 주세요)</div><button class="btn btn-primary btn-full" onclick="saveCleanCfg()">기본 설정 저장</button></div>
+  ${up.length?`<div class="small" style="margin-top:12px">예정: ${up.map(k=>{const d=cleanDay(k);return`${keyLabel(k)} ${d.count}명·${(+d.startPrice).toLocaleString()}P·${hmOf(d.openAt)}~${hmOf(d.closeAt)}`}).join(' · ')}</div>`:''}</div>`;fillCleanDay()}
 async function saveCleanCfg(){const cfg={count:Math.max(0,parseInt($('cleanCount').value)||0),startPrice:Math.max(0,Math.round((parseInt($('cleanPrice').value)||0)/STEP)*STEP),open:$('cleanOpen').value||CLEAN_DEF.open,close:$('cleanClose').value||CLEAN_DEF.close,
     weekdays:[...document.querySelectorAll('.cleanW:checked')].map(x=>+x.value),refund:$('cleanRefund').checked};
   if(kstAt('2000-01-01',cfg.open)>=kstAt('2000-01-01',cfg.close))return uiAlert('닫는 시간이 여는 시간보다 늦어야 해요.');
@@ -108,9 +112,19 @@ async function saveCleanCfg(){const cfg={count:Math.max(0,parseInt($('cleanCount
     if(hasBids||(k===key&&now>=d.openAt))return;if(!cfg.weekdays.includes(w)){upd['pub/clean/days/'+k]=null;return}
     upd['pub/clean/days/'+k+'/count']=cfg.count;upd['pub/clean/days/'+k+'/startPrice']=cfg.startPrice;upd['pub/clean/days/'+k+'/openAt']=kstAt(k,cfg.open);upd['pub/clean/days/'+k+'/closeAt']=kstAt(k,cfg.close)});
   if(!await dbUpdate(upd))return;await pull();await ensureCleanDays();renderAClean();toast('청소 면제권 설정을 저장했어요')}
-async function saveCleanDay(key){const c=Math.max(0,parseInt($('cleanTodayCount').value)||0),p=Math.max(0,Math.round((parseInt($('cleanTodayPrice').value)||0)/STEP)*STEP);
-  if(!await uiConfirm(`${keyLabel(key)} 청소 면제권을 ${c}장 · 시작가 ${p.toLocaleString()}P로 바꿀까요?`))return;
-  if(!await dbUpdate({['pub/clean/days/'+key+'/count']:c,['pub/clean/days/'+key+'/startPrice']:p}))return;await pull();renderAClean();toast('오늘 청소 면제권을 바꿨어요')}
+function fillCleanDay(){const sel=$('cleanSetDay');if(!sel||!sel.value)return;const d=cleanDay(sel.value);if(!d)return;
+  $('cleanDayCount').value=d.count;$('cleanDayPrice').value=d.startPrice;$('cleanDayOpen').value=hmOf(d.openAt);$('cleanDayClose').value=hmOf(d.closeAt)}
+async function saveCleanDay(){const key=$('cleanSetDay').value,d=cleanDay(key);if(!d)return;
+  const c=Math.max(0,parseInt($('cleanDayCount').value)||0),p=Math.max(0,Math.round((parseInt($('cleanDayPrice').value)||0)/STEP)*STEP),o=$('cleanDayOpen').value,cl=$('cleanDayClose').value;
+  if(!o||!cl)return uiAlert('여는 시간과 닫는 시간을 입력하세요.');const oa=kstAt(key,o),ca=kstAt(key,cl);if(oa>=ca)return uiAlert('닫는 시간이 여는 시간보다 늦어야 해요.');
+  const bids=Object.keys(d.bids||{}).length;
+  if(!await uiConfirm(`${keyLabel(key)} 청소 면제권을 바꿀까요?\n면제 ${c}명 · 시작가 ${p.toLocaleString()}P · ${o}~${cl}${bids?'\n이미 '+bids+'명이 입찰했어요. 이미 낸 입찰 금액은 그대로예요.':''}`))return;
+  if(!await dbUpdate({['pub/clean/days/'+key+'/count']:c,['pub/clean/days/'+key+'/startPrice']:p,['pub/clean/days/'+key+'/openAt']:oa,['pub/clean/days/'+key+'/closeAt']:ca}))return;
+  await pull();renderAClean();if($('cleanSetDay')){$('cleanSetDay').value=key;fillCleanDay()}toast(keyLabel(key)+' 청소 면제권을 바꿨어요')}
+async function removeCleanDay(){const key=$('cleanSetDay').value,d=cleanDay(key);if(!d)return;
+  if(Object.keys(d.bids||{}).length)return uiAlert('이미 입찰한 학생이 있어서 이 날을 지울 수 없어요.\n면제 인원을 0명으로 바꾸거나, 마감 후 환불해 주세요.');
+  if(!await uiConfirm(`${keyLabel(key)}에는 청소 면제권 경매를 열지 않을까요?`))return;
+  if(!await dbUpdate({['pub/clean/days/'+key]:null,['pub/clean/skip/'+key]:true}))return;await pull();renderAClean();toast(keyLabel(key)+'에는 열지 않아요')}
 async function settleClean(){if(!await uiConfirm('마감된 날의 떨어진 입찰을 모두 환불할까요?'))return;await pull();const now=Date.now(),upd={};let n=0;
   Object.entries(cleanDays()).forEach(([k,d])=>{if(cleanState(d,now)!=='closed')return;const w=new Set(cleanWinners(d).map(x=>x.sid));
     Object.entries(d.bids||{}).forEach(([sid,b])=>{const st=DATA.students.find(x=>x.id===sid);if(w.has(sid)||!st||(st.cleanRefund||{})[k])return;
