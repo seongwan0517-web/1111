@@ -474,3 +474,9 @@ body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
 .pa-none{font-size:11px;color:var(--t3);padding-left:8px;line-height:14px}
 .pa-val{text-align:right;line-height:1.15}.pa-val b{font-size:16px;font-variant-numeric:tabular-nums}.pa-val small{display:block;font-size:10px;color:var(--t3)}
 .pa-tip{margin-top:12px;padding:10px 12px;border-radius:var(--r-sm);background:var(--s2);font-size:13px;line-height:1.6;color:var(--t2)}.pa-tip b{color:var(--t)}
+/* 포인트 카드: 변화 그래프 + 획득·사용 요약 */
+.pt-sum{display:flex;align-items:center;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--b)}
+.pt-sum .donut{width:96px;height:96px;flex:none}
+.pt-nums{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pt-nums small{display:block;font-size:11px;color:var(--t2)}.pt-nums b{font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:420px){.pt-nums{grid-template-columns:1fr 1fr}}

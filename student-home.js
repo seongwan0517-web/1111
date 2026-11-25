@@ -60,7 +60,7 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
   const tot=openCount('v')+openCount('m'),done=m.vn+m.mn,ctx={tot,maxP:Math.max(1,...DATA.students.map(x=>x.points))};
   const all=DATA.students.map(x=>({m:metrics(x),a:axisVals(x,ctx)}));
   const avg=[0,1,2,3,4].map(i=>{const f=i===0?all.filter(x=>x.m.hasV):i===1?all.filter(x=>x.m.hasM):all;return f.length?f.reduce((p,x)=>p+x.a[i],0)/f.length:0});
-  const dv=dayCompare(s,'v'),dm=dayCompare(s,'m'),hm=heat(s);
+  const dv=dayCompare(s,'v'),dm=dayCompare(s,'m');
   const bestV=Math.max(0,...Object.values(s.vocabResults).filter(r=>r&&r.completed&&r.total).map(r=>r.score/r.total*100));
   const accAll=(m.vt+m.mq)?(m.vs+m.mc)/(m.vt+m.mq)*100:0;
   const wins=Object.values(DATA.auctions).filter(x=>!x.active&&x.winner&&String(x.winner.studentId)===String(s.id));
@@ -74,6 +74,8 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
   $('s-home').innerHTML=`${noticeSection()}
   <div class="banner"><div class="small" style="color:#ffb3b8">${esc(s.name)}님의 포인트${seat?' · 내 자리 '+seat.n+'번':''}</div><div class="point">${s.points.toLocaleString()}P</div>
     <div class="flex" style="margin-top:12px"><span style="font-size:13px">전체 ${rk}위 / ${n}명</span><button class="btn ${checked?'btn-ghost':'btn-primary'} btn-sm" ${checked?'disabled':''} onclick="checkIn()">${checked?'오늘 출석 완료':'출석체크 +'+CHECKIN_POINTS+'P'}</button></div></div>
+  ${preAnalysis(s)}
+  <h3 class="sec">나의 학습 현황</h3>
   <div class="stats">
     <div class="stat"><div class="sl">응시 현황</div><div class="v">${done} / ${tot}</div><div class="ss">남은 시험 ${Math.max(0,tot-done)}개</div></div>
     <div class="stat"><div class="sl">내 평균 정답률</div><div class="v">${pctR(accAll)}%</div><div class="ss">단어·수학 합산</div></div>
@@ -83,13 +85,10 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
     <div class="dcard"><h4>단어시험 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dv.days,dv.my,dv.av)}</div>
     <div class="dcard"><h4>영역별 성취도 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','나')}${lg('#9a9a9a','전체 평균')}</div>${radarSvg(axisVals(s,ctx),avg)}</div>
     <div class="dcard"><h4>수학시험 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dm.days,dm.my,dm.av)}</div>
-    <div class="dcard"><h4>포인트 변화</h4>${trendSvg(s)}</div>
-    <div class="dcard"><h4>포인트 획득 vs 사용</h4><div class="donutwrap">${donutSvg(gain,spent)}<div><div class="legend" style="flex-direction:column;align-items:flex-start;gap:8px">${lg('#46d369','획득 '+gain.toLocaleString()+'P')}${lg('#e50914','사용 '+spent.toLocaleString()+'P')}</div></div></div></div>
+    <div class="dcard"><h4>포인트 변화 · 획득과 사용</h4>${trendSvg(s)}<div class="pt-sum">${donutSvg(gain,spent)}<div class="pt-nums"><div><small>획득</small><b class="green">+${gain.toLocaleString()}P</b></div><div><small>사용</small><b class="red">-${spent.toLocaleString()}P</b></div><div><small>지금 보유</small><b>${s.points.toLocaleString()}P</b></div></div></div></div>
     <div class="dcard"><h4>나의 배지 (${BD.filter(b=>b[2]).length}/${BD.length})</h4><div class="badges">${BD.map(b=>`<div class="bd${b[2]?' on':''}"><div class="em">${b[0]}</div><b>${b[1]}</b><div class="small">${b[3]}</div></div>`).join('')}</div></div>
-    <div class="dcard"><h4>시험 기록 Day 1~30</h4><div class="small" style="margin-bottom:4px">단어 점수</div><div class="bars">${hm.bars}</div><div class="small" style="margin:10px 0 4px">수학 <span style="color:var(--green)">■</span>전부 정답 <span style="color:var(--orange)">■</span>일부 <span style="color:var(--red2)">■</span>오답</div><div class="dots">${hm.dots}</div></div>
     <div class="dcard"><h4>포인트 랭킹 TOP 5</h4>${top.map(rkRow).join('')}${rk>5?'<div class="small" style="text-align:center;margin:6px 0">⋮</div>'+rkRow(s,rk-1):''}</div>
   </div>
-  ${preAnalysis(s)}
   <h3 class="sec">경매 낙찰 목록</h3>${wins.length?wins.map(x=>`<div class="shop-item flex"><div>${esc(x.itemName)}${x.seatId?' 🪑':''}</div><span class="badge badge-winner">${x.winner.amount}P</span></div>`).join(''):'<div class="empty">아직 낙찰 기록이 없어요</div>'}
   <h3 class="sec">최근 활동</h3>${historyRows(s.history.slice(-6))}`}
 async function checkIn(){await pull();const s=getMe();if(s.lastCheck===dayStr()){toast('오늘은 이미 출석했어요');return}
