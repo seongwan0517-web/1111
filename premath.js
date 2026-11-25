@@ -6,9 +6,10 @@
    - 정답 = DB mathProblems/preAnswers (로그인해야 읽힘), 열림 여부 = pub/preMathTests/dayN/open */
 let currentPM=null,pmLock=false,pmAnswers=null,pmView='days';
 function pmSetView(v){pmView=v;renderSPreMath()}
-/* 탭 안 상단 전환 버튼: Day 문제 | 오답노트 */
-function pmSeg(s){const nbN=Object.keys(pmState(s).notebook).filter(pmProb).length;
-  return`<div class="pm-seg" role="tablist"><button role="tab" class="${pmView==='days'?'on':''}" onclick="pmSetView('days')">${ic('pi')} Day 문제</button><button role="tab" class="${pmView==='note'?'on':''}" onclick="pmSetView('note')">${ic('book-open')} 오답노트${nbN?`<span class="pm-cnt">${nbN}</span>`:''}</button></div>`}
+/* 탭 안 상단 전환 버튼: Day 문제 | 연습하기 | 오답노트 */
+function pmSeg(s){const nbN=Object.keys(pmState(s).notebook).filter(pmProb).length,pr=PRE_MATH.practice||[],prDone=pr.filter(id=>(pmState(s).practice[id]||{}).solved).length;
+  const b=(v,icon,label,extra)=>`<button role="tab" class="${pmView===v?'on':''}" onclick="pmSetView('${v}')">${ic(icon)} ${label}${extra||''}</button>`;
+  return`<div class="pm-seg three" role="tablist">${b('days','pi','Day 문제')}${b('practice','target','연습하기',`<span class="pm-cnt sub">${prDone}/${pr.length}</span>`)}${b('note','book-open','오답노트',nbN?`<span class="pm-cnt">${nbN}</span>`:'')}</div>`}
 const PM_DAYS=Object.keys(PRE_MATH.schedule).length,PM_REVEAL_AFTER=3;
 const pmKey=d=>'day'+d;
 const pmConf=d=>(DATA.preMathTests||{})[pmKey(d)]||{open:false};
@@ -18,7 +19,8 @@ const pmAnsText=(p,v)=>v==null||v===''?'-':(p.type==='mc'?CIRCLED[v-1]||v:String
 async function pmLoadAnswers(){if(!pmAnswers)pmAnswers=await api('mathProblems/preAnswers')||{};return pmAnswers}
 const pmFig=id=>`<div class="math-fig pm-fig" onclick="mathZoom(this.querySelector('img').src)"><img src="${esc(pmProb(id).img)}" alt="문제" loading="lazy"></div>`;
 const pmChips=ids=>`<div class="pm-chips">${ids.map(id=>`<span>${esc(pmArea(id).split(' · ')[0])}</span>`).join('')}</div>`;
-const pmState=s=>{s.preMath=s.preMath||{};s.preMath.notebook=s.preMath.notebook||{};s.preMath.mastered=s.preMath.mastered||{};return s.preMath};
+const pmState=s=>{s.preMath=s.preMath||{};s.preMath.notebook=s.preMath.notebook||{};s.preMath.mastered=s.preMath.mastered||{};s.preMath.practice=s.preMath.practice||{};return s.preMath};
+const pmLv=id=>{const l=pmProb(id).lv||'중';return`<span class="pm-lv lv-${l==='하'?'e':l==='중'?'m':'h'}">${l}</span>`};
 /* 오답노트 문제 (오래된 것부터). day를 주면 그날 틀린 문제만 */
 function pmWrong(s,day){const nb=pmState(s).notebook;
   return Object.keys(nb).filter(id=>pmProb(id)&&(!day||nb[id].fromDay===day)).sort((a,b)=>(nb[a].addedAt||0)-(nb[b].addedAt||0))}
@@ -26,11 +28,12 @@ function pmWrong(s,day){const nb=pmState(s).notebook;
 /* ───── 학생: 목록 ───── */
 function renderSPreMath(){
   if(pmView==='note')return showPMNote();
+  if(pmView==='practice')return renderPMPractice();
   const el=$('s-premath');if(!el)return;pmLock=false;const s=getMe(),R=s.preMathResults||{},st=pmState(s);
   
   let done=0,ok=0,tot=0,pts=0,openN=0;
   for(let d=1;d<=PM_DAYS;d++){const r=R[pmKey(d)];if(r&&r.completed){done++;const it=arr(r.items).filter(x=>!x.review);tot+=it.length;ok+=it.filter(x=>x.correct).length;pts+=r.pointsAwarded||0}else if(pmConf(d).open)openN++}
-  let h=pmSeg(s)+`<div class="banner"><div class="small" style="color:#ffb3b8">예비 고1 수학 · 하루 5문제 · 중학교 전 범위</div>
+  let h=pmSeg(s)+`<div class="banner"><div class="small" style="color:#ffb3b8">예비 고1 수학 · Day 2부터 하루 3문제 (하·중) · 어려운 문제는 연습하기</div>
     <div class="bstats"><div><div class="small">완료</div><b>${done}<small>/${PM_DAYS}일</small></b></div><div><div class="small">정답</div><b>${ok}<small>/${tot}</small></b></div><div><div class="small">획득 포인트</div><b class="green">${pts}P</b></div><div><div class="small">지금 풀 수 있는 날</div><b class="orange">${openN}</b></div></div></div>
   <div class="pm-legend">${PRE_MATH.areas.map((a,i)=>`<span><b>${i+1}</b>${esc(a.name)}</span>`).join('')}</div>`;
   const cards=[];
@@ -38,7 +41,7 @@ function renderSPreMath(){
     if(r&&r.completed){const it=arr(r.items).filter(x=>!x.review),cc=it.filter(x=>x.correct).length,left=pmWrong(s,d).length;
       cards.push(`<div class="auction-card vcard done"><div class="flex"><div class="ac-title">Day ${d}</div><span class="badge ${cc===it.length?'badge-winner':'badge-ended'}">${cc}/${it.length} 정답 · +${r.pointsAwarded||0}P</span></div>${pmChips(ids)}
       ${it.length-cc?`<div class="ac-meta">${left?`오답 ${left}개 남음`:'오답 모두 해결 🎉'}</div>`:''}<div class="ac-row"><button class="btn btn-primary" style="flex:1" onclick="showPMResult(${d})">결과 보기</button>${left?`<button class="btn btn-success" style="flex:1" onclick="startPMNote(${d})">${ic('rotate-ccw')} 오답 풀기</button>`:''}</div></div>`)}
-    else if(c.open){cards.push(`<div class="auction-card vcard open"><div class="flex"><div class="ac-title">Day ${d}</div><span class="badge badge-active">풀 수 있어요</span></div>${pmChips(ids)}<div class="ac-meta">5문제 · 정답 1개당 ${PRE_MATH_POINTS}P · 1번만 제출</div><button class="btn btn-primary btn-full" onclick="startPM(${d})">문제 풀기</button></div>`)}
+    else if(c.open){cards.push(`<div class="auction-card vcard open"><div class="flex"><div class="ac-title">Day ${d}</div><span class="badge badge-active">풀 수 있어요</span></div>${pmChips(ids)}<div class="ac-meta">${ids.length}문제 · 정답 1개당 ${PRE_MATH_POINTS}P · 1번만 제출</div><button class="btn btn-primary btn-full" onclick="startPM(${d})">문제 풀기</button></div>`)}
     else cards.push(`<div class="auction-card vcard locked"><div class="flex"><div class="ac-title">Day ${d}</div><span class="badge badge-ended">${ic('lock')} 잠김</span></div>${pmChips(ids)}</div>`)}
   el.innerHTML=h+`<div class="cgrid">${cards.join('')}</div>`;
 }
@@ -48,7 +51,7 @@ async function startPM(d){const s=getMe(),r=(s.preMathResults||{})[pmKey(d)];
   if(r&&r.completed){uiAlert('이미 제출한 날이에요.');return renderSPreMath()}
   if(!pmConf(d).open){uiAlert('아직 열리지 않은 날이에요.');return renderSPreMath()}
   const fresh=PRE_MATH.schedule[pmKey(d)];
-  if(!await uiConfirm(`Day ${d} 수학 5문제를 시작할까요?\n제출하면 다시 제출할 수 없어요. (중간에 나가면 나중에 다시 풀 수 있어요)`,{icon:'pi'}))return;
+  if(!await uiConfirm(`Day ${d} 수학 ${fresh.length}문제를 시작할까요?\n제출하면 다시 제출할 수 없어요. (중간에 나가면 나중에 다시 풀 수 있어요)`,{icon:'pi'}))return;
   try{await pmLoadAnswers()}catch(e){return uiAlert('문제를 불러오지 못했습니다.\n'+e.message)}
   currentPM={d,list:fresh.map(id=>({id})),pos:0,sel:[]};renderPMQ()}
 async function startPMNote(day){const s=getMe(),rev=pmWrong(s,day);if(!rev.length){uiAlert('다시 풀 오답이 없어요. 🎉');return renderSPreMath()}
@@ -60,17 +63,17 @@ function renderPMQ(){const c=currentPM,it=c.list[c.pos],id=it.id,p=pmProb(id),la
   const input=p.type==='mc'
     ?`<div class="math-choices">${[1,2,3,4,5].map(n=>`<button class="btn math-choice${n===5?' wide':''}${v===n?' selected':''}" onclick="selPM(${n})">${CIRCLED[n-1]}</button>`).join('')}</div>`
     :`<div class="pm-num"><input type="number" inputmode="numeric" id="pmNum" placeholder="정답 숫자 입력" value="${v!=null?esc(v):''}" oninput="numPM(this.value)"><span>단답형</span></div>`;
-  $('s-premath').innerHTML=`<div class="auction-card quiz"><div class="flex"><div class="ac-title">${c.d?'Day '+c.d+' 수학':(c.retryDay?'Day '+c.retryDay+' ':'')+'오답 풀기'}</div><span class="badge badge-active">${c.pos+1} / ${c.list.length}</span></div>
+  $('s-premath').innerHTML=`<div class="auction-card quiz"><div class="flex"><div class="ac-title">${c.practice?'연습하기':c.d?'Day '+c.d+' 수학':(c.retryDay?'Day '+c.retryDay+' ':'')+'오답 풀기'}</div><span class="badge badge-active">${c.pos+1} / ${c.list.length}</span></div>
   <div class="qbar"><i style="width:${Math.round(c.pos/c.list.length*100)}%"></i></div>
-  <div class="pm-tag">${it.review?`<span class="pm-rv">${ic('rotate-ccw')} 오답${nb?' · '+nb.tries+'번 틀림':''}</span> `:''}<b>${esc(pmArea(id))}</b> · ${esc(p.topic)} <span class="small">(${esc(p.exam)} ${p.no}번 · ${p.pts}점)</span></div>${pmFig(id)}
+  <div class="pm-tag">${it.review?`<span class="pm-rv">${ic('rotate-ccw')} 오답${nb?' · '+nb.tries+'번 틀림':''}</span> `:''}${pmLv(id)} <b>${esc(pmArea(id))}</b> · ${esc(p.topic)} <span class="small">(${esc(p.exam)} ${p.no}번 · ${p.pts}점)</span></div>${pmFig(id)}
   <div class="small" style="margin-bottom:8px">${p.type==='mc'?'정답 번호를 고르세요':'정답을 숫자로 입력하세요'}</div>${input}
   <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" style="flex:1" onclick="cancelPM()">나가기</button>${c.pos?`<button class="btn btn-ghost" style="flex:1" onclick="movePM(-1)">이전</button>`:''}<button class="btn btn-primary" style="flex:2" id="pmNext" ${v==null||v===''?'disabled':''} onclick="nextPM()">${last?'제출하기':'다음 문제'}</button></div></div>`;
   window.scrollTo(0,0);const ni=$('pmNum');if(ni)ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('pmNext').disabled)nextPM()})}
 function selPM(n){currentPM.sel[currentPM.pos]=n;document.querySelectorAll('#s-premath .math-choice').forEach((b,i)=>b.classList.toggle('selected',i+1===n));$('pmNext').disabled=false}
 function numPM(v){v=String(v).trim();currentPM.sel[currentPM.pos]=v===''?null:v;$('pmNext').disabled=v===''}
 function movePM(k){currentPM.pos+=k;renderPMQ()}
-async function cancelPM(){if(currentPM.d&&!await uiConfirm('지금 나가면 제출하지 않은 것으로 처리돼요.\n나중에 처음부터 다시 풀 수 있어요. 나갈까요?',{ok:'나가기'}))return;currentPM=null;renderSPreMath()}
-async function nextPM(){const c=currentPM;if(c.pos<c.list.length-1){c.pos++;return renderPMQ()}
+async function cancelPM(){if(currentPM.practice){const back=currentPM.back;currentPM=null;return back?pmSetView(back):renderSPreMath()}if(currentPM.d&&!await uiConfirm('지금 나가면 제출하지 않은 것으로 처리돼요.\n나중에 처음부터 다시 풀 수 있어요. 나갈까요?',{ok:'나가기'}))return;currentPM=null;renderSPreMath()}
+async function nextPM(){const c=currentPM;if(c.practice)return finishPMPractice();if(c.pos<c.list.length-1){c.pos++;return renderPMQ()}
   if(c.d&&!await uiConfirm('제출할까요?\n제출하면 답을 바꿀 수 없어요.',{ok:'제출하기'}))return;
   const A=await pmLoadAnswers();await pull();const s=getMe(),st=pmState(s),t=dayStr(),now=Date.now(),P=SP(s.id)+'/preMath/';
   if(c.d&&(s.preMathResults||{})[pmKey(c.d)]&&s.preMathResults[pmKey(c.d)].completed){currentPM=null;uiAlert('이미 제출한 날이에요.');return renderSPreMath()}
@@ -129,8 +132,8 @@ function renderAPreMath(){const el=$('adminPreMathList');if(!el)return;if($('pmP
     <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end"><span class="badge ${c.open?'badge-active':'badge-ended'}">${c.open?'열림':'닫힘'}</span><button class="btn btn-sm ${c.open?'btn-danger':'btn-primary'}" onclick="togglePM(${d})">${c.open?'닫기':'열기'}</button></div></div></div>`}
   el.innerHTML=`<div class="cgrid">${h}</div>`;
   const rows=DATA.students.map(s=>{const st=pmState(s),done=Object.values(s.preMathResults||{}).filter(r=>r&&r.completed).length,nb=Object.keys(st.notebook),ms=Object.keys(st.mastered);
-    return`<tr><td>${esc(s.name)}</td><td>${done}/${PM_DAYS}</td><td class="red">${nb.length}</td><td class="green">${ms.length}</td><td class="small">${esc(PRE_MATH.areas.map(a=>{const k=nb.filter(id=>pmProb(id)&&pmProb(id).area===a.id).length;return k?a.name.split(' · ')[0]+' '+k:''}).filter(Boolean).join(', ')||'-')}</td></tr>`}).join('');
-  if($('adminPMNotes'))$('adminPMNotes').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>완료</th><th>오답 남음</th><th>해결</th><th>약한 단원 (남은 오답 수)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    return`<tr><td>${esc(s.name)}</td><td>${done}/${PM_DAYS}</td><td class="red">${nb.length}</td><td class="green">${ms.length}</td><td>${(PRE_MATH.practice||[]).filter(id=>(st.practice[id]||{}).solved).length}/${(PRE_MATH.practice||[]).length}</td><td class="small">${esc(PRE_MATH.areas.map(a=>{const k=nb.filter(id=>pmProb(id)&&pmProb(id).area===a.id).length;return k?a.name.split(' · ')[0]+' '+k:''}).filter(Boolean).join(', ')||'-')}</td></tr>`}).join('');
+  if($('adminPMNotes'))$('adminPMNotes').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>완료</th><th>오답 남음</th><th>해결</th><th>연습하기 해결</th><th>약한 단원 (남은 오답 수)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   renderAPMScore()}
 async function togglePM(d){await pull();const c=pmConf(d),v=!c.open;if(!await dbUpdate({['pub/preMathTests/'+pmKey(d)+'/open']:v}))return;await pull();renderAPreMath();toast('예비고1 수학 Day '+d+(v?' 열림':' 닫힘'))}
 async function setPMAll(open){if(!await uiConfirm('예비고1 수학 Day 1~'+PM_DAYS+'을 모두 '+(open?'열까요?':'닫을까요?')))return;const upd={};for(let d=1;d<=PM_DAYS;d++)upd['pub/preMathTests/'+pmKey(d)+'/open']=open;if(!await dbUpdate(upd))return;await pull();renderAPreMath()}
@@ -142,3 +145,35 @@ async function renderAPMScore(){const sel=$('pmScoreDay');if(!sel)return;if(sel.
     const cc=ids.filter(id=>{const x=it.find(y=>y.id===id&&!y.review);return x&&x.correct}).length;
     return`<tr><td>${esc(s.name)}</td>${cells}<td><b>${cc}/${ids.length}</b></td></tr>`}).join('');
   $('adminPMScore').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th>${head}<th>점수</th></tr></thead><tbody>${rows}</tbody></table></div>`}
+
+/* ───── 연습하기: 상 난이도 + 정규 일정에 없는 문제, 자율 연습 (포인트 없음) ─────
+   기록 = pub/students/{id}/preMath/practice/{문제}: {tries, solved, date} · 3번 틀리면 정답 공개 */
+let pmPracArea='all';
+function pmPracFilter(a){pmPracArea=a;renderPMPractice()}
+function renderPMPractice(){pmView='practice';pmLock=false;const el=$('s-premath');if(!el)return;const s=getMe(),st=pmState(s),pr=PRE_MATH.practice||[];
+  const list=pr.filter(id=>pmPracArea==='all'||pmProb(id).area===pmPracArea),done=pr.filter(id=>(st.practice[id]||{}).solved).length;
+  const nextId=list.find(id=>!(st.practice[id]||{}).solved);
+  let h=pmSeg(s)+`<div class="auction-card"><div class="flex"><div class="ac-title">${ic('target')} 연습하기</div><span class="badge badge-winner">해결 ${done}/${pr.length}</span></div>
+  <div class="small" style="margin:6px 0 12px">Day 문제보다 어려운 '상' 난이도 문제와 추가 문제를 모아 두었어요. 원하는 문제를 골라 자유롭게 풀어 보세요. 포인트는 없고, 몇 번이든 다시 풀 수 있어요. ${PM_REVEAL_AFTER}번 틀리면 정답을 알려 줘요.</div>
+  <div class="pm-filter"><button class="${pmPracArea==='all'?'on':''}" onclick="pmPracFilter('all')">전체 ${pr.length}</button>${PRE_MATH.areas.map(a=>{const n=pr.filter(id=>pmProb(id).area===a.id).length;return n?`<button class="${pmPracArea===a.id?'on':''}" onclick="pmPracFilter('${a.id}')">${esc(a.name.split(' · ')[0])} ${n}</button>`:''}).join('')}</div>
+  ${nextId?`<button class="btn btn-primary btn-full" style="margin-top:12px" onclick="startPMPractice('${nextId}')">${ic('target')} 안 푼 문제부터 풀기</button>`:'<div class="empty">🎉 이 범위의 연습 문제를 모두 해결했어요!</div>'}</div>`;
+  h+='<div class="cgrid">'+list.map(id=>{const p=pmProb(id),r=st.practice[id]||{};
+    const stat=r.solved?`<span class="badge badge-active">${ic('circle-check')} 해결${r.tries>1?' · '+r.tries+'번 만에':''}</span>`:r.tries?`<span class="badge badge-ended">${r.tries}번 시도</span>`:'<span class="badge badge-ended">안 풀어봄</span>';
+    return`<div class="auction-card vcard${r.solved?' done':''}"><div class="flex" style="align-items:flex-start"><div>${pmLv(id)} <b>${esc(pmArea(id).split(' · ')[0])}</b><div class="vsub">${esc(p.topic)}</div></div>${stat}</div>
+      <div class="ac-meta">${esc(p.exam)} ${p.no}번 · ${p.pts}점 · ${p.type==='mc'?'객관식':'단답형'}</div><button class="btn ${r.solved?'btn-ghost':'btn-primary'} btn-full" onclick="startPMPractice('${id}')">${r.solved?'다시 풀기':'풀기'}</button></div>`}).join('')+'</div>';
+  el.innerHTML=h;window.scrollTo(0,0)}
+async function startPMPractice(id){try{await pmLoadAnswers()}catch(e){return uiAlert('문제를 불러오지 못했습니다.\n'+e.message)}
+  currentPM={practice:true,back:'practice',list:[{id}],pos:0,sel:[]};renderPMQ()}
+async function finishPMPractice(){const c=currentPM,id=c.list[0].id,p=pmProb(id),raw=c.sel[0],A=await pmLoadAnswers();
+  const sel=p.type==='mc'?+raw:Number(raw),ok=sel===Number(A[id]);const s=getMe(),st=pmState(s),prev=st.practice[id]||{};
+  const r={tries:(prev.tries||0)+1,solved:!!prev.solved||ok,date:today()};if(ok&&!prev.solved)r.solvedTries=r.tries;else if(prev.solvedTries)r.solvedTries=prev.solvedTries;
+  st.practice[id]=r;await dbUpdate({[SP(s.id)+'/preMath/practice/'+id]:r});currentPM=null;pmLock=true;
+  const show=ok||r.tries>=PM_REVEAL_AFTER||prev.solved;const pr=PRE_MATH.practice||[];
+  const next=pr.filter(x=>pmPracArea==='all'||pmProb(x).area===pmPracArea).find(x=>x!==id&&!(st.practice[x]||{}).solved);
+  $('s-premath').innerHTML=pmSeg(s)+`<div class="auction-card quiz"><div class="flex"><div class="ac-title">연습하기 결과</div><span class="badge ${ok?'badge-active':'badge-ended'}">${ic(ok?'circle-check':'circle-x')} ${ok?'정답!':'오답'}</span></div>
+    <div class="pm-score ${ok?'green':''}">${ok?'정답':'아쉬워요'}</div>
+    <div class="pm-tag">${pmLv(id)} <b>${esc(pmArea(id))}</b> · ${esc(p.topic)}</div>${pmFig(id)}
+    <div class="small ${ok?'green':'red'}">내 답: ${esc(pmAnsText(p,c.list[0]&&(p.type==='mc'?sel:String(raw))))}</div>
+    ${show?`<div class="small green" style="font-weight:700">정답: ${esc(pmAnsText(p,A[id]))}</div>`:`<div class="small orange">${PM_REVEAL_AFTER-r.tries}번 더 틀리면 정답을 알려 줘요. 다시 도전해 보세요!</div>`}
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">${ok?'':`<button class="btn btn-success" style="flex:1" onclick="startPMPractice('${id}')">${ic('rotate-ccw')} 다시 풀기</button>`}${next?`<button class="btn btn-primary" style="flex:1" onclick="startPMPractice('${next}')">다음 문제</button>`:''}<button class="btn btn-ghost" style="flex:1" onclick="pmSetView('practice')">연습 목록</button></div></div>`;
+  window.scrollTo(0,0)}

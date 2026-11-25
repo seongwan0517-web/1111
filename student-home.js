@@ -89,6 +89,7 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
     <div class="dcard"><h4>시험 기록 Day 1~30</h4><div class="small" style="margin-bottom:4px">단어 점수</div><div class="bars">${hm.bars}</div><div class="small" style="margin:10px 0 4px">수학 <span style="color:var(--green)">■</span>전부 정답 <span style="color:var(--orange)">■</span>일부 <span style="color:var(--red2)">■</span>오답</div><div class="dots">${hm.dots}</div></div>
     <div class="dcard"><h4>포인트 랭킹 TOP 5</h4>${top.map(rkRow).join('')}${rk>5?'<div class="small" style="text-align:center;margin:6px 0">⋮</div>'+rkRow(s,rk-1):''}</div>
   </div>
+  ${preAnalysis(s)}
   <h3 class="sec">경매 낙찰 목록</h3>${wins.length?wins.map(x=>`<div class="shop-item flex"><div>${esc(x.itemName)}${x.seatId?' 🪑':''}</div><span class="badge badge-winner">${x.winner.amount}P</span></div>`).join(''):'<div class="empty">아직 낙찰 기록이 없어요</div>'}
   <h3 class="sec">최근 활동</h3>${historyRows(s.history.slice(-6))}`}
 async function checkIn(){await pull();const s=getMe();if(s.lastCheck===dayStr()){toast('오늘은 이미 출석했어요');return}
@@ -105,3 +106,35 @@ async function buyItem(id){await pull();const item=DATA.items.find(x=>+x.id===+i
   s.points-=item.price;const oid=Date.now(),upd={[SP(s.id)+'/points']:s.points,['orders/o'+oid]:{id:oid,sid:s.id,studentName:s.name,itemName:item.name}};
   addHist(s,{label:'상품 구매 - '+item.name,points:-item.price,date:today()},upd);
   if(!await dbUpdate(upd))return renderStudent();toast('🛍️ '+item.name+' 구매 완료!');renderStudent()}
+
+/* ───── 대시보드: 예비 고1 분석 (영어 단어 · 수학 단원) ───── */
+/* 맞힘/틀림 비율 도넛 */
+function ratioDonut(ok,ng){const t=(ok+ng)||1,C=2*Math.PI*40,a=ok/t*C;
+  return`<svg viewBox="0 0 120 120" class="donut"><circle cx="60" cy="60" r="40" fill="none" class="dn-bg" stroke-width="16"/>${ok+ng?`<circle cx="60" cy="60" r="40" fill="none" class="dn-ng" stroke-width="16"/><circle cx="60" cy="60" r="40" fill="none" class="dn-ok" stroke-width="16" stroke-dasharray="${a} ${C-a}" transform="rotate(-90 60 60)"/>`:''}<text x="60" y="60" text-anchor="middle" class="dn-v" font-size="18" font-weight="800">${ok+ng?Math.round(ok/t*100)+'%':'-'}</text><text x="60" y="76" text-anchor="middle" class="dn-l" font-size="9">정답률</text></svg>`}
+function preEngStats(st){const keys=typeof vocabKeys==='function'?vocabKeys('pre'):[];let ok=0,tot=0,n=0;const per=[];
+  keys.forEach(k=>{const r=(st.vocabResults||{})[k];if(r&&r.completed){n++;ok+=+r.score||0;tot+=+r.total||0;per.push({k,p:r.total?r.score/r.total*100:0})}});return{keys,ok,ng:tot-ok,tot,n,per}}
+function preMathStats(st){const by={};PRE_MATH.areas.forEach(a=>by[a.id]={ok:0,ng:0});
+  Object.values(st.preMathResults||{}).forEach(r=>{if(!(r&&r.completed))return;arr(r.items).forEach(x=>{if(x.review)return;const p=PRE_MATH.problems[x.id];if(!p)return;by[p.area][x.correct?'ok':'ng']++})});return by}
+function preAnalysis(me){
+  if(typeof PRE_MATH==='undefined')return'';
+  /* 영어 */
+  const E=preEngStats(me),others=DATA.students.map(preEngStats).filter(x=>x.tot);const avgE=others.length?others.reduce((a,x)=>a+x.ok/x.tot*100,0)/others.length:0;
+  const days=E.per.map(x=>{const m=/Day (\d+)/.exec(x.k);return m?+m[1]:0}),my=E.per.map(x=>x.p),av=E.per.map(x=>{const v=DATA.students.map(st=>(st.vocabResults||{})[x.k]).filter(r=>r&&r.completed&&r.total).map(r=>r.score/r.total*100);return v.reduce((a,b)=>a+b,0)/(v.length||1)});
+  const eng=`<div class="dcard pa-card"><h4>${ic('graduation-cap')} 예비 고1 영어 분석</h4>
+    ${E.tot?`<div class="donutwrap">${ratioDonut(E.ok,E.ng)}<div class="pa-nums"><div><small>맞힌 단어</small><b class="green">${E.ok}</b></div><div><small>틀린 단어</small><b class="red">${E.ng}</b></div><div><small>응시</small><b>${E.n}<small>/${E.keys.length}일</small></b></div><div><small>전체 평균</small><b>${Math.round(avgE)}%</b></div></div></div>
+    <div class="pa-split"><i class="ok" style="width:${E.ok/E.tot*100}%"></i><i class="ng" style="width:${E.ng/E.tot*100}%"></i></div><div class="pa-split-l"><span class="green">맞힘 ${Math.round(E.ok/E.tot*100)}%</span><span class="red">틀림 ${Math.round(E.ng/E.tot*100)}%</span></div>
+    <div class="small" style="margin:12px 0 4px">Day별 정답률 (나 vs 전체 평균)</div>${barsSvg(days.slice(-8),my.slice(-8),av.slice(-8))}
+    <div class="pa-tip">${E.ok/E.tot*100>=avgE?'👍 전체 평균보다 잘하고 있어요!':'💪 틀린 단어는 단어시험의 "오답 확인"과 "오답 다시 풀기"로 복습해 보세요.'}</div>`:'<div class="empty">아직 응시한 예비 고1 영어 시험이 없어요</div>'}</div>`;
+  /* 수학 */
+  const M=preMathStats(me),all=DATA.students.map(preMathStats);
+  const rows=PRE_MATH.areas.map(a=>{const m=M[a.id],t=m.ok+m.ng,pct=t?m.ok/t*100:null;
+    const cls=all.map(x=>x[a.id]).filter(x=>x.ok+x.ng),avg=cls.length?cls.reduce((s,x)=>s+x.ok/(x.ok+x.ng)*100,0)/cls.length:null;return{a,m,t,pct,avg}});
+  const tried=rows.filter(r=>r.t),weak=tried.slice().sort((x,y)=>x.pct-y.pct||y.m.ng-x.m.ng)[0],strong=tried.slice().sort((x,y)=>y.pct-x.pct)[0];
+  const nb=Object.keys(((me.preMath||{}).notebook)||{}).filter(id=>PRE_MATH.problems[id]).length;
+  const math=`<div class="dcard pa-card"><h4>${ic('pi')} 예비 고1 수학 단원 분석</h4>
+    ${tried.length?`<div class="pa-legend"><span><i class="ok"></i>맞힌 문제</span><span><i class="ng"></i>틀린 문제</span><span><i class="avg"></i>전체 평균 정답률</span></div>
+    ${rows.map(r=>`<div class="pa-row${weak&&r===weak&&r.pct<100?' weak':''}"><div class="pa-name">${esc(r.a.name.split(' · ')[0])}<small>${esc(r.a.name.split(' · ').slice(1).join(' · '))}</small></div>
+      <div class="pa-bar">${r.t?`<i class="ok" style="width:${r.m.ok/r.t*100}%"></i><i class="ng" style="width:${r.m.ng/r.t*100}%"></i>${r.avg!=null?`<b class="avg" style="left:${r.avg}%" title="전체 평균 ${Math.round(r.avg)}%"></b>`:''}`:'<span class="pa-none">아직 안 풀었어요</span>'}</div>
+      <div class="pa-val">${r.t?`<b>${Math.round(r.pct)}%</b><small>${r.m.ok}맞음 · ${r.m.ng}틀림</small>`:'<small>-</small>'}</div></div>`).join('')}
+    <div class="pa-tip">${weak&&weak.pct<100?`🎯 <b>${esc(weak.a.name.split(' · ')[0])}</b> 단원이 가장 부족해요 (정답률 ${Math.round(weak.pct)}%). 오답노트와 연습하기에서 이 단원을 더 풀어 보세요.`:'🎉 지금까지 푼 문제를 모두 맞혔어요!'}${strong&&weak&&strong!==weak?`<br>⭐ 가장 잘하는 단원: <b>${esc(strong.a.name.split(' · ')[0])}</b> (${Math.round(strong.pct)}%)`:''}${nb?`<br>📒 오답노트에 남은 문제 ${nb}개`:''}</div>`:'<div class="empty">아직 푼 예비 고1 수학 문제가 없어요</div>'}</div>`;
+  return`<h3 class="sec">예비 고1 분석</h3><div class="dash-grid pa-grid">${eng}${math}</div>`}
