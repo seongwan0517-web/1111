@@ -138,13 +138,15 @@ function renderAPreMath(){const el=$('adminPreMathList');if(!el)return;if($('pmP
 async function togglePM(d){await pull();const c=pmConf(d),v=!c.open;if(!await dbUpdate({['pub/preMathTests/'+pmKey(d)+'/open']:v}))return;await pull();renderAPreMath();toast('예비고1 수학 Day '+d+(v?' 열림':' 닫힘'))}
 async function setPMAll(open){if(!await uiConfirm('예비고1 수학 Day 1~'+PM_DAYS+'을 모두 '+(open?'열까요?':'닫을까요?')))return;const upd={};for(let d=1;d<=PM_DAYS;d++)upd['pub/preMathTests/'+pmKey(d)+'/open']=open;if(!await dbUpdate(upd))return;await pull();renderAPreMath()}
 async function renderAPMScore(){const sel=$('pmScoreDay');if(!sel)return;if(sel.options.length!==PM_DAYS)sel.innerHTML=Array.from({length:PM_DAYS},(_,i)=>`<option value="${i+1}">Day ${i+1}</option>`).join('');
-  const d=+sel.value||1,ids=PRE_MATH.schedule[pmKey(d)];let A={};try{A=await pmLoadAnswers()}catch(e){}
-  const head=ids.map((id,i)=>`<th title="${esc(pmProb(id).topic)}">${i+1}번<br><span class="small">정답 ${esc(pmAnsText(pmProb(id),A[id]))}</span></th>`).join('');
-  const rows=DATA.students.map(s=>{const r=s.preMathResults&&s.preMathResults[pmKey(d)];if(!(r&&r.completed))return`<tr><td>${esc(s.name)}</td><td colspan="${ids.length+1}" class="small">미응시</td></tr>`;
-    const it=arr(r.items),rv=it.filter(x=>x.review);const cells=ids.map(id=>{const x=it.find(y=>y.id===id&&!y.review);return x?`<td class="${x.correct?'green':'red'}">${esc(pmAnsText(pmProb(id),x.selected))}</td>`:'<td class="small">-</td>'}).join('');
+  $('adminPMScore').innerHTML=await pmScoreTable(+sel.value||1)}
+/* 예비고1 수학 Day d 성적표 (학생별 고른 답 · 점수) */
+async function pmScoreTable(d){const ids=PRE_MATH.schedule[pmKey(d)];if(!ids)return'<div class="empty">없는 Day예요</div>';let A={};try{A=await pmLoadAnswers()}catch(e){}
+  const head=ids.map((id,i)=>`<th title="${esc(pmProb(id).topic)}">${i+1}번 ${pmLv(id)}<br><span class="small">정답 ${esc(pmAnsText(pmProb(id),A[id]))}</span></th>`).join('');
+  let done=0;const rows=DATA.students.map(s=>{const r=s.preMathResults&&s.preMathResults[pmKey(d)];if(!(r&&r.completed))return`<tr><td>${esc(s.name)}</td><td colspan="${ids.length+2}" class="small">미응시</td></tr>`;done++;
+    const it=arr(r.items);const cells=ids.map(id=>{const x=it.find(y=>y.id===id&&!y.review);return x?`<td class="${x.correct?'green':'red'}">${esc(pmAnsText(pmProb(id),x.selected))}</td>`:'<td class="small">-</td>'}).join('');
     const cc=ids.filter(id=>{const x=it.find(y=>y.id===id&&!y.review);return x&&x.correct}).length;
-    return`<tr><td>${esc(s.name)}</td>${cells}<td><b>${cc}/${ids.length}</b></td></tr>`}).join('');
-  $('adminPMScore').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th>${head}<th>점수</th></tr></thead><tbody>${rows}</tbody></table></div>`}
+    return`<tr><td>${esc(s.name)}</td>${cells}<td><span class="badge ${cc===ids.length?'badge-winner':'badge-ended'}">${cc}/${ids.length}</span></td><td class="small">${esc(r.date||'')}</td></tr>`}).join('');
+  return`<div class="small" style="margin:4px 0 10px">예비고1 수학 Day ${d} · ${pmConf(d).open?'열림':'닫힘'} · 응시 ${done}/${DATA.students.length}명</div><div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th>${head}<th>점수</th><th>응시일</th></tr></thead><tbody>${rows}</tbody></table></div>`}
 
 /* ───── 연습하기: 상 난이도 + 정규 일정에 없는 문제, 자율 연습 (포인트 없음) ─────
    기록 = pub/students/{id}/preMath/practice/{문제}: {tries, solved, date} · 3번 틀리면 정답 공개 */

@@ -117,9 +117,19 @@ function finishCrop(useSel){const im=crop.img;let sx=0,sy=0,sw=im.naturalWidth,s
   if(useSel&&crop.sel&&crop.sel.w>8&&crop.sel.h>8){sx=crop.sel.x/crop.scale;sy=crop.sel.y/crop.scale;sw=crop.sel.w/crop.scale;sh=crop.sel.h/crop.scale}
   const ow=Math.min(Math.round(sw),900),oh=Math.round(sh*ow/sw),o=document.createElement('canvas');o.width=ow;o.height=oh;const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,ow,oh);x.drawImage(im,sx,sy,sw,sh,0,0,ow,oh);
   const t=crop.t;mathEdit[t.g][t.i][t.f]=o.toDataURL('image/jpeg',.78);$('cropModal').style.display='none';renderMathEditor()}
-function renderAMScore(){const k=dayOptions('mathScoreDay'),c=mconf(k);
+/* 수학성적 Day 목록: 수학시험 Day 1~30 + 예비고1 수학 Day 1~12 (값 'pre:dayN') */
+function mathScoreOptions(){const sel=$('mathScoreDay'),pv=sel.value;
+  if(!sel.dataset.ready){const pre=typeof PRE_MATH!=='undefined'?Object.keys(PRE_MATH.schedule).map(k=>`<option value="pre:${k}">예비고1 수학 Day ${k.slice(3)}</option>`).join(''):'';
+    sel.innerHTML=`<optgroup label="수학시험">${Array.from({length:MATH_DAYS},(_,i)=>`<option value="day${i+1}">Day ${i+1}</option>`).join('')}</optgroup>${pre?`<optgroup label="예비고1 수학">${pre}</optgroup>`:''}`;sel.dataset.ready='1';if(pv)sel.value=pv}
+  return sel.value||'day1'}
+async function renderAMScore(){const sel0=mathScoreOptions();
+  if(sel0.startsWith('pre:')){$('adminMathScoreList').innerHTML=await pmScoreTable(+sel0.slice(7));renderAMSummary();return}
+  const k=sel0,c=mconf(k);
   const rows=DATA.students.map(s=>{const r=s.mathResults[k];if(!(r&&r.completed))return`<tr><td>${esc(s.name)}</td><td class="small" colspan="4">미응시</td></tr>`;
     const it=mItems(r),ok=it.filter(x=>x.correct).length,rt=it.map((x,i)=>x.correct?'-':(mRetry(r,i)?(mRetry(r,i).correct?'<span class="green">○</span>':'<span class="red">✕</span>'):'<span class="small">미</span>')).join(' ');
     return`<tr><td>${esc(s.name)}</td><td>${it.map(x=>x.selected?CIRCLED[x.selected-1]:'-').join(' ')}</td><td><span class="badge ${ok===it.length?'badge-winner':'badge-ended'}">${ok}/${it.length}</span></td><td>${rt}</td><td class="small">${esc(r.date)}</td></tr>`}).join('');
   $('adminMathScoreList').innerHTML=`<div class="small" style="margin:4px 0 10px">Day ${k.slice(3)} · 원본 ${c.open?'열림':'닫힘'}${c.retryHas?' · 유사 '+(c.retryOpen?'열림':'닫힘'):''}</div><div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>선택</th><th>결과</th><th>유사(○/✕)</th><th>응시일</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  $('adminMathScoreSummary').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>응시</th><th>정답</th><th>누적 P</th></tr></thead><tbody>${DATA.students.map(s=>{let n=0,q=0,ok=0,p=0;Object.keys(s.mathResults).forEach(x=>{const r=s.mathResults[x];if(r&&r.completed){n++;const it=mItems(r);q+=it.length;ok+=it.filter(y=>y.correct).length;p+=(r.pointsAwarded||0)+(r.retryPoints||0)}});return`<tr><td>${esc(s.name)}</td><td>${n}일</td><td>${ok}/${q}</td><td class="green">${p}P</td></tr>`}).join('')}</tbody></table></div>`}
+  renderAMSummary()}
+function renderAMSummary(){$('adminMathScoreSummary').innerHTML=`<div style="overflow-x:auto"><table class="table"><thead><tr><th>이름</th><th>수학시험 응시</th><th>정답</th><th>누적 P</th><th>예비고1 수학 응시</th><th>정답</th></tr></thead><tbody>${DATA.students.map(s=>{let n=0,q=0,ok=0,p=0;Object.keys(s.mathResults).forEach(x=>{const r=s.mathResults[x];if(r&&r.completed){n++;const it=mItems(r);q+=it.length;ok+=it.filter(y=>y.correct).length;p+=(r.pointsAwarded||0)+(r.retryPoints||0)}});
+    let pn=0,pq=0,pok=0;Object.values(s.preMathResults||{}).forEach(r=>{if(r&&r.completed){pn++;const it=arr(r.items).filter(y=>y&&!y.review);pq+=it.length;pok+=it.filter(y=>y.correct).length}});
+    return`<tr><td>${esc(s.name)}</td><td>${n}일</td><td>${ok}/${q}</td><td class="green">${p}P</td><td>${pn}일</td><td>${pok}/${pq}</td></tr>`}).join('')}</tbody></table></div>`}
