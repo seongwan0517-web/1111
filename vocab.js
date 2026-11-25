@@ -101,7 +101,7 @@ function renderAVocab(){renderAVocabList('main','adminVocabList');renderAVocabLi
 function renderAVocabList(group,elId){
   const el=$(elId);if(!el)return;const keys=vocabKeys(group);
   const h=keys.map(k=>{const c=DATA.vocabTests[k]||{open:false},n=DATA.students.filter(s=>s.vocabResults&&s.vocabResults[k]&&s.vocabResults[k].completed).length,sub=vocabSub(k);
-    return `<div class="admin-card flex"><div><b>${esc(vocabCardTitle(k))}</b>${sub?`<div class="vsub">${esc(sub)}</div>`:''}<div class="small" style="margin-top:4px">단어 ${wordsOf(k).length}개 · 응시 ${n}/${DATA.students.length}명</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge ${c.open?'badge-active':'badge-ended'}">${c.open?'열림':'닫힘'}</span><button class="btn btn-sm ${c.open?'btn-danger':'btn-primary'}" onclick="toggleVocab('${jsq(k)}')">${c.open?'닫기':'열기'}</button></div></div>`;
+    return `<div class="admin-card flex"><div><b>${esc(vocabCardTitle(k))}</b>${sub?`<div class="vsub">${esc(sub)}</div>`:''}<div class="small" style="margin-top:4px">단어 ${wordsOf(k).length}개 · 응시 ${n}/${DATA.students.length}명</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge ${c.open?'badge-active':'badge-ended'}">${c.open?'열림':'닫힘'}</span><button class="btn btn-sm btn-ghost" onclick="previewVocab('${jsq(k)}','${elId}')">단어 보기</button><button class="btn btn-sm ${c.open?'btn-danger':'btn-primary'}" onclick="toggleVocab('${jsq(k)}')">${c.open?'닫기':'열기'}</button></div></div>`;
   }).join('');
   el.innerHTML=h?`<div class="cgrid">${h}</div>`:'<div class="empty">표시할 단어 챕터가 없습니다.</div>';
 }
@@ -129,3 +129,10 @@ function showAWrong(sid,k){
   const s=DATA.students.find(x=>x.id===sid),r=s&&s.vocabResults&&s.vocabResults[k],w=r?arr(r.wrongList):[];if(!s)return;
   $('adminVocabScoreDetail').innerHTML=`<div class="auction-card" style="margin-top:12px"><div class="flex"><div class="ac-title">${esc(s.name)} · ${esc(vocabShortTitle(k))} 오답</div><span class="badge badge-ended">${w.length}개</span></div>${w.length?w.map(x=>`<div class="history"><b>${esc(x.word)}</b><div class="small red" style="margin-top:4px">내가 고른 답: ${esc(x.selected)}</div><div class="small green">정답: ${esc(x.correct)}</div></div>`).join(''):'<div class="empty">오답이 없습니다.</div>'}</div>`;
 }
+
+/* 관리자: 단어 미리보기 (열기 전에 시험에 나올 단어 확인) */
+function previewVocab(k,elId){const el=$(elId),w=wordsOf(k),c=DATA.vocabTests[k]||{},sub=vocabSub(k),g=elId==='adminPreList'?'pre':'main';
+  el.innerHTML=`<div class="admin-section"><div class="flex"><b>${esc(vocabShortTitle(k))} 단어 미리보기 (${w.length}개 · ${c.open?'열림':'닫힘'})</b><button class="btn btn-sm" onclick="renderAVocab()">목록으로</button></div>${sub?`<div class="vsub">${esc(sub)}</div>`:''}
+  <div class="small" style="margin:6px 0 10px">시험에서는 이 단어들이 무작위 순서로 나오고, 보기는 같은 챕터의 다른 뜻 3개가 섞여 나와요.</div>
+  <div style="overflow-x:auto"><table class="table vprev"><thead><tr><th>#</th><th>단어</th><th>뜻</th></tr></thead><tbody>${w.map((x,i)=>`<tr><td class="small">${i+1}</td><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td></tr>`).join('')}</tbody></table></div>
+  <button class="btn btn-full ${c.open?'btn-danger':'btn-primary'}" style="margin-top:12px" onclick="toggleVocab('${jsq(k)}')">${esc(vocabShortTitle(k))} ${c.open?'닫기':'열기'}</button></div>`;el.scrollIntoView({block:'start'})}
