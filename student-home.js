@@ -22,12 +22,22 @@ function maybeNoticeModal(){if(noticeShown)return;noticeShown=true;const l=lates
 /* ───── 대시보드 ───── */
 const pctR=v=>Math.round(v||0);
 function openCount(kind){const T=kind==='v'?DATA.vocabTests:DATA.mathTests,key=kind==='v'?'vocabResults':'mathResults';let n=0;
-  for(let i=1;i<=30;i++){const k='day'+i;if((T[k]&&T[k].open)||DATA.students.some(s=>s[key][k]&&s[key][k].completed))n++}return n}
+  for(let i=1;i<=30;i++){const k='day'+i;if((T[k]&&T[k].open)||DATA.students.some(s=>s[key][k]&&s[key][k].completed))n++}
+  /* 예비고1: 영어 Day(예비고1 Day NN) · 수학 Day(preMathResults/dayN) */
+  if(kind==='v'&&typeof vocabKeys==='function')vocabKeys('pre').forEach(k=>{if((T[k]&&T[k].open)||DATA.students.some(s=>s.vocabResults[k]&&s.vocabResults[k].completed))n++});
+  if(kind==='m'&&typeof PRE_MATH!=='undefined')Object.keys(PRE_MATH.schedule).forEach(k=>{const c=(DATA.preMathTests||{})[k];if((c&&c.open)||DATA.students.some(s=>s.preMathResults&&s.preMathResults[k]&&s.preMathResults[k].completed))n++});
+  return n}
 function metrics(s){let vs=0,vt=0,vn=0,mq=0,mc=0,mn=0;
   Object.keys(s.vocabResults).forEach(k=>{const r=s.vocabResults[k];if(r&&r.completed){vs+=r.score||0;vt+=r.total||0;vn++}});
   Object.keys(s.mathResults).forEach(k=>{const r=s.mathResults[k];if(r&&r.completed){const it=mItems(r);mn++;mq+=it.length;mc+=it.filter(x=>x.correct).length}});
+  Object.values(s.preMathResults||{}).forEach(r=>{if(r&&r.completed){const it=arr(r.items).filter(x=>x&&!x.review);mn++;mq+=it.length;mc+=it.filter(x=>x.correct).length}});
   return{vs,vt,vn,mq,mc,mn,vp:vt?vs/vt*100:0,mp:mq?mc/mq*100:0,hasV:vt>0,hasM:mq>0,checks:s.history.filter(h=>h.label==='출석 체크').length}}
 function axisVals(s,c){const m=metrics(s);return[m.vp,m.mp,c.tot?Math.min(100,(m.vn+m.mn)/c.tot*100):0,Math.min(100,m.checks/20*100),c.maxP>0?Math.max(0,s.points)/c.maxP*100:0]}
+/* 예비고1 Day별 비교 (영어: 예비고1 Day NN, 수학: preMathResults/dayN) */
+function preDayCompare(s,kind){const pcV=r=>r.total?r.score/r.total*100:0,pcM=r=>{const it=arr(r.items).filter(x=>x&&!x.review);return it.length?it.filter(x=>x.correct).length/it.length*100:0};
+  const get=(st,d)=>kind==='v'?(st.vocabResults||{})['예비고1 Day '+String(d).padStart(2,'0')]:(st.preMathResults||{})['day'+d],pc=kind==='v'?pcV:pcM;
+  const days=[];for(let d=1;d<=30;d++){const r=get(s,d);if(r&&r.completed)days.push(d)}const ds=days.slice(-8);
+  return{days:ds,my:ds.map(d=>pc(get(s,d))),av:ds.map(d=>{const v=DATA.students.map(x=>get(x,d)).filter(r=>r&&r.completed).map(pc);return v.reduce((p,q)=>p+q,0)/(v.length||1)}),pre:true}}
 function dayCompare(s,kind){const key=kind==='v'?'vocabResults':'mathResults';
   const pc=r=>{if(kind==='v')return r.total?r.score/r.total*100:0;const it=mItems(r);return it.length?it.filter(x=>x.correct).length/it.length*100:0};
   /* Day 시험(day1~day30)만 비교 차트에 사용 — '예비고1 01' 같은 다른 챕터는 제외 */
@@ -60,8 +70,8 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
   const tot=openCount('v')+openCount('m'),done=m.vn+m.mn,ctx={tot,maxP:Math.max(1,...DATA.students.map(x=>x.points))};
   const all=DATA.students.map(x=>({m:metrics(x),a:axisVals(x,ctx)}));
   const avg=[0,1,2,3,4].map(i=>{const f=i===0?all.filter(x=>x.m.hasV):i===1?all.filter(x=>x.m.hasM):all;return f.length?f.reduce((p,x)=>p+x.a[i],0)/f.length:0});
-  const dv=dayCompare(s,'v'),dm=dayCompare(s,'m');
-  const bestV=Math.max(0,...Object.values(s.vocabResults).filter(r=>r&&r.completed&&r.total).map(r=>r.score/r.total*100));
+  let dv=dayCompare(s,'v'),dm=dayCompare(s,'m');if(!dv.days.length)dv=preDayCompare(s,'v');if(!dm.days.length)dm=preDayCompare(s,'m');
+  const bestV=Math.max(0,...Object.values(s.vocabResults).filter(r=>r&&r.completed&&r.total).map(r=>r.score/r.total*100));/* 단어시험·예비고1 영어 중 최고 */
   const accAll=(m.vt+m.mq)?(m.vs+m.mc)/(m.vt+m.mq)*100:0;
   const wins=Object.values(DATA.auctions).filter(x=>!x.active&&x.winner&&String(x.winner.studentId)===String(s.id));
   const gain=s.history.filter(h=>h.points>0).reduce((p,h)=>p+h.points,0),spent=s.history.filter(h=>h.points<0).reduce((p,h)=>p-h.points,0);
@@ -82,9 +92,9 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
     <div class="stat"><div class="sl">최고 점수</div><div class="v">${pctR(bestV)}점</div><div class="ss">단어시험 기준</div></div>
     <div class="stat"><div class="sl">최근 석차</div><div class="v">${rk}위 / ${n}명</div><div class="ss">상위 ${Math.ceil(rk/n*100)}% · 포인트 기준</div></div></div>
   <div class="dash-grid">
-    <div class="dcard"><h4>단어시험 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dv.days,dv.my,dv.av)}</div>
+    <div class="dcard"><h4>${dv.pre?'예비 고1 영어':'단어시험'} 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dv.days,dv.my,dv.av)}</div>
     <div class="dcard"><h4>영역별 성취도 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','나')}${lg('#9a9a9a','전체 평균')}</div>${radarSvg(axisVals(s,ctx),avg)}</div>
-    <div class="dcard"><h4>수학시험 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dm.days,dm.my,dm.av)}</div>
+    <div class="dcard"><h4>${dm.pre?'예비 고1 수학':'수학시험'} 정답률 (나 vs 전체 평균, %)</h4><div class="legend">${lg('#e50914','내 정답률')}${lg('#6b6b6b','전체 평균')}</div>${barsSvg(dm.days,dm.my,dm.av)}</div>
     <div class="dcard"><h4>포인트 변화 · 획득과 사용</h4>${trendSvg(s)}<div class="pt-sum">${donutSvg(gain,spent)}<div class="pt-nums"><div><small>획득</small><b class="green">+${gain.toLocaleString()}P</b></div><div><small>사용</small><b class="red">-${spent.toLocaleString()}P</b></div><div><small>지금 보유</small><b>${s.points.toLocaleString()}P</b></div></div></div></div>
     <div class="dcard"><h4>나의 배지 (${BD.filter(b=>b[2]).length}/${BD.length})</h4><div class="badges">${BD.map(b=>`<div class="bd${b[2]?' on':''}"><div class="em">${b[0]}</div><b>${b[1]}</b><div class="small">${b[3]}</div></div>`).join('')}</div></div>
     <div class="dcard"><h4>포인트 랭킹 TOP 5</h4>${top.map(rkRow).join('')}${rk>5?'<div class="small" style="text-align:center;margin:6px 0">⋮</div>'+rkRow(s,rk-1):''}</div>
@@ -135,5 +145,9 @@ function preAnalysis(me){
     ${rows.map(r=>`<div class="pa-row${weak&&r===weak&&r.pct<100?' weak':''}"><div class="pa-name">${esc(r.a.name.split(' · ')[0])}<small>${esc(r.a.name.split(' · ').slice(1).join(' · '))}</small></div>
       <div class="pa-bar">${r.t?`<i class="ok" style="width:${r.m.ok/r.t*100}%"></i><i class="ng" style="width:${r.m.ng/r.t*100}%"></i>${r.avg!=null?`<b class="avg" style="left:${r.avg}%" title="전체 평균 ${Math.round(r.avg)}%"></b>`:''}`:'<span class="pa-none">아직 안 풀었어요</span>'}</div>
       <div class="pa-val">${r.t?`<b>${Math.round(r.pct)}%</b><small>${r.m.ok}맞음 · ${r.m.ng}틀림</small>`:'<small>-</small>'}</div></div>`).join('')}
-    <div class="pa-tip">${weak&&weak.pct<100?`🎯 <b>${esc(weak.a.name.split(' · ')[0])}</b> 단원이 가장 부족해요 (정답률 ${Math.round(weak.pct)}%). 오답노트와 연습하기에서 이 단원을 더 풀어 보세요.`:'🎉 지금까지 푼 문제를 모두 맞혔어요!'}${strong&&weak&&strong!==weak?`<br>⭐ 가장 잘하는 단원: <b>${esc(strong.a.name.split(' · ')[0])}</b> (${Math.round(strong.pct)}%)`:''}${nb?`<br>📒 오답노트에 남은 문제 ${nb}개`:''}</div>`:'<div class="empty">아직 푼 예비 고1 수학 문제가 없어요</div>'}</div>`;
+    ${preMathDayChips(me)}<div class="pa-tip">${weak&&weak.pct<100?`🎯 <b>${esc(weak.a.name.split(' · ')[0])}</b> 단원이 가장 부족해요 (정답률 ${Math.round(weak.pct)}%). 오답노트와 연습하기에서 이 단원을 더 풀어 보세요.`:'🎉 지금까지 푼 문제를 모두 맞혔어요!'}${strong&&weak&&strong!==weak?`<br>⭐ 가장 잘하는 단원: <b>${esc(strong.a.name.split(' · ')[0])}</b> (${Math.round(strong.pct)}%)`:''}${nb?`<br>📒 오답노트에 남은 문제 ${nb}개`:''}</div>`:'<div class="empty">아직 푼 예비 고1 수학 문제가 없어요</div>'}</div>`;
   return`<h3 class="sec">예비 고1 분석</h3><div class="dash-grid pa-grid">${eng}${math}</div>`}
+
+/* 예비고1 수학 Day별 점수 한 줄 (예: Day 1 4/5) */
+function preMathDayChips(st){const R=st.preMathResults||{},out=[];Object.keys(PRE_MATH.schedule).forEach(k=>{const r=R[k];if(r&&r.completed){const it=arr(r.items).filter(x=>x&&!x.review),c=it.filter(x=>x.correct).length;out.push(`<span class="${c===it.length?'full':c?'part':'zero'}">Day ${k.slice(3)} <b>${c}/${it.length}</b></span>`)}});
+  return out.length?`<div class="pa-days"><small>Day별 점수</small>${out.join('')}</div>`:''}

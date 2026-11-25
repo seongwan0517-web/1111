@@ -480,3 +480,7 @@ body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
 .pt-nums{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pt-nums small{display:block;font-size:11px;color:var(--t2)}.pt-nums b{font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media (max-width:420px){.pt-nums{grid-template-columns:1fr 1fr}}
+.pa-days{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px}
+.pa-days small{font-size:11px;color:var(--t2);margin-right:2px}
+.pa-days span{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--s2);border:1px solid var(--b)}
+.pa-days .full b{color:var(--green)}.pa-days .part b{color:var(--orange)}.pa-days .zero b{color:var(--red2)}
