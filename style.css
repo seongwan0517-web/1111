@@ -488,3 +488,23 @@ body{background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased}
 .pm-preview .q-block{margin-top:12px}
 .vprev td,.vprev th{padding:8px 10px}
 @media (min-width:1100px){.pm-preview .pm-fig img{max-width:640px}}
+
+/* ── 청소 면제권 ── */
+.clean-card{margin-top:14px;border:1px solid var(--b)}
+.clean-card.open{border-color:rgba(52,211,153,.5);box-shadow:0 0 0 1px rgba(52,211,153,.15) inset}
+.clean-card.won{border-color:rgba(251,191,36,.6)}
+.clean-card .ac-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.clean-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 4px;font-size:13px;color:var(--t2)}
+.clean-status{margin-top:10px;padding:10px 12px;border-radius:var(--r-sm);background:var(--s2);font-size:14px;line-height:1.6}
+.clean-bid{margin-top:12px}.clean-bid .bid-main input{font-size:34px}
+.clean-win{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.clean-win small{width:100%;font-size:12px;color:var(--t2)}
+.clean-win span{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--s2);border:1px solid var(--b)}.clean-win span.me{background:var(--orangebg);border-color:rgba(251,191,36,.5)}
+.clean-today{background:var(--s2);border-radius:var(--r-sm);padding:12px}
+.inp.sm{width:90px;padding:6px 8px;font-size:14px;margin-left:4px}
+.clean-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.clean-roster b{font-size:13px}.clean-roster span{display:inline-block;margin:4px 4px 0 0;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--s2);border:1px solid var(--b)}
+.clean-roster span.won{background:var(--greenbg);color:var(--green);border-color:transparent}
+.clean-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:10px 0}
+.clean-form label{font-size:12px;color:var(--t2);display:flex;flex-direction:column;gap:4px}
+.clean-days{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px;font-size:14px}

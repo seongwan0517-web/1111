@@ -7,7 +7,7 @@
 (function(){var t=null;try{t=localStorage.getItem('vit_theme')}catch(e){}if(t!=='light'&&t!=='dark')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#f4f5f7':'#0e0e10'})();</script>
 <title>Vitamin v2.0 - 포인트 상점 &amp; 경매 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="style.css?v=38">
+<link rel="stylesheet" href="style.css?v=39">
 </head>
 <body>
 <div class="app">
@@ -69,6 +69,7 @@
     <div class="admin-section"><div class="field"><input id="itemName" placeholder="상품명"></div><div class="field"><input type="number" id="itemPrice" placeholder="가격"></div>
       <button class="btn btn-primary btn-full" onclick="addItem()">상품 추가</button></div><div id="adminShopList"></div></div>
   <div class="panel" id="a-auction">
+    <div id="adminClean"></div>
     <div class="admin-section"><b>새 경매 시작</b><div style="height:10px"></div>
       <div class="field"><label>경매 상품명</label><input id="auctionItem" placeholder="예) 편의점 상품권 5000원"></div>
       <div class="field"><label>최소 시작가 (P)</label><input type="number" id="auctionStart" placeholder="예) 100" min="10" step="10"></div>
@@ -91,7 +92,7 @@
     <div id="adminVocabScoreList"></div><div id="adminVocabScoreDetail"></div>
     <div class="admin-section" style="margin-top:16px"><b>학생별 누적 성적</b><div id="adminVocabScoreSummary"></div></div></div>
   <div class="panel" id="a-premath"><div class="admin-section"><b>예비고1 수학 (Day 1~12 + 연습하기 + 오답 풀기)</b><div class="small" style="margin-top:6px">2025·2026학년도 3월 고1 학력평가 수학 60문항을 중학교 5개 단원으로 나눴어요. Day 1은 5문제(이미 응시), Day 2~12는 하루 3문제로 하·중 난이도만, 매일 서로 다른 단원 3개가 나와요. 정답 1개당 <span id="pmPts">100</span>P.
-'상' 난이도 20문제와 추가 문제는 '연습하기'에서 학생이 자유롭게 풀어요(포인트 없음). 틀린 Day 문제는 오답노트에 모이고 '오답 풀기'로 다시 풀 수 있어요. 3번 틀리면 정답을 보여 줘요.</div>
+'상' 난이도 20문제와 추가 문제는 '연습하기'에서 학생이 골라 풀어요. 문제마다 한 번만 도전하고, 맞히면 100P. 틀린 Day 문제는 오답노트에 모이고 '오답 풀기'로 다시 풀 수 있어요. 3번 틀리면 정답을 보여 줘요.</div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="setPMAll(true)">모두 열기</button><button class="btn btn-danger btn-sm" onclick="setPMAll(false)">모두 닫기</button></div></div>
     <div id="adminPreMathList"></div>
     <div class="admin-section" style="margin-top:16px"><b>학생별 수학 노트</b><div style="height:8px"></div><div id="adminPMNotes"></div></div>
@@ -120,19 +121,20 @@
 <div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh"><svg class="ic"><use href="#i-megaphone"/></svg> 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=38"></script>
-<script src="vocab-data.js?v=38"></script>
-<script src="core.js?v=38"></script>
-<script src="icons.js?v=38"></script>
-<script src="ui.js?v=38"></script>
-<script src="auth.js?v=38"></script>
-<script src="student-home.js?v=38"></script>
-<script src="auction.js?v=38"></script>
-<script src="seat.js?v=38"></script>
-<script src="vocab.js?v=38"></script>
-<script src="math.js?v=38"></script>
-<script src="premath-data.js?v=38"></script>
-<script src="premath.js?v=38"></script>
-<script src="poll.js?v=38"></script>
-<script src="admin.js?v=38"></script>
+<script src="config.js?v=39"></script>
+<script src="vocab-data.js?v=39"></script>
+<script src="core.js?v=39"></script>
+<script src="icons.js?v=39"></script>
+<script src="ui.js?v=39"></script>
+<script src="auth.js?v=39"></script>
+<script src="student-home.js?v=39"></script>
+<script src="auction.js?v=39"></script>
+<script src="seat.js?v=39"></script>
+<script src="vocab.js?v=39"></script>
+<script src="math.js?v=39"></script>
+<script src="premath-data.js?v=39"></script>
+<script src="premath.js?v=39"></script>
+<script src="clean.js?v=39"></script>
+<script src="poll.js?v=39"></script>
+<script src="admin.js?v=39"></script>
 </body></html>

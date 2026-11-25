@@ -2,13 +2,11 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "admins": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid"
       }
     },
-
     "uids": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
@@ -16,16 +14,13 @@
         ".read": "auth != null && auth.uid === $uid"
       }
     },
-
     "data": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "pub": {
       ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('uids').child(auth.uid).exists())",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
-
       "students": {
         "$sid": {
           ".write": "auth != null && root.child('uids').child(auth.uid).val() === $sid && data.exists() && newData.exists()",
@@ -41,7 +36,6 @@
           }
         }
       },
-
       "auctions": {
         "$aid": {
           "bids": {
@@ -51,9 +45,20 @@
             }
           }
         }
+      },
+      "clean": {
+        "days": {
+          "$date": {
+            "bids": {
+              "$bsid": {
+                ".write": "auth != null && root.child('uids').child(auth.uid).val() === $bsid && now >= root.child('pub').child('clean').child('days').child($date).child('openAt').val() && now <= root.child('pub').child('clean').child('days').child($date).child('closeAt').val() && newData.exists()",
+                ".validate": "newData.child('amount').isNumber() && newData.child('amount').val() % 10 === 0 && newData.child('amount').val() >= root.child('pub').child('clean').child('days').child($date).child('startPrice').val() && (!data.exists() || newData.child('amount').val() > data.child('amount').val())"
+              }
+            }
+          }
+        }
       }
     },
-
     "orders": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
@@ -61,7 +66,6 @@
         ".write": "auth != null && !data.exists() && newData.child('sid').val() === root.child('uids').child(auth.uid).val()"
       }
     },
-
     "mathProblems": {
       ".read": "auth != null",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"

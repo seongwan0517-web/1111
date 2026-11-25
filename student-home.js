@@ -1,5 +1,5 @@
 /* 학생 홈(대시보드·공지), 상점, 내역 */
-function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab('main');renderSVocab('pre');renderSPreMath();renderSMath();renderSSeat();maybeNoticeModal()}
+function renderStudent(){$('studentName').textContent=getMe().name;renderNoticeBar();renderHome();renderShop();renderHist();renderSAuc();renderSVocab('main');renderSVocab('pre');renderSPreMath();renderSMath();cleanAutoRefund();renderSSeat();maybeNoticeModal()}
 function stab(id,el){document.querySelectorAll('#studentMain .tab,#studentMain .panel').forEach(e=>e.classList.remove('active'));el.classList.add('active');$('s-'+id).classList.add('active');
   if(id==='vocab'){currentQuiz=null;renderSVocab('main')}if(id==='pre'){currentQuiz=null;renderSVocab('pre')}if(id==='math'){currentMath=null;renderSMath()}if(id==='premath'){currentPM=null;renderSPreMath()}
   window.scrollTo(0,0);
@@ -84,6 +84,7 @@ function renderHome(){const s=getMe();$('studentPoints').textContent=s.points;
   $('s-home').innerHTML=`${noticeSection()}
   <div class="banner"><div class="small" style="color:#ffb3b8">${esc(s.name)}님의 포인트${seat?' · 내 자리 '+seat.n+'번':''}</div><div class="point">${s.points.toLocaleString()}P</div>
     <div class="flex" style="margin-top:12px"><span style="font-size:13px">전체 ${rk}위 / ${n}명</span><button class="btn ${checked?'btn-ghost':'btn-primary'} btn-sm" ${checked?'disabled':''} onclick="checkIn()">${checked?'오늘 출석 완료':'출석체크 +'+CHECKIN_POINTS+'P'}</button></div></div>
+  ${cleanCard(s)}
   ${preAnalysis(s)}
   <h3 class="sec">나의 학습 현황</h3>
   <div class="stats">

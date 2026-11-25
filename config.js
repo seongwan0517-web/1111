@@ -8,5 +8,7 @@ const LOGIN_DOMAIN="vitamin2.app";
 const ADMIN_LOGIN_ID="admin";
 const STEP=10,MATH_DAYS=30,MATH_POINTS=300,MATH_RETRY_POINTS=0,CHECKIN_POINTS=10,MAX_Q=5;
 /* 예비고1 수학: 정답 1문제당 포인트 */
-const PRE_MATH_POINTS=100;
+const PRE_MATH_POINTS=200;
+/* 예비고1 수학 연습하기(상 문제 등): 정답 1문제당 포인트 · 문제마다 한 번만 도전 */
+const PRE_MATH_PRACTICE_POINTS=100;
 const CIRCLED=['①','②','③','④','⑤'];
