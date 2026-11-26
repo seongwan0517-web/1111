@@ -49,10 +49,15 @@
       "clean": {
         "days": {
           "$date": {
-            "bids": {
+            "slots": {
+              "$slot": {
+                ".write": "auth != null && now >= root.child('pub').child('clean').child('days').child($date).child('openAt').val() && now <= root.child('pub').child('clean').child('days').child($date).child('closeAt').val() && data.val() === 0 && newData.val() === root.child('uids').child(auth.uid).val() && !root.child('pub').child('clean').child('days').child($date).child('buyers').child(newData.val()).exists()"
+              }
+            },
+            "buyers": {
               "$bsid": {
-                ".write": "auth != null && root.child('uids').child(auth.uid).val() === $bsid && now >= root.child('pub').child('clean').child('days').child($date).child('openAt').val() && now <= root.child('pub').child('clean').child('days').child($date).child('closeAt').val() && newData.exists()",
-                ".validate": "newData.child('amount').isNumber() && newData.child('amount').val() % 10 === 0 && newData.child('amount').val() >= root.child('pub').child('clean').child('days').child($date).child('startPrice').val() && (!data.exists() || newData.child('amount').val() > data.child('amount').val())"
+                ".write": "auth != null && root.child('uids').child(auth.uid).val() === $bsid && !data.exists() && newData.exists() && now >= root.child('pub').child('clean').child('days').child($date).child('openAt').val() && now <= root.child('pub').child('clean').child('days').child($date).child('closeAt').val()",
+                ".validate": "newData.child('slot').isString() && newData.parent().parent().child('slots').child(newData.child('slot').val()).val() === $bsid && newData.child('price').val() === (root.child('pub').child('clean').child('days').child($date).child('price').exists() ? root.child('pub').child('clean').child('days').child($date).child('price').val() : root.child('pub').child('clean').child('days').child($date).child('startPrice').val())"
               }
             }
           }
