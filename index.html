@@ -7,7 +7,7 @@
 (function(){var t=null;try{t=localStorage.getItem('vit_theme')}catch(e){}if(t!=='light'&&t!=='dark')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.documentElement.setAttribute('data-theme',t);var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#f4f5f7':'#0e0e10'})();</script>
 <title>Vitamin v2.0 - 포인트 상점 &amp; 경매 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="style.css?v=41">
+<link rel="stylesheet" href="style.css?v=42">
 </head>
 <body>
 <div class="app">
@@ -31,8 +31,8 @@
   <nav class="tabs">
     <div class="tab active" onclick="stab('home',this)"><i><svg class="ic"><use href="#i-house"/></svg></i><span>홈</span></div><div class="tab" onclick="stab('shop',this)"><i><svg class="ic"><use href="#i-shopping-bag"/></svg></i><span>상점</span></div>
     <div class="tab" onclick="stab('auction',this)"><i><svg class="ic"><use href="#i-gavel"/></svg></i><span>경매</span></div><div class="tab" onclick="stab('seat',this)"><i><svg class="ic"><use href="#i-armchair"/></svg></i><span>자리</span></div>
-    <div class="tab" onclick="stab('vocab',this)"><i><svg class="ic"><use href="#i-notebook-pen"/></svg></i><span data-s="단어">단어시험</span></div><div class="tab" onclick="stab('pre',this)"><i><svg class="ic"><use href="#i-graduation-cap"/></svg></i><span data-s="예비고1">예비 고1(영어)</span></div>
-    <div class="tab" onclick="stab('premath',this)"><i><svg class="ic"><use href="#i-pi"/></svg></i><span data-s="예비수학">예비고1 수학</span></div><div class="tab" onclick="stab('math',this)"><i><svg class="ic"><use href="#i-calculator"/></svg></i><span data-s="수학">수학시험</span></div><div class="tab" onclick="stab('history',this)"><i><svg class="ic"><use href="#i-receipt"/></svg></i><span>내역</span></div>
+    <div class="tab" onclick="stab('vocab',this)"><i><svg class="ic"><use href="#i-notebook-pen"/></svg></i><span data-s="단어">단어시험</span></div><div class="tab" onclick="stab('pre',this)"><i><svg class="ic"><use href="#i-graduation-cap"/></svg></i><span data-s="온쌤영어">함께온쌤(영어)</span></div>
+    <div class="tab" onclick="stab('premath',this)"><i><svg class="ic"><use href="#i-pi"/></svg></i><span data-s="온쌤수학">함께온쌤(수학)</span></div><div class="tab" onclick="stab('math',this)"><i><svg class="ic"><use href="#i-calculator"/></svg></i><span data-s="수학">수학시험</span></div><div class="tab" onclick="stab('history',this)"><i><svg class="ic"><use href="#i-receipt"/></svg></i><span>내역</span></div>
   </nav>
   <div class="panel active" id="s-home"></div><div class="panel" id="s-shop"></div><div class="panel" id="s-auction"></div>
   <div class="panel" id="s-seat"></div><div class="panel" id="s-vocab"></div><div class="panel" id="s-pre"></div><div class="panel" id="s-premath"></div><div class="panel" id="s-math"></div><div class="panel" id="s-history"></div>
@@ -44,9 +44,9 @@
   <nav class="tabs">
     <div class="tab active" onclick="atab('students',this)"><i><svg class="ic"><use href="#i-users"/></svg></i><span>학생</span></div><div class="tab" onclick="atab('shop',this)"><i><svg class="ic"><use href="#i-shopping-bag"/></svg></i><span>상점</span></div>
     <div class="tab" onclick="atab('auction',this)"><i><svg class="ic"><use href="#i-gavel"/></svg></i><span>경매</span></div><div class="tab" onclick="atab('seat',this)"><i><svg class="ic"><use href="#i-armchair"/></svg></i><span>자리</span></div>
-    <div class="tab" onclick="atab('vocab',this)"><i><svg class="ic"><use href="#i-notebook-pen"/></svg></i><span data-s="단어">단어시험</span></div><div class="tab" onclick="atab('pre',this)"><i><svg class="ic"><use href="#i-graduation-cap"/></svg></i><span data-s="예비고1">예비 고1(영어)</span></div>
+    <div class="tab" onclick="atab('vocab',this)"><i><svg class="ic"><use href="#i-notebook-pen"/></svg></i><span data-s="단어">단어시험</span></div><div class="tab" onclick="atab('pre',this)"><i><svg class="ic"><use href="#i-graduation-cap"/></svg></i><span data-s="온쌤영어">함께온쌤(영어)</span></div>
     <div class="tab" onclick="atab('vocabscore',this)"><i><svg class="ic"><use href="#i-chart-column"/></svg></i><span data-s="단어성적">단어성적</span></div>
-    <div class="tab" onclick="atab('premath',this)"><i><svg class="ic"><use href="#i-pi"/></svg></i><span data-s="예비수학">예비고1 수학</span></div><div class="tab" onclick="atab('math',this)"><i><svg class="ic"><use href="#i-calculator"/></svg></i><span data-s="수학">수학시험</span></div><div class="tab" onclick="atab('mathscore',this)"><i><svg class="ic"><use href="#i-chart-line"/></svg></i><span data-s="수학성적">수학성적</span></div>
+    <div class="tab" onclick="atab('premath',this)"><i><svg class="ic"><use href="#i-pi"/></svg></i><span data-s="온쌤수학">함께온쌤(수학)</span></div><div class="tab" onclick="atab('math',this)"><i><svg class="ic"><use href="#i-calculator"/></svg></i><span data-s="수학">수학시험</span></div><div class="tab" onclick="atab('mathscore',this)"><i><svg class="ic"><use href="#i-chart-line"/></svg></i><span data-s="수학성적">수학성적</span></div>
     <div class="tab" onclick="atab('orders',this)"><i><svg class="ic"><use href="#i-package"/></svg></i><span>주문</span></div><div class="tab" onclick="atab('notice',this)"><i><svg class="ic"><use href="#i-megaphone"/></svg></i><span>공지</span></div>
   </nav>
   <div class="panel active" id="a-students">
@@ -85,13 +85,13 @@
   <div class="panel" id="a-seat"></div>
   <div class="panel" id="a-vocab"><div class="admin-section"><b>단어시험 관리 (Day 1~30)</b><div class="small" style="margin-top:6px">열기를 누르면 학생들이 해당 Day 시험에 응시할 수 있습니다. 학생은 Day당 1회만 응시합니다.</div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="setVocabGroup('main',true)">모두 열기</button><button class="btn btn-danger btn-sm" onclick="setVocabGroup('main',false)">모두 닫기</button></div></div><div id="adminVocabList"></div></div>
-  <div class="panel" id="a-pre"><div class="admin-section"><b>예비 고1(영어) 단어시험 관리 (01~20)</b><div class="small" style="margin-top:6px">학생 화면의 '예비 고1(영어)' 탭에 보입니다. 챕터마다 단어 100개, 학생은 챕터당 1회만 응시합니다. 성적은 '단어성적' 탭에서 볼 수 있어요.</div>
+  <div class="panel" id="a-pre"><div class="admin-section"><b>함께온쌤(영어) 단어시험 관리 (Day 1~20)</b><div class="small" style="margin-top:6px">학생 화면의 '함께온쌤(영어)' 탭에 보입니다. 챕터마다 단어 100개, 학생은 챕터당 1회만 응시합니다. 성적은 '단어성적' 탭에서 볼 수 있어요.</div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="setVocabGroup('pre',true)">모두 열기</button><button class="btn btn-danger btn-sm" onclick="setVocabGroup('pre',false)">모두 닫기</button></div></div><div id="adminPreList"></div></div>
   <div class="panel" id="a-vocabscore">
     <div class="admin-section"><b>Day별 성적</b><div style="height:8px"></div><select id="vocabScoreDay" class="inp" onchange="renderAVScore()"></select></div>
     <div id="adminVocabScoreList"></div><div id="adminVocabScoreDetail"></div>
     <div class="admin-section" style="margin-top:16px"><b>학생별 누적 성적</b><div id="adminVocabScoreSummary"></div></div></div>
-  <div class="panel" id="a-premath"><div class="admin-section"><b>예비고1 수학 (Day 1~12 + 연습하기 + 오답 풀기)</b><div class="small" style="margin-top:6px">2025·2026학년도 3월 고1 학력평가 수학 60문항을 중학교 5개 단원으로 나눴어요. Day 1은 5문제(이미 응시), Day 2~12는 하루 3문제로 하·중 난이도만, 매일 서로 다른 단원 3개가 나와요. 정답 1개당 <span id="pmPts">100</span>P.
+  <div class="panel" id="a-premath"><div class="admin-section"><b>함께온쌤(수학) (Day 1~12 + 연습하기 + 오답 풀기)</b><div class="small" style="margin-top:6px">2025·2026학년도 3월 고1 학력평가 수학 60문항을 중학교 5개 단원으로 나눴어요. Day 1은 5문제(이미 응시), Day 2~12는 하루 3문제로 하·중 난이도만, 매일 서로 다른 단원 3개가 나와요. 정답 1개당 <span id="pmPts">100</span>P.
 '상' 난이도 20문제와 추가 문제는 '연습하기'에서 학생이 골라 풀어요. 문제마다 한 번만 도전하고, 맞히면 100P. 틀린 Day 문제는 오답노트에 모이고 '오답 풀기'로 다시 풀 수 있어요. 3번 틀리면 정답을 보여 줘요.</div>
     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" onclick="setPMAll(true)">모두 열기</button><button class="btn btn-danger btn-sm" onclick="setPMAll(false)">모두 닫기</button></div></div>
     <div id="adminPreMathList"></div>
@@ -121,20 +121,20 @@
 <div class="modal-bg" id="noticeModal"><div class="nmodal"><div class="nh"><svg class="ic"><use href="#i-megaphone"/></svg> 공지사항</div><div id="noticeList2"></div><button class="btn btn-primary" onclick="closeNotice()">확인했어요</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=41"></script>
-<script src="vocab-data.js?v=41"></script>
-<script src="core.js?v=41"></script>
-<script src="icons.js?v=41"></script>
-<script src="ui.js?v=41"></script>
-<script src="auth.js?v=41"></script>
-<script src="student-home.js?v=41"></script>
-<script src="auction.js?v=41"></script>
-<script src="seat.js?v=41"></script>
-<script src="vocab.js?v=41"></script>
-<script src="math.js?v=41"></script>
-<script src="premath-data.js?v=41"></script>
-<script src="premath.js?v=41"></script>
-<script src="clean.js?v=41"></script>
-<script src="poll.js?v=41"></script>
-<script src="admin.js?v=41"></script>
+<script src="config.js?v=42"></script>
+<script src="vocab-data.js?v=42"></script>
+<script src="core.js?v=42"></script>
+<script src="icons.js?v=42"></script>
+<script src="ui.js?v=42"></script>
+<script src="auth.js?v=42"></script>
+<script src="student-home.js?v=42"></script>
+<script src="auction.js?v=42"></script>
+<script src="seat.js?v=42"></script>
+<script src="vocab.js?v=42"></script>
+<script src="math.js?v=42"></script>
+<script src="premath-data.js?v=42"></script>
+<script src="premath.js?v=42"></script>
+<script src="clean.js?v=42"></script>
+<script src="poll.js?v=42"></script>
+<script src="admin.js?v=42"></script>
 </body></html>

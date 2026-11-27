@@ -1,4 +1,4 @@
-/* 단어시험: Day 1~30 (단어시험 탭) + 예비고1 01~20 (예비 고1(영어) 탭) */
+/* 단어시험: Day 1~30 (단어시험 탭) + 예비고1 01~20 (함께온쌤(영어) 탭) */
 const isPre=k=>/^예비고1/.test(k);
 const vGroup=k=>isPre(k)?'pre':'main';
 const vPanel=k=>isPre(k)?'s-pre':'s-vocab';
@@ -19,7 +19,7 @@ function vocabKeys(group){
 const preDay=k=>{const m=/^예비고1 Day (\d+)$/.exec(k);return m?Number(m[1]):null};
 function vocabShortTitle(key){
   const m=/^day(\d+)$/i.exec(key);if(m)return `Day ${Number(m[1])}`;
-  const p=preDay(key);return p?`예비고1 Day ${p}`:String(key).split('|')[0].trim();
+  const p=preDay(key);return p?`함께온쌤(영어) Day ${p}`:String(key).split('|')[0].trim();
 }
 /* 예비 고1 탭 안에서는 'Day 1'처럼 짧게 */
 const vocabCardTitle=k=>preDay(k)?`Day ${preDay(k)}`:vocabShortTitle(k);
@@ -40,7 +40,7 @@ function renderSVocab(group){
   const completed=keys.filter(k=>R[k]&&R[k].completed);let sc=0,tq=0,tp=0;
   completed.forEach(k=>{sc+=Number(R[k].score)||0;tq+=Number(R[k].total)||0;tp+=R[k].pointsAwarded!=null?R[k].pointsAwarded:(Number(R[k].score)||0)*10});
   const openN=keys.filter(k=>(DATA.vocabTests[k]||{}).open&&!(R[k]&&R[k].completed)).length;
-  let h=`<div class="banner"><div class="small" style="color:#ffb3b8">${group==='pre'?'예비 고1 영어 단어':'단어시험'} · 누적 결과</div>
+  let h=`<div class="banner"><div class="small" style="color:#ffb3b8">${group==='pre'?'함께온쌤(영어) 단어':'단어시험'} · 누적 결과</div>
     <div class="bstats"><div><div class="small">응시</div><b>${completed.length}<small>/${keys.length}</small></b></div><div><div class="small">점수</div><b>${sc}<small>/${tq}</small></b></div><div><div class="small">획득 포인트</div><b class="green">${tp}P</b></div><div><div class="small">지금 응시 가능</div><b class="orange">${openN}</b></div></div></div>`;
   if(!keys.length)h+='<div class="warn">표시할 단어 챕터가 없습니다.</div>';
   const cards=keys.map(k=>{
@@ -108,7 +108,7 @@ function renderAVocabList(group,elId){
 async function toggleVocab(k){
   await pull();const c=DATA.vocabTests[k]||(DATA.vocabTests[k]={open:false});c.open=!c.open;if(!await dbUpdate({['pub/vocabTests/'+k+'/open']:c.open}))return renderAVocab();renderAVocab();toast(c.open?'✅ '+vocabShortTitle(k)+' 열림':'🔒 '+vocabShortTitle(k)+' 닫힘');
 }
-async function setVocabGroup(group,open){const keys=vocabKeys(group);if(!await uiConfirm((group==='pre'?'예비 고1':'Day')+' 단어시험 '+keys.length+'개를 모두 '+(open?'열까요?':'닫을까요?')))return;
+async function setVocabGroup(group,open){const keys=vocabKeys(group);if(!await uiConfirm((group==='pre'?'함께온쌤(영어)':'Day')+' 단어시험 '+keys.length+'개를 모두 '+(open?'열까요?':'닫을까요?')))return;
   const upd={};keys.forEach(k=>upd['pub/vocabTests/'+k+'/open']=open);if(!await dbUpdate(upd))return;await pull();renderAVocab();toast(open?'✅ 모두 열림':'🔒 모두 닫힘')}
 function dayOptions(id){
   const sel=$(id),keys=vocabKeys(),pv=sel.value;
